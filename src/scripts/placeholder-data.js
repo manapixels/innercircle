@@ -4,50 +4,52 @@ const users = [
     name: 'User 11111',
     email: 'user1@nextmail.com',
     password: '123456',
+    image_url: '/users/delba-de-oliveira.png',
   },
   {
-    id: '410544b2-4001-4271-9855-abcdef11223344c',
+    id: 'c8640814-19d5-48e8-b1b8-0a8e6851beb9',
     name: 'User 22222',
     email: 'user2@nextmail.com',
     password: '123456',
+    image_url: '/users/lee-robinson.png',
   },
 ];
 
 const events = [
   {
-    customer_id: customers[0].id,
-    status: 'pending',
+    id: '47ea6615-10ca-42f0-9581-bdac1c5ccc67',
+    status: 'in progress',
     date_start: '2022-12-06',
     date_end: '2022-12-06',
-    customer_id: [customers[0].id,]
+    user_ids: [users[0].id,]
   },
   {
-    customer_id: customers[1].id,
-    status: 'pending',
+    id: 'af864b13-5c10-4eec-9a47-70a2d3743cfd',
+    status: 'in progress',
     date_start: '2022-11-14',
     date_end: '2022-12-14',
-    customer_id: []
+    user_ids: []
   },
   {
-    customer_id: customers[4].id,
-    status: 'paid',
+    id: 'a528416b-44b9-453e-94ed-49534bc2fdb8',
+    status: 'completed',
     date_start: '2022-10-29',
     date_end: '2022-12-29',
-    customer_id: []
+    user_ids: []
   },
   {
-    customer_id: customers[3].id,
-    status: 'paid',
+    id: '58bd7a83-3d7e-45c5-ad8f-878134e525a5',
+    status: 'completed',
     date_start: '2023-09-10',
     date_end: '2023-12-10',
-    customer_id: []
+    user_ids: []
   },
   {
-    customer_id: customers[5].id,
-    status: 'pending',
+    id: '8861b868-a827-4781-b073-c757ce386f09',
+    status: 'cancelled',
     date_start: '2023-08-05',
     date_end: '2023-12-05',
-    customer_id: []
+    user_ids: []
   },
 ];
 
