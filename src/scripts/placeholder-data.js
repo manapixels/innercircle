@@ -21,6 +21,10 @@ const events = [
     status: 'in progress',
     date_start: '2022-12-06',
     date_end: '2022-12-06',
+    location: 'Singapore',
+    name: 'event 1',
+    description: 'description',
+    image_url: '',
     user_ids: [users[0].id,]
   },
   {
@@ -28,6 +32,10 @@ const events = [
     status: 'in progress',
     date_start: '2022-11-14',
     date_end: '2022-12-14',
+    location: 'Singapore',
+    name: 'event 2',
+    description: 'description',
+    image_url: '',
     user_ids: []
   },
   {
@@ -35,6 +43,10 @@ const events = [
     status: 'completed',
     date_start: '2022-10-29',
     date_end: '2022-12-29',
+    location: 'Singapore',
+    name: 'event 3',
+    description: 'description',
+    image_url: '',
     user_ids: []
   },
   {
@@ -42,6 +54,10 @@ const events = [
     status: 'completed',
     date_start: '2023-09-10',
     date_end: '2023-12-10',
+    location: 'Singapore',
+    name: 'event 4',
+    description: 'description',
+    image_url: '',
     user_ids: []
   },
   {
@@ -49,6 +65,10 @@ const events = [
     status: 'cancelled',
     date_start: '2023-08-05',
     date_end: '2023-12-05',
+    location: 'Singapore',
+    name: 'event 5',
+    description: 'description',
+    image_url: '',
     user_ids: []
   },
 ];

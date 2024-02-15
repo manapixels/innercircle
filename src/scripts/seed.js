@@ -55,7 +55,12 @@ async function seedEvents(client) {
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       status TEXT CHECK (status IN ('draft','in progress', 'confirmed', 'cancelled', 'completed')) NOT NULL,
       date_start DATE NOT NULL,
-      date_end DATE NOT NULL
+      date_end DATE NOT NULL,
+      location TEXT NOT NULL,
+      name TEXT NOT NULL,
+      description TEXT,
+      image_url VARCHAR(255),
+      user_ids UUID[] REFERENCES users(id) ON DELETE CASCADE
     );
 `;
 
@@ -66,8 +71,8 @@ async function seedEvents(client) {
       events.map(
         async (event) => {
           return client.sql`
-            INSERT INTO events (id, status, date_start, date_end)
-            VALUES (${event.id}, ${event.status}, ${event.date_start}, ${event.date_end})
+            INSERT INTO events (id, status, date_start, date_end, location, name, description, image_url, user_ids)
+            VALUES (${event.id}, ${event.status}, ${event.date_start}, ${event.date_end}, ${event.location}, ${event.name}, ${event.description}, ${event.image_url}, ${event.user_ids})
             ON CONFLICT (id) DO NOTHING;
           `;
         },
