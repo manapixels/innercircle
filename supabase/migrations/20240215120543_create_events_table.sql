@@ -141,12 +141,3 @@ create policy "Individuals can update their own events." on events for
 update using (auth.uid() = user_id);
 create policy "Individuals can delete their own events." on events for delete using (auth.uid() = user_id);
 create policy "Authorized user can delete any event." on events for delete using (authorize('events.delete', auth.uid()));
-
--- ..............
---
--- Seeding data
---
--- ..............
-insert into public.role_permissions (role, permission)
-values ('admin', 'events.create'),
-  ('admin', 'events.delete');
