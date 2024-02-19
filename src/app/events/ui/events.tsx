@@ -1,10 +1,13 @@
-import Image from 'next/image';;
-import { Event } from '@/app/lib/definitions-backup';
-export default async function Events({
-    events,
-}: {
-    events: Event[];
-}) {
+'use client'
+
+import Image from 'next/image';
+import { StoreContext } from '@/app/lib/data';
+import { useContext } from "react";
+
+export default function Events() {
+
+    const { events } = useContext(StoreContext) || {};
+
     return (
         <div className="flex w-full flex-col md:col-span-4">
             <h2 className="mb-4 text-xl md:text-2xl">
@@ -13,7 +16,7 @@ export default async function Events({
             <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
 
                 <div className="bg-white px-6">
-                    {events.map((event, i) => {
+                    {events?.map((event, i) => {
                         return (
                             <div
                                 key={event.id}
@@ -21,7 +24,7 @@ export default async function Events({
                             >
                                 <div className="flex items-center">
                                     <Image
-                                        src={event.image_url}
+                                        src={event.image_url || ""}
                                         alt={`${event.name}'s profile picture`}
                                         className="mr-4 rounded-full"
                                         width={32}

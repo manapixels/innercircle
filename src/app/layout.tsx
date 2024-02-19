@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Image from "next/image";
 import Link from "next/link";
+import { StoreContextProvider } from "./lib/data";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -50,7 +51,9 @@ export default function RootLayout({
             </div>
           </nav>
         </header>
-        {children}
+        <StoreContextProvider>
+          {children}
+        </StoreContextProvider>
       </body>
     </html>
   );

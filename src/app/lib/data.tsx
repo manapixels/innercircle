@@ -1,18 +1,35 @@
-import { useState, useEffect } from 'react'
+"use client"
+
+import { createContext, useState, useEffect, useContext } from 'react';
 import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
 import { Database, Tables } from './definitions'
 
-type EventType = Tables<'events'>
-type UserType = Tables<'users'>
+export type EventType = Tables<'events'>
+export type UserType = Tables<'users'>
+
+type StoreContextType = {
+  events: EventType[]
+  users: Map<string, UserType>
+}
+
+export const StoreContext = createContext<StoreContextType | null>(null);
+
+export const useStore = () => useContext(StoreContext);
 
 export const supabase = createPagesBrowserClient<Database>()
 
-export const useStore = () => {
+export const StoreContextProvider = (
+  {
+  children
+}: {
+  children: React.ReactNode;
+}
+) => {
   const [events, setEvents] = useState<EventType[]>([])
-  const [users] = useState(new Map())
-  const [newOrUpdatedEvent, handleNewOrUpdatedEvent] = useState({})
-  const [deletedEvent, handleDeletedEvent] = useState({})
-  const [newOrUpdatedUser, handleNewOrUpdatedUser] = useState({})
+  const [users, setUsers] = useState<Map<string, UserType>>(new Map())
+  const [newOrUpdatedEvent, handleNewOrUpdatedEvent] = useState<EventType | null>(null)
+  const [deletedEvent, handleDeletedEvent] = useState<EventType | null>(null)
+  const [newOrUpdatedUser, handleNewOrUpdatedUser] = useState<UserType | null>(null)
 
   // Load initial data and set up listeners
   useEffect(() => {
@@ -24,12 +41,22 @@ export const useStore = () => {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'events' },
-        (payload) => payload.new && handleNewOrUpdatedEvent(payload.new)
+        (payload) => {
+          if (payload.new) {
+            const newEvent = payload.new as EventType;
+            handleNewOrUpdatedEvent(newEvent);
+          }
+        }
       )
       .on(
         'postgres_changes',
         { event: 'DELETE', schema: 'public', table: 'events' },
-        (payload) => handleDeletedEvent(payload.old)
+        (payload) => {
+          if (payload.old) {
+            const oldEvent = payload.old as EventType;
+            handleDeletedEvent(oldEvent);
+          }
+        }
       )
       .subscribe()
     // Listen for changes to our users
@@ -38,7 +65,12 @@ export const useStore = () => {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'users' },
-        (payload) => payload.new && handleNewOrUpdatedUser(payload.new)
+        (payload) => {
+          if (payload.new) {
+            const newUser = payload.new as UserType;
+            handleNewOrUpdatedUser(newUser);
+          }
+        }
       )
       .subscribe()
 
@@ -52,35 +84,47 @@ export const useStore = () => {
   // New event received from Postgres
   useEffect(() => {
     if (newOrUpdatedEvent) {
-      const handleAsync = async () => {
-        setEvents(events.concat(newOrUpdatedEvent as EventType))
-      }
-      handleAsync()
+      setEvents(prevEvents => {
+        const eventIndex = prevEvents.findIndex(event => event.id === newOrUpdatedEvent.id);
+        if (eventIndex > -1) {
+          const updatedEvents = [...prevEvents];
+          updatedEvents[eventIndex] = newOrUpdatedEvent;
+          return updatedEvents;
+        } else {
+          return [...prevEvents, newOrUpdatedEvent];
+        }
+      });
     }
   }, [newOrUpdatedEvent])
 
   // Deleted event received from postgres
   useEffect(() => {
     if (deletedEvent) {
-      const eventToDelete = deletedEvent as UserType;
-      setEvents(events.filter((event) => event.id !== eventToDelete.id));
+      setEvents(prevEvents => prevEvents.filter((event) => event.id !== deletedEvent.id));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deletedEvent])
 
   // New or updated user received from Postgres
   useEffect(() => {
     if (newOrUpdatedUser) {
-      const userToUpdate = newOrUpdatedUser as UserType
-      users.set(userToUpdate.id, userToUpdate)
+      setUsers(prevUsers => {
+        const updatedUsers = new Map(prevUsers);
+        updatedUsers.set(newOrUpdatedUser.id, newOrUpdatedUser);
+        return updatedUsers;
+      });
     }
   }, [newOrUpdatedUser])
 
-  return {
-    // We can export computed values here to map the authors to each message
-    events: events.map((x) => ({ ...x, author: users.get(x.user_id) })),
-    users,
-  }
+  return (
+    <StoreContext.Provider
+      value={{
+        events,
+        users
+      }}
+    >
+      {children}
+    </StoreContext.Provider>
+  )
 }
 
 
@@ -97,7 +141,7 @@ export const fetchUser = async (userId, setState) => {
       .eq('id', userId)
 
     if (data?.[0]) {
-      let user = data[0]
+      let user = data[0] as UserType;
       if (setState) setState(user)
       return user
     }
@@ -135,7 +179,7 @@ export const fetchEvents = async (setState) => {
       .from('events')
       .select(`*`)
       .order('created_at', { ascending: true })
-    if (setState) setState(data)
+    if (setState) setState(data as EventType[])
     return data
   } catch (error) {
     console.log('error', error)
@@ -156,8 +200,8 @@ export const addEvent = async (name, description, user_id, date_start, date_end,
   try {
     let { data } = await supabase
       .from('events')
-      .insert([{ 
-        name, 
+      .insert([{
+        name,
         description,
         user_id,
         date_start,
@@ -165,7 +209,7 @@ export const addEvent = async (name, description, user_id, date_start, date_end,
         location
       }])
       .select(`*`)
-    return data
+    return data as EventType[]
   } catch (error) {
     console.log('error', error)
     return error
@@ -173,7 +217,7 @@ export const addEvent = async (name, description, user_id, date_start, date_end,
 }
 
 /**
- * Delete a event from the DB
+ * Delete an event from the DB
  * @param {number} event_id
  */
 export const deleteEvent = async (event_id) => {

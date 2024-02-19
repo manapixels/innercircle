@@ -33,6 +33,13 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "**/*.js", "supabase/seed.mts"],
+  "include": [
+    "next-env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    ".next/types/**/*.ts",
+    "supabase/seed.mts"
+  ],
   "exclude": ["node_modules"]
 }
