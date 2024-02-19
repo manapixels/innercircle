@@ -45,7 +45,7 @@ comment on table public.role_permissions is 'Application permissions for each ro
 -- EVENTS
 -- .........
 create table public.events (
-  id            uuid not null default gen_random_uuid (),
+  id            uuid not null default gen_random_uuid() primary key,
   status        event_status not null default 'draft',
   user_id       uuid references public.users (id) not null,
   date_start    date not null,
@@ -55,10 +55,9 @@ create table public.events (
   name          text not null,
   description   text,
   image_url     varchar(255),
-  created_at    timestamp with time zone default timezone ('utc'::text, now()) not null,
+  created_at    timestamp with time zone default timezone('utc'::text, now()) not null
 );
 comment on table public.events is 'Details for each event.';
-comment on column public.events.participant_ids is 'List of user IDs participating in the event.';
 
 create table public.event_participants (
   event_id      uuid not null,
@@ -73,7 +72,7 @@ create table public.event_participants (
     references public.users (id)
     on delete cascade
 );
-comment on table public.event_participants is 'Participants of an event.';
+comment on table public.event_participants is 'List of user IDs participating in an event.';
 
 -- ....................
 --
