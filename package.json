@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "dev:seed": "node -r dotenv/config ./src/scripts/seed.js",
-    "snaplet:seed": "npx tsx ./supabase/seed.mts > supabase/seed.sql",
+    "db-preseed": "npx snaplet generate",
+    "db-seed": "npx tsx ./supabase/seed.mts > supabase/seed.sql",
+    "db-reset": "supabase db reset",
     "generate-types": "npx supabase gen types typescript --project-id 'rshggwxwrmtmsllwrgmz' --schema public > ./src/app/lib/definitions.ts"
   },
   "dependencies": {

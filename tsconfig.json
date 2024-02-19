@@ -8,6 +8,7 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
+    "target": "ES2017",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "importHelpers": true,
@@ -32,6 +33,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "**/*.js", "**,*.mts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "**/*.js", "supabase/seed.mts"],
   "exclude": ["node_modules"]
 }

@@ -10,14 +10,13 @@ create type public.event_status as enum (
 -- .......
 -- USERS
 -- .......
-create table users (
-  id            uuid references auth.users on delete cascade not null primary key,
+create table public.users (
+  id            uuid references auth.users not null primary key,
   updated_at    timestamp with time zone,
   username      text unique,
   password      text,
-  name          text not null,
+  name          text,
   avatar_url    text,
-  website       text,
   constraint    username_length check (char_length(username) >= 3)
 );
 comment on table public.users is 'Profile data for each user.';
@@ -56,9 +55,25 @@ create table public.events (
   name          text not null,
   description   text,
   image_url     varchar(255),
-  created_at    timestamp with time zone default timezone ('utc'::text, now()) not null
+  created_at    timestamp with time zone default timezone ('utc'::text, now()) not null,
 );
+comment on table public.events is 'Details for each event.';
+comment on column public.events.participant_ids is 'List of user IDs participating in the event.';
 
+create table public.event_participants (
+  event_id      uuid not null,
+  user_id       uuid not null,
+  primary key (event_id, user_id),
+  constraint fk_event
+    foreign key (event_id) 
+    references public.events (id)
+    on delete cascade,
+  constraint fk_user
+    foreign key (user_id)
+    references public.users (id)
+    on delete cascade
+);
+comment on table public.event_participants is 'Participants of an event.';
 
 -- ....................
 --
@@ -92,20 +107,21 @@ end;
 $$ language plpgsql security definer;
 
 -- Automatically reates a user entry when a new user signs up via Supabase Auth.
-create or replace function public.handle_new_user() returns trigger as $$ begin
-insert into public.users (id, name, avatar_url)
-values (
-    new.id,
-    new.raw_user_meta_data->>'name',
-    new.raw_user_meta_data->>'avatar_url'
-  );
-return new;
+create or replace function public.handle_new_user() returns trigger as $$ 
+begin
+  insert into public.users (id, name, avatar_url)
+  values (
+      new.id,
+      new.raw_user_meta_data->>'name',
+      new.raw_user_meta_data->>'avatar_url'
+    );
+  return new;
 end;
 $$ language plpgsql security definer;
 
 create or replace trigger on_auth_user_created
-after insert on auth.users for each row 
-execute procedure public.handle_new_user();
+  after insert on auth.users for each row 
+  execute procedure public.handle_new_user();
 
 
 -- ...................
