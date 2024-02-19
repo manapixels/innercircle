@@ -1,6 +1,6 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
-import { Database } from '../schema'
+import { Database } from '../lib/definitions'
 import ProfileForm from './profile-form'
 
 export default async function Profile() {

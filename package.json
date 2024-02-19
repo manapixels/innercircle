@@ -9,7 +9,7 @@
     "lint": "next lint",
     "dev:seed": "node -r dotenv/config ./src/scripts/seed.js",
     "snaplet:seed": "npx tsx ./supabase/seed.mts > supabase/seed.sql",
-    "generate-types": "npx supabase gen types typescript --project-id 'rshggwxwrmtmsllwrgmz' --schema public > ./src/app/schema.ts"
+    "generate-types": "npx supabase gen types typescript --project-id 'rshggwxwrmtmsllwrgmz' --schema public > ./src/app/lib/definitions.ts"
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.9.0",

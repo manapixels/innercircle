@@ -1,5 +1,5 @@
 import Image from 'next/image';;
-import { Event } from '@/app/lib/definitions';
+import { Event } from '@/app/lib/definitions-backup';
 export default async function Events({
     events,
 }: {

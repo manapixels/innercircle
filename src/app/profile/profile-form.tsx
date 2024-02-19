@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
-import { Database } from '../schema'
+import { Database } from '../lib/definitions'
 import { User, createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export default function ProfileForm({ user }: { user: User | null }) {
