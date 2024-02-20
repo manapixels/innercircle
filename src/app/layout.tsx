@@ -4,6 +4,7 @@ import "./globals.css";
 import Image from "next/image";
 import Link from "next/link";
 import { StoreContextProvider } from "./lib/data";
+import AuthForm from "./auth/login/auth-form";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,10 +18,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
-        <header className="bg-white">
+        <header>
           <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
             <div className="flex lg:flex-1">
               <a href="#" className="-m-1.5 p-1.5">
@@ -47,13 +49,20 @@ export default function RootLayout({
               <Link href="/about" className="text-sm font-semibold leading-6 text-gray-900">About</Link>
             </div>
             <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-              <Link href="/auth/login" type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Log in <span aria-hidden="true">&rarr;</span></Link>
+              <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Log in <span aria-hidden="true">&rarr;</span></button>
             </div>
           </nav>
         </header>
         <StoreContextProvider>
           {children}
         </StoreContextProvider>
+
+        {/* Main modal */}
+        <div id="default-modal" tabIndex={-1} aria-hidden="true" className="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+          <div className="relative p-4 w-full max-w-2xl max-h-full">
+            <AuthForm />
+          </div>
+        </div>
       </body>
     </html>
   );
