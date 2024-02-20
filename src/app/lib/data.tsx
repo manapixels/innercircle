@@ -127,6 +127,33 @@ export const StoreContextProvider = (
   )
 }
 
+export const signUpNewUser = async (email, password) => {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: '/welcome',
+    },
+  })
+  if (error) return error
+  return data
+}
+
+export const signInWithEmail = async (email, password) => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
+  if (error) return error
+  return data
+}
+
+export const signOut = async () => {
+  const { error } = await supabase.auth.signOut()
+  if (error) return false
+  return true
+}
+
 
 /**
  * Fetch a single user
