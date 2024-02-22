@@ -1,5 +1,5 @@
 'use client';
-import { signInWithEmail, signUpNewUser } from '@/app/lib/data';
+import { signInWithEmail, signUpNewUser } from '@/app/_lib/data';
 import { useState } from 'react';
 import { GrFormView, GrFormViewHide } from 'react-icons/gr';
 import { useForm, SubmitHandler } from 'react-hook-form';
