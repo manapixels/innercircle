@@ -1,23 +1,35 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { RiHomeHeartLine } from 'react-icons/ri';
+
 
 export default async function NotFound() {
   return (
     <div>
       <div className="xl:pt-24 w-full max-w-lg xl:w-1/2 relative pb-12 lg:pb-0 mx-auto">
-        <div className="text-9xl font-bold text-yellow-500">404</div>
+        <div className="relative">
+          <div className="text-9xl font-bold text-white absolute bottom-0">
+            404
+          </div>
+          <Image
+            src="/not-found.png"
+            alt="Not found"
+            width={250}
+            height={250}
+            className="rounded-xl"
+          />
+        </div>
         <h1 className="my-2 text-gray-800 font-bold text-2xl">
-          Looks like you've hit a roadblock.
+          Our pup found a chest!
         </h1>
         <p className="mb-4 text-gray-800">
-          Unfortunately, it's not the kind leading to hidden treasure.😳
+          But it isn't the one you were looking for 🫠
         </p>
         <Link
           href="/"
           className="sm:w-full lg:w-auto my-2 border rounded md py-4 px-8 text-center bg-yellow-500 text-white hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-opacity-50 block"
         >
-          Let's head back Home{' '}
-          <RiHomeHeartLine style={{ display: 'inline-block' }} />
+          Head home to find another <RiHomeHeartLine style={{ display: 'inline-block' }} />
         </Link>
       </div>
     </div>
