@@ -27,9 +27,9 @@ export default async function NotFound() {
         </p>
         <Link
           href="/"
-          className="sm:w-full lg:w-auto my-2 border rounded md py-4 px-8 text-center bg-yellow-500 text-white hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-opacity-50 block"
+          className="sm:w-full lg:w-auto my-2 border rounded-xl md py-4 px-8 text-center bg-base-100 text-black font-bold hover:bg-base-200 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-opacity-50 block"
         >
-          Head home to find another <RiHomeHeartLine style={{ display: 'inline-block' }} />
+          Go back home <RiHomeHeartLine style={{ display: 'inline-block' }} />
         </Link>
       </div>
     </div>
