@@ -81,6 +81,7 @@ export default function RootLayout({
           </nav>
         </header>
         <StoreContextProvider>{children}</StoreContextProvider>
+        <div id="modal-portal"></div>
       </body>
     </html>
   );
