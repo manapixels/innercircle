@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import Events from '@/app/events/ui/events';
+import Events from '@/app/events/_components/events';
 
 export const metadata: Metadata = {
   title: "innercircle | All events",
