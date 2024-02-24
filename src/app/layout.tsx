@@ -64,13 +64,13 @@ export default function RootLayout({
             <div className="hidden lg:flex lg:gap-x-12">
               <Link
                 href="/events"
-                className="text-sm font-semibold leading-6 text-gray-900"
+                className="text-md font-semibold leading-6 text-gray-900"
               >
                 Events
               </Link>
               <Link
                 href="/about"
-                className="text-sm font-semibold leading-6 text-gray-900"
+                className="text-md font-semibold leading-6 text-gray-900"
               >
                 About
               </Link>
