@@ -3,6 +3,7 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
 import { Database, Tables } from './definitions'
+import { dummyEvents } from '@/app/_lib/dummyData';
 
 export type EventType = Tables<'events'>
 export type UserType = Tables<'users'>
@@ -25,7 +26,7 @@ export const StoreContextProvider = (
   children: React.ReactNode;
 }
 ) => {
-  const [events, setEvents] = useState<EventType[]>([])
+  const [events, setEvents] = useState<EventType[]>(dummyEvents)
   const [users, setUsers] = useState<Map<string, UserType>>(new Map())
   const [newOrUpdatedEvent, handleNewOrUpdatedEvent] = useState<EventType | null>(null)
   const [deletedEvent, handleDeletedEvent] = useState<EventType | null>(null)
@@ -34,7 +35,7 @@ export const StoreContextProvider = (
   // Load initial data and set up listeners
   useEffect(() => {
     // Get Events
-    fetchEvents(setEvents)
+    // fetchEvents(setEvents)
     // Listen for new and deleted events
     const eventListener = supabase
       .channel('public:events')
