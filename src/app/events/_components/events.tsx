@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { StoreContext } from '@/app/_lib/data';
 import { useContext } from 'react';
 import { formatDateRange } from '@/app/_lib/helpers';
+import Link from 'next/link';
 
 export default function Events() {
   const { events } = useContext(StoreContext) || {};
@@ -30,12 +31,13 @@ export default function Events() {
           Retreats
         </button>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {events?.map((event, i) => {
           return (
-            <div
+            <Link
+              href={`/events/${event.id}`}
               key={event.id}
-              className={`py-4 rounded-lg ${i !== 0 ?? 'border-t'}`}
+              className={`p-3 rounded-lg ${i !== 0 ?? 'border-t'} hover:bg-gray-100`}
             >
               <div className="w-full relative aspect-square">
                 <Image
@@ -47,18 +49,19 @@ export default function Events() {
                 />
               </div>
               <div className="min-w-0 py-2">
-                <p className="truncate text-sm font-semibold">
-                  {event.name}
-                </p>
+                <p className="truncate text-sm font-semibold">{event.name}</p>
                 <p className="hidden text-sm text-gray-500 sm:block">
                   {event.location}
                 </p>
                 <p className="hidden text-sm text-gray-500 sm:block">
                   {formatDateRange(event.date_start, event.date_end)}
                 </p>
-            </div>
-          </div>
-          )
+                <p className="truncate text-sm font-semibold uppercase mt-1">
+                  ${event.price} {event.price_currency}
+                </p>
+              </div>
+            </Link>
+          );
         })}
       </div>
     </div>
