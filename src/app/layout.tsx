@@ -28,7 +28,7 @@ export default function RootLayout({
             className="mx-auto flex max-w-7xl items-center justify-between p-6"
             aria-label="Global"
           >
-            <div className="flex lg:flex-1 gap-3 items-center">
+            <div className="flex lg:flex-1 gap-6 items-center">
               <a href="/" className="-m-1.5 p-1.5">
                 <Image
                   className="relative"
@@ -56,7 +56,7 @@ export default function RootLayout({
                     src="/xiaohongshu.svg"
                     width={20}
                     height={20}
-                    className="grayscale group-hover:grayscale-0"
+                    className="grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100"
                     alt="小红书"
                   />
                 </Link>
