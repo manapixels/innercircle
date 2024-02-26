@@ -63,6 +63,7 @@ create table public.events (
   description       text,
   price             integer,
   price_currency    currencies not null default 'sgd',
+  slots             integer not null default 0, 
   image_url         varchar(255),
   created_at        timestamp with time zone default timezone('utc'::text, now()) not null
 );

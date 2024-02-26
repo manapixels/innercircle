@@ -39,13 +39,13 @@ export default function RootLayout({
                   priority
                 />
               </a>
-              <div className="bg-gray-100 rounded-lg flex items-center">
+              <div className="bg-gray-100 rounded-lg flex items-center px-1">
                 <Link
                   href="https://instagram.com/innercircle.fam"
                   className="p-2 inline-block hover:bg-gray-200 rounded-lg"
                   target="_blank"
                 >
-                  <FaInstagram />
+                  <FaInstagram color="#464233" />
                 </Link>
               </div>
             </div>

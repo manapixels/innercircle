@@ -18,10 +18,10 @@ export function formatDateRange(start_date: string | Date, end_date: string | Da
         // Check if the month and year are the same for both dates
         if (startDate.getMonth() === endDate.getMonth() && startDate.getFullYear() === endDate.getFullYear()) {
             // Return the formatted date range within the same month and year
-            return `${startDate.getDate()} - ${formatDate(endDate)}`;
+            return `${startDate.getDate()} – ${formatDate(endDate)}`;
         } else {
             // Return the full date range across different months or years
-            return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+            return `${formatDate(startDate)} – ${formatDate(endDate)}`;
         }
     }
 }
