@@ -85,23 +85,23 @@ export default function Header() {
               />
             </Link>
             <Link
-                href="/events/speed-dating"
+                href="/events?type=speed-dating"
               type="button"
-              className={`relative overflow-hidden px-5 py-2.5 text-center hover:bg-gray-100 rounded-md ${pathname === '/events/speed-dating' ? 'font-semibold' : 'text-gray-500'}`}
+              className={`relative overflow-hidden px-5 py-2.5 text-center hover:bg-gray-100 rounded-md ${pathname === '/events?type=speed-dating' ? 'font-semibold' : 'text-gray-500'}`}
             >
               Speed Dating
               <div
-                className={`w-1 h-1 rounded-full ${pathname === '/events/speed-dating' ? 'bg-base-500' : 'bg-transparent'} absolute bottom-0 left-1/2 transform`}
+                className={`w-1 h-1 rounded-full ${pathname === '/events?type=speed-dating' ? 'bg-base-500' : 'bg-transparent'} absolute bottom-0 left-1/2 transform`}
               />
             </Link>
             <Link
-                href="/events/retreats"
+                href="/events?type=retreats"
               type="button"
-              className={`relative overflow-hidden px-5 py-2.5 text-center hover:bg-gray-100 rounded-md ${pathname === '/events/retreats' ? 'font-semibold' : 'text-gray-500'}`}
+              className={`relative overflow-hidden px-5 py-2.5 text-center hover:bg-gray-100 rounded-md ${pathname === '/events?type=retreats' ? 'font-semibold' : 'text-gray-500'}`}
             >
               Retreats
               <div
-                className={`w-1 h-1 rounded-full ${pathname === '/events/retreats' ? 'bg-base-500' : 'bg-transparent'} absolute bottom-0 left-1/2 transform`}
+                className={`w-1 h-1 rounded-full ${pathname === '/events?type=retreats' ? 'bg-base-500' : 'bg-transparent'} absolute bottom-0 left-1/2 transform`}
               />
             </Link>
           </div>
