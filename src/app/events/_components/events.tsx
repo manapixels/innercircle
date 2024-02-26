@@ -56,8 +56,13 @@ export default function Events() {
                 <p className="hidden text-sm text-gray-500 sm:block">
                   {formatDateRange(event.date_start, event.date_end)}
                 </p>
-                <p className="truncate text-sm font-semibold uppercase mt-1">
-                  ${event.price} {event.price_currency}
+                <p className="truncate text-sm mt-1">
+                  <span className="font-semibold uppercase mr-1">
+                    ${event.price} {event.price_currency}
+                  </span>
+                  <span className="text-sm text-gray-400">
+                    {event.slots} slots left
+                  </span>
                 </p>
               </div>
             </Link>
