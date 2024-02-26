@@ -91,12 +91,6 @@ export default function RootLayout({
               >
                 Events
               </Link>
-              <Link
-                href="/about"
-                className="text-md font-semibold leading-6 text-gray-900"
-              >
-                About
-              </Link>
             </div>
             <div className="hidden lg:flex lg:flex-1 lg:justify-end">
               <AuthForm />
