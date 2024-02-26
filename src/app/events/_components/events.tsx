@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { StoreContext } from '@/app/_lib/data';
 import { useContext } from 'react';
+import { formatDateRange } from '@/app/_lib/helpers';
 
 export default function Events() {
   const { events } = useContext(StoreContext) || {};
@@ -29,35 +30,35 @@ export default function Events() {
           Retreats
         </button>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {events?.map((event, i) => {
           return (
             <div
               key={event.id}
-              className={`flex flex-row items-center justify-between py-4 ${i !== 0 ?? 'border-t'}`}
+              className={`py-4 rounded-lg ${i !== 0 ?? 'border-t'}`}
             >
-              <div className="flex items-center">
+              <div className="w-full relative aspect-square">
                 <Image
                   src={event.image_url || ''}
                   alt={`${event.name}'s profile picture`}
-                  className="mr-4 rounded-full"
-                  width={32}
-                  height={32}
+                  className="rounded-lg"
+                  layout="fill"
+                  objectFit="cover"
                 />
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold md:text-base">
-                    {event.name}
-                  </p>
-                  <p className="hidden text-sm text-gray-500 sm:block">
-                    {event.location}
-                  </p>
-                  <p className="hidden text-sm text-gray-500 sm:block">
-                    {event.date_start} {event.date_end}
-                  </p>
-                </div>
               </div>
+              <div className="min-w-0 py-2">
+                <p className="truncate text-sm font-semibold">
+                  {event.name}
+                </p>
+                <p className="hidden text-sm text-gray-500 sm:block">
+                  {event.location}
+                </p>
+                <p className="hidden text-sm text-gray-500 sm:block">
+                  {formatDateRange(event.date_start, event.date_end)}
+                </p>
             </div>
-          );
+          </div>
+          )
         })}
       </div>
     </div>

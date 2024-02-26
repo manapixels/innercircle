@@ -51,6 +51,7 @@ create table public.events (
   date_end      date not null,
   category      text,
   location      text not null,
+  location_country text not null,
   name          text not null,
   description   text,
   image_url     varchar(255),
