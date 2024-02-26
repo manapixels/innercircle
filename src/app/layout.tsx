@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import Image from "next/image";
-import Link from "next/link";
 import { StoreContextProvider } from "@/app/_lib/data";
-import AuthForm from "./_components/auth/auth-form";
-import { FaInstagram } from "react-icons/fa";
+import Header from "@/app/_components/Header";
+import './globals.css';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,80 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
-        <header>
-          <nav
-            className="mx-auto flex max-w-7xl items-center justify-between p-6"
-            aria-label="Global"
-          >
-            <div className="flex lg:flex-1 gap-6 items-center">
-              <a href="/" className="-m-1.5 p-1.5">
-                <Image
-                  className="relative"
-                  src="/logo.svg"
-                  alt="innercircle Logo"
-                  width={80}
-                  height={55}
-                  priority
-                />
-              </a>
-              <div className="bg-gray-100 rounded-lg flex items-center px-1">
-                <Link
-                  href="https://instagram.com/innercircle.fam"
-                  className="p-2 inline-block hover:bg-gray-200 rounded-lg"
-                  target="_blank"
-                >
-                  <FaInstagram color="#464233" />
-                </Link>
-                <Link
-                  href="https://www.xiaohongshu.com/user/profile/5a7a6e4be8ac2b63699feebc"
-                  className="p-2 inline-block hover:bg-gray-200 rounded-lg group"
-                  target="_blank"
-                >
-                  <Image
-                    src="/xiaohongshu.svg"
-                    width={20}
-                    height={20}
-                    className="grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100"
-                    alt="小红书"
-                  />
-                </Link>
-              </div>
-            </div>
-            <div className="flex lg:hidden">
-              <button
-                type="button"
-                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-              >
-                <span className="sr-only">Open main menu</span>
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className="hidden lg:flex lg:gap-x-12">
-              <Link
-                href="/events"
-                className="text-md font-semibold leading-6 text-gray-900"
-              >
-                Events
-              </Link>
-            </div>
-            <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-              <AuthForm />
-            </div>
-          </nav>
-        </header>
+        <Header />
         <StoreContextProvider>{children}</StoreContextProvider>
         <div id="modal-portal"></div>
       </body>
