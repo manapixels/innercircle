@@ -47,6 +47,15 @@ export default function Events() {
                   layout="fill"
                   objectFit="cover"
                 />
+                <div className="rounded-full absolute bottom-5 left-5 bg-white w-16 h-16"></div>
+                <div className="rounded-full absolute bottom-14 left-14 bg-base-400 w-6 h-6"></div>
+                <Image
+                  src={'/users/shirley-chen.jpg' || ''}
+                  alt="Host"
+                  className="rounded-full absolute bottom-5 left-5 p-1"
+                  width="60"
+                  height="60"
+                />
               </div>
               <div className="min-w-0 py-2">
                 <p className="truncate text-sm font-semibold">{event.name}</p>

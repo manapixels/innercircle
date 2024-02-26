@@ -47,6 +47,19 @@ export default function RootLayout({
                 >
                   <FaInstagram color="#464233" />
                 </Link>
+                <Link
+                  href="https://www.xiaohongshu.com/user/profile/5a7a6e4be8ac2b63699feebc"
+                  className="p-2 inline-block hover:bg-gray-200 rounded-lg group"
+                  target="_blank"
+                >
+                  <Image
+                    src="/xiaohongshu.svg"
+                    width={20}
+                    height={20}
+                    className="grayscale group-hover:grayscale-0"
+                    alt="小红书"
+                  />
+                </Link>
               </div>
             </div>
             <div className="flex lg:hidden">
