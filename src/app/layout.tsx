@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { StoreContextProvider } from "@/app/_lib/data";
 import AuthForm from "./_components/auth/auth-form";
+import { FaInstagram } from "react-icons/fa";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +28,7 @@ export default function RootLayout({
             className="mx-auto flex max-w-7xl items-center justify-between p-6"
             aria-label="Global"
           >
-            <div className="flex lg:flex-1">
+            <div className="flex lg:flex-1 gap-3 items-center">
               <a href="/" className="-m-1.5 p-1.5">
                 <Image
                   className="relative"
@@ -38,6 +39,15 @@ export default function RootLayout({
                   priority
                 />
               </a>
+              <div className="bg-gray-100 rounded-lg flex items-center">
+                <Link
+                  href="https://instagram.com/innercircle.fam"
+                  className="p-2 inline-block hover:bg-gray-200 rounded-lg"
+                  target="_blank"
+                >
+                  <FaInstagram />
+                </Link>
+              </div>
             </div>
             <div className="flex lg:hidden">
               <button
