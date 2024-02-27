@@ -6,18 +6,23 @@ import { Database, Tables } from './definitions'
 import { dummyEvents } from '@/app/_lib/dummyData';
 
 export type EventType = Tables<'events'>
-export type UserType = Tables<'users'>
+export type UserType = Tables<'profiles'>
 
 type StoreContextType = {
   events: EventType[]
-  users: Map<string, UserType>
+  user: UserType | null
 }
 
 export const StoreContext = createContext<StoreContextType | null>(null);
 
 export const useStore = () => useContext(StoreContext);
 
-export const supabase = createPagesBrowserClient<Database>()
+export const supabase = createPagesBrowserClient<Database>({
+  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+})
+
+console.log(supabase)
 
 export const StoreContextProvider = (
   {
@@ -27,10 +32,9 @@ export const StoreContextProvider = (
 }
 ) => {
   const [events, setEvents] = useState<EventType[]>(dummyEvents)
-  const [users, setUsers] = useState<Map<string, UserType>>(new Map())
   const [newOrUpdatedEvent, handleNewOrUpdatedEvent] = useState<EventType | null>(null)
   const [deletedEvent, handleDeletedEvent] = useState<EventType | null>(null)
-  const [newOrUpdatedUser, handleNewOrUpdatedUser] = useState<UserType | null>(null)
+  const [user, setUser] = useState<UserType | null>(null)
 
   // Load initial data and set up listeners
   useEffect(() => {
@@ -69,7 +73,7 @@ export const StoreContextProvider = (
         (payload) => {
           if (payload.new) {
             const newUser = payload.new as UserType;
-            handleNewOrUpdatedUser(newUser);
+            setUser(newUser);
           }
         }
       )
@@ -107,20 +111,16 @@ export const StoreContextProvider = (
 
   // New or updated user received from Postgres
   useEffect(() => {
-    if (newOrUpdatedUser) {
-      setUsers(prevUsers => {
-        const updatedUsers = new Map(prevUsers);
-        updatedUsers.set(newOrUpdatedUser.id, newOrUpdatedUser);
-        return updatedUsers;
-      });
+    if (user) {
+      setUser(user);
     }
-  }, [newOrUpdatedUser])
+  }, [user])
 
   return (
     <StoreContext.Provider
       value={{
         events,
-        users
+        user
       }}
     >
       {children}
@@ -223,8 +223,11 @@ export const fetchEvents = async (setState) => {
  * @param {Date} date_start The event start date
  * @param {Date} date_end The event end date
  * @param {string} location The event location
+ * @param {string} location_country The event location country
+ * @param {number} price The event price
+ * @param {string} price_currency The event price currency
  */
-export const addEvent = async (name, description, user_id, date_start, date_end, location) => {
+export const addEvent = async (name, description, user_id, date_start, date_end, location, location_country, price, price_currency) => {
   try {
     let { data } = await supabase
       .from('events')
@@ -234,7 +237,10 @@ export const addEvent = async (name, description, user_id, date_start, date_end,
         user_id,
         date_start,
         date_end,
-        location
+        location,
+        location_country,
+        price,
+        price_currency
       }])
       .select(`*`)
     return data as EventType[]
