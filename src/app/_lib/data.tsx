@@ -22,8 +22,6 @@ export const supabase = createPagesBrowserClient<Database>({
   supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 })
 
-console.log(supabase)
-
 export const StoreContextProvider = (
   {
   children

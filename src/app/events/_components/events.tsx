@@ -23,9 +23,9 @@ export default function Events() {
                 <Image
                   src={event.image_url || ''}
                   alt={`${event.name}'s profile picture`}
-                  className="rounded-lg"
-                  layout="fill"
-                  objectFit="cover"
+                  className="rounded-lg object-cover w-full h-full"
+                  width="300"
+                  height="300"
                 />
                 <div className="rounded-full absolute bottom-5 left-5 bg-white w-16 h-16"></div>
                 <div className="rounded-full absolute bottom-14 left-14 bg-base-400 w-6 h-6"></div>
