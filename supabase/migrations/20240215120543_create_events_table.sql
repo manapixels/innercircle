@@ -19,10 +19,10 @@ create type public.currencies as enum (
 -- ........
 create table public.profiles (
   id                uuid not null primary key,
-  name              text not null,
+  name              text,
   avatar_url        text,
-  birthmonth        integer not null,
-  birthyear         integer not null,
+  birthmonth        integer,
+  birthyear         integer,
   foreign key       (id) references auth.users(id) on delete cascade
 );
 comment on table public.profiles is 'Profile data for each user.';

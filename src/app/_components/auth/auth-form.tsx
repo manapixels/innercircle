@@ -8,6 +8,9 @@ import { Modal } from '../Modal';
 interface AuthFormInput {
   email: string;
   password: string;
+  birthyear: number;
+  birthmonth: number;
+  name: string;
 }
 
 export default function AuthForm() {

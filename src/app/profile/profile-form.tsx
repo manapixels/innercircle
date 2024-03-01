@@ -73,6 +73,40 @@ export default function ProfileForm({ user }: { user: User | null }) {
         }
     }
 
+    // <div className="mb-5 w-full flex">
+    //         <select {...register("birthyear", {
+    //               required: true,
+    //             })} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    //             required>
+    //             {Array.from({ length: new Date().getFullYear() - 1970 - 20 + 1 }, (_, i) => 1970 + i).map(year => (
+    //               <option key={year} value={year}>{year}</option>
+    //             ))}
+    //           </select>
+    //           {errors.birthyear?.type === 'required' && (
+    //             <p role="alert">Please enter your birthyear</p>
+    //           )}    
+    //           <select {...register("birthmonth", {
+    //               required: true,
+    //             })} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    //             required>
+    //             <option value="Jan">Jan</option>
+    //             <option value="Feb">Feb</option>
+    //             <option value="Mar">Mar</option>
+    //             <option value="Apr">Apr</option>
+    //             <option value="May">May</option>
+    //             <option value="Jun">Jun</option>
+    //             <option value="Jul">Jul</option>
+    //             <option value="Aug">Aug</option>
+    //             <option value="Sep">Sep</option>
+    //             <option value="Oct">Oct</option>
+    //             <option value="Nov">Nov</option>
+    //             <option value="Dec">Dec</option>
+    //           </select>
+    //           {errors.birthmonth?.type === 'required' && (
+    //             <p role="alert">Please enter your birthmonth</p>
+    //           )}
+    //         </div>
+
     return (
         <div className="form-widget">
             <div>

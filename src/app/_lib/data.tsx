@@ -6,7 +6,7 @@ import { Database, Tables } from './definitions'
 import { dummyEvents } from '@/app/_lib/dummyData';
 
 export type EventType = Tables<'events'>
-export type UserType = Tables<'profiles'>
+export type UserType = Tables<'profiles'> & { email?: string }
 
 type StoreContextType = {
   events: EventType[]
@@ -36,6 +36,34 @@ export const StoreContextProvider = (
 
   // Load initial data and set up listeners
   useEffect(() => {
+
+    // Check active sessions and set user
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (data?.session?.user) {
+        const _user = {
+          id: data.session.user.id,
+          email: data.session.user.email || "",
+          avatar_url: data.session.user.user_metadata.avatar_url,
+          name: data.session.user.user_metadata.full_name,
+        } as UserType
+        setUser(_user);
+      }
+    });
+    // Listen for changes on auth state (login, logout)
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        const _user = {
+          id: session.user.id,
+          email: session.user.email || "",
+          avatar_url: session.user.user_metadata.avatar_url,
+          name: session.user.user_metadata.full_name,
+        } as UserType
+        setUser(_user);
+      } else {
+        setUser(null);
+      }
+    });
+
     // Get Events
     // fetchEvents(setEvents)
     // Listen for new and deleted events
@@ -62,25 +90,10 @@ export const StoreContextProvider = (
         }
       )
       .subscribe()
-    // Listen for changes to our users
-    const userListener = supabase
-      .channel('public:users')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'users' },
-        (payload) => {
-          if (payload.new) {
-            const newUser = payload.new as UserType;
-            setUser(newUser);
-          }
-        }
-      )
-      .subscribe()
 
     // Cleanup on unmount
     return () => {
       supabase.removeChannel(eventListener)
-      supabase.removeChannel(userListener)
     }
   }, [])
 
@@ -132,6 +145,11 @@ export const signUpNewUser = async (email, password) => {
     password,
     options: {
       emailRedirectTo: '/welcome',
+      // data: {
+      //   birthyear,
+      //   birthmonth,
+      //   name
+      // }
     },
   })
   if (error) return error
