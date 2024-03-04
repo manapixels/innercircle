@@ -1,11 +1,10 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-import { Database } from '../lib/definitions'
-import ProfileForm from './profile-form'
+
+// import ProfileForm from './profile-form'
+import { createClient } from '../_utils/supabase/server';
 
 export default async function Profile() {
 
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createClient()
 
   const {
     data: { user },
@@ -13,7 +12,9 @@ export default async function Profile() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-24">
-      <ProfileForm user={user} />
+      {/* <ProfileForm user={user} /> */}
+      profile form
+      {user?.email}
     </div>
   );
 }

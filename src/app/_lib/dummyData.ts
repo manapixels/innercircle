@@ -1,4 +1,4 @@
-import { EventType } from "@/app/_lib/data";
+import { EventType } from "@/app/_lib/actions";
 
 export const dummyEvents: EventType[] = [
     {

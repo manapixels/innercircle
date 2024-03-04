@@ -1,14 +1,21 @@
-"use client";
-
 import Image from 'next/image';
 import Link from 'next/link';
 import AuthForm from './auth/auth-form';
 import { FaInstagram } from 'react-icons/fa';
-import { usePathname } from 'next/navigation';
+import { createClient } from '../_utils/supabase/server';
+import { headers } from 'next/headers';
 
-export default function Header() {
+export default async function Header() {
 
-    const pathname = usePathname();
+  const supabase = createClient()
+  const headersList = headers();
+  const pathname = headersList.get("next-url");
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  console.log(user, pathname)
 
   return (
     <header>
@@ -75,7 +82,7 @@ export default function Header() {
         <div className="hidden lg:flex lg:gap-x-4 bg-gray-50 rounded-lg px-3 items-center text-sm">
           <div className="flex">
             <Link
-                href="/events"
+              href="/events"
               type="button"
               className={`relative overflow-hidden px-5 py-2.5 text-center hover:bg-gray-100 rounded-md ${pathname === '/events' ? 'font-semibold' : ' text-gray-500'}`}
             >
@@ -85,7 +92,7 @@ export default function Header() {
               />
             </Link>
             <Link
-                href="/events?type=speed-dating"
+              href="/events?type=speed-dating"
               type="button"
               className={`relative overflow-hidden px-5 py-2.5 text-center hover:bg-gray-100 rounded-md ${pathname === '/events?type=speed-dating' ? 'font-semibold' : 'text-gray-500'}`}
             >
@@ -95,7 +102,7 @@ export default function Header() {
               />
             </Link>
             <Link
-                href="/events?type=retreats"
+              href="/events?type=retreats"
               type="button"
               className={`relative overflow-hidden px-5 py-2.5 text-center hover:bg-gray-100 rounded-md ${pathname === '/events?type=retreats' ? 'font-semibold' : 'text-gray-500'}`}
             >

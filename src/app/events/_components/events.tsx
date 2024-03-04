@@ -1,9 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { StoreContext } from '@/app/_lib/data';
+import { StoreContext } from '@/app/_lib/actions';
 import { useContext } from 'react';
-import { formatDateRange } from '@/app/_lib/helpers';
+import { formatDateRange } from '@/app/_utils/date';
 import Link from 'next/link';
 
 export default function Events() {

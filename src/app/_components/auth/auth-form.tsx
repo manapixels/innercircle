@@ -1,9 +1,10 @@
 'use client';
-import { signInWithEmail, signUpNewUser } from '@/app/_lib/data';
+import { signInWithEmail, signUpNewUser } from '@/app/_lib/actions';
 import { useState } from 'react';
 import { GrFormView, GrFormViewHide } from 'react-icons/gr';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Modal } from '../Modal';
+import { useRouter } from 'next/navigation';
 
 interface AuthFormInput {
   email: string;
@@ -18,6 +19,7 @@ export default function AuthForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const router = useRouter()
 
   const {
     register,
@@ -29,11 +31,13 @@ export default function AuthForm() {
       password: 'password123',
     },
   });
-  const onSubmit: SubmitHandler<AuthFormInput> = (data) => {
+  const onSubmit: SubmitHandler<AuthFormInput> = async (data) => {
     if (state === 'login') {
-      signInWithEmail(data.email, data.password);
+      await signInWithEmail(data.email, data.password);
+      router.refresh()
     } else {
-      signUpNewUser(data.email, data.password);
+      await signUpNewUser(data.email, data.password);
+      router.refresh()
     }
   };
 
