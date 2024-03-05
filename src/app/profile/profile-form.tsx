@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { UserType, fetchUserProfile, updateUserProfile } from '../_lib/actions';
 import Spinner from '../_components/Spinner';
@@ -76,13 +76,14 @@ export default function ProfileForm({
         <input
           type="text"
           id="name"
-          className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          className={`bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
           required
           placeholder="Name"
           {...register('name', {
             required: true,
           })}
           aria-invalid={errors.name ? 'true' : 'false'}
+          disabled={loading}
         />
         {errors.name?.type === 'required' && (
           <p role="alert">Please enter your name</p>
@@ -100,7 +101,7 @@ export default function ProfileForm({
           type="text"
           id="name"
           value={calculateAge(currProfile?.birthyear, currProfile?.birthmonth)}
-          className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none"
+          className={`bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none ${loading ? 'animate-pulse bg-gray-200' : ''}`}
           readOnly
         />
       </div>
@@ -114,7 +115,7 @@ export default function ProfileForm({
             {...register('birthyear', {
               required: true,
             })}
-            className="text-gray-900 text-sm p-1 rounded-md mr-2 border border-gray-300"
+            className={`text-gray-900 text-sm p-1 rounded-md mr-2 border border-gray-300 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
             required
           >
             {Array.from(
@@ -134,7 +135,7 @@ export default function ProfileForm({
             {...register('birthmonth', {
               required: true,
             })}
-            className="text-gray-900 text-sm p-1 rounded-md border border-gray-300"
+            className={`text-gray-900 text-sm p-1 rounded-md border border-gray-300 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
             required
           >
             <option value="Jan">Jan</option>
@@ -161,7 +162,7 @@ export default function ProfileForm({
         <button
           type="submit"
           className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-md text-xs px-2 py-1.5"
-          disabled={isSubmitting}
+          disabled={isSubmitting || loading}
         >
           {isSubmitting && <Spinner className="mr-1.5" />}
           Update profile
