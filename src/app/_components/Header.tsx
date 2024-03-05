@@ -4,6 +4,7 @@ import AuthForm from './auth/auth-form';
 import { FaInstagram } from 'react-icons/fa';
 import { createClient } from '../_utils/supabase/server';
 import { headers } from 'next/headers';
+import LoggedInUser from './LoggedInUser';
 
 export default async function Header() {
 
@@ -15,15 +16,13 @@ export default async function Header() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  console.log(user, pathname)
-
   return (
     <header>
       <nav
         className="mx-auto flex max-w-7xl items-center justify-between p-6"
         aria-label="Global"
       >
-        <div className="flex lg:flex-1 gap-6 items-center">
+        <div className="flex lg:flex gap-6 items-center">
           <a href="/" className="-m-1.5 p-1.5">
             <Image
               className="relative"
@@ -56,28 +55,6 @@ export default async function Header() {
               />
             </Link>
           </div>
-        </div>
-        <div className="flex lg:hidden">
-          <button
-            type="button"
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-          >
-            <span className="sr-only">Open main menu</span>
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-              />
-            </svg>
-          </button>
         </div>
         <div className="hidden lg:flex lg:gap-x-4 bg-gray-50 rounded-lg px-3 items-center text-sm">
           <div className="flex">
@@ -113,9 +90,8 @@ export default async function Header() {
             </Link>
           </div>
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <AuthForm />
-        </div>
+        {user?.id ? <LoggedInUser user={user} /> : <AuthForm />}
+
       </nav>
     </header>
   );

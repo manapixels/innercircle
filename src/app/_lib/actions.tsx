@@ -1,13 +1,13 @@
-"use server"
+'use server';
 
-import { redirect } from 'next/navigation'
-import { createClient } from '../_utils/supabase/server'
+import { redirect } from 'next/navigation';
+import { createClient } from '../_utils/supabase/server';
 // import { createContext, useState, useEffect, useContext } from 'react';
-import { Tables } from './definitions'
+import { Tables } from './definitions';
 // import { dummyEvents } from '@/app/_lib/dummyData';
 
-export type EventType = Tables<'events'>
-export type UserType = Tables<'profiles'> & { email?: string }
+export type EventType = Tables<'events'>;
+export type UserType = Tables<'profiles'> & { email?: string };
 
 // type StoreContextType = {
 //   events: EventType[]
@@ -136,7 +136,7 @@ export type UserType = Tables<'profiles'> & { email?: string }
 // }
 
 export const signUpNewUser = async (email, password) => {
-  const supabase = createClient()
+  const supabase = createClient();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -148,35 +148,36 @@ export const signUpNewUser = async (email, password) => {
       //   name
       // }
     },
-  })
-  if (error) return error
-  return data
-}
+  });
+  if (error) return error;
+  return data;
+};
 
 export const signInWithEmail = async (email, password) => {
-  "use server";
-  const supabase = createClient()
+  'use server';
+  const supabase = createClient();
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
-  })
+  });
 
   if (error) {
-    return redirect("/login?message=Could not authenticate user");
+    return redirect('/login?message=Could not authenticate user');
   }
 
-  return redirect("/protected");
+  return redirect('/protected');
   // if (error) return error
   // return data
-}
+};
 
 export const signOut = async () => {
-  const supabase = createClient()
-  const { error } = await supabase.auth.signOut()
-  if (error) return false
-  return true
-}
-
+  const supabase = createClient();
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    return error;
+  }
+  return true;
+};
 
 /**
  * Fetch a single user
@@ -184,61 +185,56 @@ export const signOut = async () => {
  * @param {function} setState Optionally pass in a hook or callback to set the state
  */
 export const fetchUser = async (userId, setState) => {
-  const supabase = createClient()
+  const supabase = createClient();
   try {
-    let { data } = await supabase
-      .from('users')
-      .select(`*`)
-      .eq('id', userId)
+    let { data } = await supabase.from('users').select(`*`).eq('id', userId);
 
     if (data?.[0]) {
       let user = data[0] as UserType;
-      if (setState) setState(user)
-      return user
+      if (setState) setState(user);
+      return user;
     }
-    return null
+    return null;
   } catch (error) {
-    console.log('error', error)
-    return error
+    console.log('error', error);
+    return error;
   }
-}
+};
 
 /**
  * Fetch all roles for the current user
  * @param {function} setState Optionally pass in a hook or callback to set the state
  */
 export const fetchUserRoles = async (setState) => {
-  const supabase = createClient()
+  const supabase = createClient();
   try {
-    let { data } = await supabase
-      .from('user_roles')
-      .select(`*`)
-    if (setState) setState(data)
-    return data
+    let { data } = await supabase.from('user_roles').select(`*`);
+    if (setState) setState(data);
+    return data;
   } catch (error) {
-    console.log('error', error)
-    return error
+    console.log('error', error);
+    return error;
   }
-}
+};
 
 /**
  * Fetch all events and their authors
  * @param {function} setState Optionally pass in a hook or callback to set the state
  */
 export const fetchEvents = async (setState) => {
-  const supabase = createClient()
+  const supabase = createClient();
   try {
     let { data } = await supabase
       .from('events')
       .select(`*`)
-      .order('created_at', { ascending: true })
-    if (setState) setState(data as EventType[])
-    return data
+      .order('created_at', { ascending: true });
+    if (setState) setState(data as EventType[]);
+    return data;
   } catch (error) {
-    console.log('error', error)
-    return error
+    console.log('error', error);
+    return error;
   }
-}
+};
 
 /**
  * Insert a new event into the DB
@@ -252,44 +248,56 @@ export const fetchEvents = async (setState) => {
  * @param {number} price The event price
  * @param {string} price_currency The event price currency
  */
-export const addEvent = async (name, description, user_id, date_start, date_end, location, location_country, price, price_currency) => {
-  const supabase = createClient()
+export const addEvent = async (
+  name,
+  description,
+  user_id,
+  date_start,
+  date_end,
+  location,
+  location_country,
+  price,
+  price_currency,
+) => {
+  const supabase = createClient();
   try {
     let { data } = await supabase
       .from('events')
-      .insert([{
-        name,
-        description,
-        user_id,
-        date_start,
-        date_end,
-        location,
-        location_country,
-        price,
-        price_currency
-      }])
-      .select(`*`)
-    return data as EventType[]
+      .insert([
+        {
+          name,
+          description,
+          user_id,
+          date_start,
+          date_end,
+          location,
+          location_country,
+          price,
+          price_currency,
+        },
+      ])
+      .select(`*`);
+    return data as EventType[];
   } catch (error) {
-    console.log('error', error)
-    return error
+    console.log('error', error);
+    return error;
   }
-}
+};
 
 /**
  * Delete an event from the DB
  * @param {number} event_id
  */
 export const deleteEvent = async (event_id) => {
-  const supabase = createClient()
+  const supabase = createClient();
   try {
     let { data } = await supabase
       .from('events')
       .delete()
-      .match({ id: event_id })
-    return data
+      .match({ id: event_id });
+    return data;
   } catch (error) {
-    console.log('error', error)
-    return error
+    console.log('error', error);
+    return error;
   }
-}
+};
