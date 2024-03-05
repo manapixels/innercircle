@@ -137,7 +137,7 @@ export const fetchEvents = async () => {
     let { data } = await supabase
       .from('events')
       .select(`*`)
-      .order('created_at', { ascending: true });
+      .order('created_at', { ascending: false });
     return data;
   } catch (error) {
     console.log('error', error);

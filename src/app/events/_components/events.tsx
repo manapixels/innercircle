@@ -1,12 +1,10 @@
 import Image from 'next/image';
 import { EventType, fetchEvents } from '@/app/_lib/actions';
-import { formatDateRange } from '@/app/_utils/date';
+import { formatDateRange, hasDatePassed } from '@/app/_utils/date';
 import Link from 'next/link';
 
 export default async function Events() {
   const events = await fetchEvents() as EventType[];
-
-  console.log(events)
 
   return (
     <div className="flex w-full flex-col md:col-span-4">
@@ -16,7 +14,7 @@ export default async function Events() {
             <Link
               href={`/events/${event.id}`}
               key={event.id}
-              className={`p-3 rounded-lg ${i !== 0 ?? 'border-t'} hover:bg-gray-100`}
+              className={`p-3 rounded-lg ${i !== 0 ?? 'border-t'} hover:bg-gray-100 ${hasDatePassed(event.date_end) && 'grayscale opacity-80'}`}
             >
               <div className="w-full relative aspect-square">
                 <Image

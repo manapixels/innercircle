@@ -42,3 +42,9 @@ export function calculateAge(birthYear: number | string | undefined, birthMonth:
     }
     return age;
 }
+
+export function hasDatePassed(inputDate: string | Date): boolean {
+    const currentDate = new Date();
+    const dateToCheck = typeof inputDate === 'string' ? new Date(inputDate) : inputDate;
+    return dateToCheck < currentDate;
+}
