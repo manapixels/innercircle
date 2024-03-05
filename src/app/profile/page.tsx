@@ -1,8 +1,8 @@
 
-import ProfileForm from './profile-form'
+import ProfileForm from './_components/profile-form'
 import { createClient } from '../_utils/supabase/server';
-import EmailForm from './email-form';
-import PasswordForm from './password-form';
+import EmailForm from './_components/email-form';
+import PasswordForm from './_components/password-form';
 
 export default async function Profile() {
 
