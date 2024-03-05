@@ -1,6 +1,8 @@
 
-// import ProfileForm from './profile-form'
+import ProfileForm from './profile-form'
 import { createClient } from '../_utils/supabase/server';
+import EmailForm from './email-form';
+import PasswordForm from './password-form';
 
 export default async function Profile() {
 
@@ -11,10 +13,10 @@ export default async function Profile() {
   } = await supabase.auth.getUser()
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between p-24">
-      {/* <ProfileForm user={user} /> */}
-      profile form
-      {user?.email}
+    <div className="p-24">
+      <EmailForm _email={user?.email} />
+      <PasswordForm />
+      <ProfileForm userId={user?.id} />
     </div>
   );
 }
