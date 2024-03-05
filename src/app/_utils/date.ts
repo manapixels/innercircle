@@ -25,3 +25,20 @@ export function formatDateRange(start_date: string | Date, end_date: string | Da
         }
     }
 }
+
+export function calculateAge(birthYear: number | string | undefined, birthMonth: number | string | undefined): number | undefined {
+    if (birthYear === undefined || birthMonth === undefined) {
+        return undefined;
+    }
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1; // JavaScript months are 0-based
+    // Convert string inputs to numbers if necessary
+    const numericBirthYear = typeof birthYear === 'string' ? parseInt(birthYear, 10) : birthYear;
+    const numericBirthMonth = typeof birthMonth === 'string' ? parseInt(birthMonth, 10) : birthMonth;
+    let age = currentYear - numericBirthYear;
+    if (numericBirthMonth > currentMonth) {
+        age--;
+    }
+    return age;
+}

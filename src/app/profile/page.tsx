@@ -13,10 +13,16 @@ export default async function Profile() {
   } = await supabase.auth.getUser()
 
   return (
-    <div className="p-24">
-      <EmailForm _email={user?.email} />
-      <PasswordForm />
+    <div>
+      <div className="max-w-md mx-auto">
+      <h3 className="text-lg font-medium mb-4">Profile</h3>
       <ProfileForm userId={user?.id} />
+      <h3 className="text-lg font-medium mt-8 mb-4">Account</h3>
+      <EmailForm currEmail={user?.email} />
+      <div className="mb-6"></div>
+      <PasswordForm />
+      
+      </div>
     </div>
   );
 }

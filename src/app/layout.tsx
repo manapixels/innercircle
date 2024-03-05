@@ -37,7 +37,9 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <ChakraProvider>
           <Header />
-          {children}
+          <div className="px-6 py-8">
+            {children}
+          </div>
           <Footer />
           <div id="modal-portal"></div>
         </ChakraProvider>

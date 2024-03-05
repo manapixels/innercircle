@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { updatePassword } from '../_lib/actions';
+import Spinner from '../_components/Spinner';
 
 interface PasswordFormInput {
   password: string;
@@ -16,38 +17,20 @@ export default function PasswordForm() {
     formState: { errors, isSubmitting },
   } = useForm<PasswordFormInput>();
   const onSubmit: SubmitHandler<PasswordFormInput> = async (data) => {
-    setLoading(true)
+    setLoading(true);
     await updatePassword(data.password);
     setLoading(false);
   };
 
   return (
-    <form className="max-w-lg mx-auto p-10" onSubmit={handleSubmit(onSubmit)}>
-
-      {loading && (
-        <div className="border border-blue-300 shadow rounded-md p-4 max-w-sm w-full mx-auto">
-          <div className="animate-pulse flex space-x-4">
-            <div className="rounded-full bg-slate-700 h-10 w-10"></div>
-            <div className="flex-1 space-y-6 py-1">
-              <div className="h-2 bg-slate-700 rounded"></div>
-              <div className="space-y-3">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="h-2 bg-slate-700 rounded col-span-2"></div>
-                  <div className="h-2 bg-slate-700 rounded col-span-1"></div>
-                </div>
-                <div className="h-2 bg-slate-700 rounded"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
+    <form className="p-10 border border-gray-300 rounded-lg bg-gray-50" onSubmit={handleSubmit(onSubmit)}>
       <input
         type="password"
         id="password"
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        className={`bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
         required
-        placeholder="Password"
+        disabled={loading}
+        placeholder="New password"
         {...register('password', {
           required: true,
         })}
@@ -56,14 +39,17 @@ export default function PasswordForm() {
       {errors.password?.type === 'required' && (
         <p role="alert">Please enter your password</p>
       )}
-
-      <button
-        type="submit"
-        className="button primary block"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? 'Loading ...' : 'Update'}
-      </button>
+      <div className="mb-2"></div>
+      <div className="text-right">
+        <button
+          type="submit"
+          className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-md text-xs px-2 py-1.5"
+          disabled={isSubmitting}
+        >
+          {isSubmitting && <Spinner className="mr-1.5" />}
+          Change password
+        </button>
+      </div>
     </form>
   );
 }

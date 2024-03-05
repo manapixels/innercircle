@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaInstagram } from 'react-icons/fa';
 import { RiInstagramFill } from 'react-icons/ri';
 
 export default async function Footer() {
