@@ -146,6 +146,24 @@ export const fetchEvents = async () => {
 };
 
 /**
+ * Fetch an event by its id
+ */
+export const fetchEvent = async (id: string) => {
+  const supabase = createClient();
+  try {
+    let { data } = await supabase
+      .from('events')
+      .select(`*`)
+      .eq('id', id)
+      .single();
+    return data;
+  } catch (error) {
+    console.log('error', error);
+    return error;
+  }
+};
+
+/**
  * Insert a new event into the DB
  * @param {string} name The event name
  * @param {string} description The event description
