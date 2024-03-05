@@ -138,8 +138,6 @@ export const fetchEvents = async () => {
       .from('events')
       .select(`*`)
       .order('created_at', { ascending: true });
-
-      console.log('lalalaz', data)
     return data;
   } catch (error) {
     console.log('error', error);
