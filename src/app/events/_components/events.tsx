@@ -1,13 +1,12 @@
-'use client';
-
 import Image from 'next/image';
-import { StoreContext } from '@/app/_lib/actions';
-import { useContext } from 'react';
+import { EventType, fetchEvents } from '@/app/_lib/actions';
 import { formatDateRange } from '@/app/_utils/date';
 import Link from 'next/link';
 
-export default function Events() {
-  const { events } = useContext(StoreContext) || {};
+export default async function Events() {
+  const events = await fetchEvents() as EventType[];
+
+  console.log(events)
 
   return (
     <div className="flex w-full flex-col md:col-span-4">

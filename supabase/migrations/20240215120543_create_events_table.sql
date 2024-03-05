@@ -157,10 +157,9 @@ insert with check (bucket_id = 'avatars');
 
 -- events
 alter table events enable row level security;
+create policy "Public events are viewable by everyone." on events for select using (true);
 create policy "Individuals can create events." on events for
 insert with check (auth.uid() = user_id);
-create policy "Individuals can view their own events. " on events for
-select using (auth.uid() = user_id);
 create policy "Individuals can update their own events." on events for
 update using (auth.uid() = user_id);
 create policy "Individuals can delete their own events." on events for delete using (auth.uid() = user_id);

@@ -131,14 +131,15 @@ export const fetchUserRoles = async (setState) => {
  * Fetch all events and their authors
  * @param {function} setState Optionally pass in a hook or callback to set the state
  */
-export const fetchEvents = async (setState) => {
+export const fetchEvents = async () => {
   const supabase = createClient();
   try {
     let { data } = await supabase
       .from('events')
       .select(`*`)
       .order('created_at', { ascending: true });
-    if (setState) setState(data as EventType[]);
+
+      console.log('lalalaz', data)
     return data;
   } catch (error) {
     console.log('error', error);
