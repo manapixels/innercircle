@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import AuthForm from './auth/auth-form';
-import { FaInstagram } from 'react-icons/fa';
 import { createClient } from '../_utils/supabase/server';
 import { headers } from 'next/headers';
 import LoggedInUser from './LoggedInUser';
@@ -33,28 +32,6 @@ export default async function Header() {
               priority
             />
           </a>
-          <div className="bg-gray-50 rounded-lg flex items-center px-1">
-            <Link
-              href="https://instagram.com/innercircle.fam"
-              className="p-2 inline-block hover:bg-gray-100 rounded-lg"
-              target="_blank"
-            >
-              <FaInstagram color="#464233" />
-            </Link>
-            <Link
-              href="https://www.xiaohongshu.com/user/profile/5a7a6e4be8ac2b63699feebc"
-              className="p-2 inline-block hover:bg-gray-100 rounded-lg group"
-              target="_blank"
-            >
-              <Image
-                src="/xiaohongshu.svg"
-                width={20}
-                height={20}
-                className="grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100"
-                alt="小红书"
-              />
-            </Link>
-          </div>
         </div>
         <div className="hidden lg:flex lg:gap-x-4 bg-gray-50 rounded-lg px-3 items-center text-sm">
           <div className="flex">

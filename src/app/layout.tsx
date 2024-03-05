@@ -4,6 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 // import { StoreContextProvider } from "@/app/_lib/actions";
 import Header from '@/app/_components/Header';
 import './globals.css';
+import Footer from './_components/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -36,9 +37,8 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <ChakraProvider>
           <Header />
-          {/* <StoreContextProvider> */}
           {children}
-          {/* </StoreContextProvider> */}
+          <Footer />
           <div id="modal-portal"></div>
         </ChakraProvider>
       </body>
