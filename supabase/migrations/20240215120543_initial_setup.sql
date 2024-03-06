@@ -52,6 +52,7 @@ comment on table public.role_permissions is 'Application permissions for each ro
 -- .........
 create table public.events (
   id                uuid not null default gen_random_uuid() primary key,
+  slug              text not null unique,
   status            event_status not null default 'draft',
   user_id           uuid references public.profiles (id) not null,
   date_start        timestamp with time zone default timezone('utc'::text, now()) not null,
@@ -106,12 +107,12 @@ create or replace function public.authorize(
   ) returns boolean as $$
 declare bind_permissions int;
 begin
-select count(*)
-from public.role_permissions
-  inner join public.user_roles on role_permissions.role = user_roles.role
-where role_permissions.permission = authorize.requested_permission
-  and user_roles.user_id = authorize.user_id into bind_permissions;
-return bind_permissions > 0;
+  select count(*)
+  from public.role_permissions
+    inner join public.user_roles on role_permissions.role = user_roles.role
+  where role_permissions.permission = authorize.requested_permission
+    and user_roles.user_id = authorize.user_id into bind_permissions;
+  return bind_permissions > 0;
 end;
 $$ language plpgsql security definer;
 
@@ -134,6 +135,59 @@ create or replace trigger on_auth_user_created
   after insert on auth.users for each row 
   execute procedure public.handle_new_user();
 
+-- Function to generate a unique slug using a text input
+create extension if not exists "unaccent";
+create or replace function slugify("value" text)
+returns text as $$
+  with "unaccented" as (
+    select unaccent("value") as "value"
+  ),
+  "lowercase" as (
+    select lower("value") as "value"
+    from "unaccented"
+  ),
+  "removed_quotes" as (
+    select regexp_replace("value", '[''"]+', '', 'gi') as "value"
+    from "lowercase"
+  ),
+  "hyphenated" as (
+    select regexp_replace("value", '[^a-z0-9\\-_]+', '-', 'gi') as "value"
+    from "removed_quotes"
+  ),
+  "trimmed" as (
+    select regexp_replace(regexp_replace("value", '\-+$', ''), '^\-', '') as "value"
+    from "hyphenated"
+  )
+  select "value" from "trimmed";
+$$ language sql strict immutable;
+
+-- Create a function to generate and set a unique slug from the event name
+create or replace function public.set_event_slug() returns trigger as $$
+declare
+    base_slug text;
+    new_slug text;
+    slug_count int;
+begin
+    new_slug := slugify(NEW.name);
+    slug_count := 1;
+
+    -- Check if the slug already exists and append a number to make it unique
+    loop
+        select count(*) into slug_count from public.events where slug = new_slug;
+        exit when slug_count = 0;
+        new_slug := base_slug || '-' || slug_count;
+        slug_count := slug_count + 1;
+    end loop;
+
+    new.slug := new_slug;
+    return new;
+end;
+$$ language plpgsql;
+
+-- Create a trigger to automatically set the slug before inserting or updating the event name
+create trigger set_event_slug_before_insert_or_update
+before insert or update of name on public.events
+for each row execute function public.set_event_slug();
 
 -- ...................
 --
