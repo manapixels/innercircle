@@ -13,12 +13,7 @@ export const signUpNewUser = async (email, password) => {
     email,
     password,
     options: {
-      emailRedirectTo: '/welcome',
-      // data: {
-      //   birthyear,
-      //   birthmonth,
-      //   name
-      // }
+      emailRedirectTo: '/events',
     },
   });
   if (error) return error;
@@ -149,7 +144,20 @@ export const fetchEvent = async (slug: string) => {
   try {
     let { data } = await supabase
       .from('events')
-      .select(`*`)
+      .select(`
+        id,
+        name,
+        created_at,
+        created_by (id, name, avatar_url),
+        description,
+        date_start,
+        date_end,
+        location,
+        location_country,
+        price,
+        price_currency,
+        slug
+      `)
       .eq('slug', slug)
       .single();
     return data;

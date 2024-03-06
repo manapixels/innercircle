@@ -8,10 +8,13 @@ export const metadata: Metadata = {
 export default async function EventDetailsPage({ params: { slug } }: { params: { slug: string } }) {
 
   const event = (await fetchEvent(slug as string)) as EventType;
+  console.log('test', event)
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-6 max-w-7xl mx-auto">
-      {event.slug}
+      {event?.slug}
+
+      <div>Hosted by</div>
     </div>
   );
 }

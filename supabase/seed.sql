@@ -38,7 +38,7 @@ BEGIN
   END LOOP;
 
     -- Insert events
-  INSERT INTO events (category, created_at, date_end, date_start, description, id, image_url, location, location_country, name, price, status, user_id, slots) VALUES
+  INSERT INTO events (category, created_at, date_end, date_start, description, id, image_url, location, location_country, name, price, status, created_by, slots) VALUES
   ('speed-dating', '2023-11-01T10:00:00Z', '2023-11-24T22:00:00Z', '2023-11-24T19:00:00Z', '', '295f43cc-c332-40ec-ab5e-467c663241fd', '/1.jpg', 'No Spoilers Bar, Orchard Cineleisure', 'Singapore', 'Mystery Date, Speed Dating Night', 58, 'completed', user_id, 50),
   ('speed-dating', '2023-12-01T00:00:00Z', '2023-12-23T19:00:00Z', '2023-12-23T00:00:00Z', '', 'f90d618d-291e-4923-a083-2e44651a069f', '/2.jpg', 'The Soul Atelier, Suntec', 'Singapore', 'Speed Dating Night X''mas Edition', 48, 'completed', user_id, 50),
   ('speed-dating', '2024-01-01T10:00:00Z', '2024-01-27T22:00:00Z', '2024-01-27T19:00:00Z', 'kinda like single''s inferno... but not exactly', 'a3157df3-4b7b-451a-842b-0fe5e72ffdcf', '/3.jpg', 'Suntec Tower 3', 'Singapore', 'Singles Night', 0, 'completed', user_id, 45),
