@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { UserType, fetchUserProfile, updateUserProfile } from '../../_lib/actions';
 import Spinner from '../../_components/Spinner';

@@ -1,5 +1,5 @@
 'use client';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { updateEmail } from '../../_lib/actions';
 import Spinner from '../../_components/Spinner';
@@ -11,16 +11,21 @@ interface EmailFormInput {
 export default function EmailForm({ currEmail }: { currEmail: string | undefined }) {
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (currEmail) {
+      reset({ email: currEmail });
+    }
+  }, [currEmail]);
+
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<EmailFormInput>({
-    defaultValues: useMemo(() => {
-      return { email: currEmail ?? '' };
-    }, [currEmail]),
+    defaultValues: { email: currEmail ?? '' },
   });
-  const onSubmit: SubmitHandler<EmailFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<EmailFormInput> = async (data: EmailFormInput) => {
     setLoading(true);
     await updateEmail(data.email);
     setLoading(false);
