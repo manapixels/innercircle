@@ -4,8 +4,11 @@ import { createClient } from '../_utils/supabase/server';
 import { Tables } from './definitions';
 // import { dummyEvents } from '@/app/_lib/dummyData';
 
+export type Profile = Tables<'profiles'> & { email?: string };
 export type EventType = Tables<'events'>;
-export type UserType = Tables<'profiles'> & { email?: string };
+export type EventWithCreatorInfo = EventType & {
+  created_by: Pick<Profile, 'name' | 'avatar_url'>;
+};
 
 export const signUpNewUser = async (email, password) => {
   const supabase = createClient();
@@ -51,14 +54,14 @@ export const fetchUserProfile = async (userId) => {
   const supabase = createClient();
   try {
     let { data } = await supabase.from('profiles').select(`*`).eq('id', userId).single();
-    return data as UserType
+    return data as Profile
   } catch (error) {
     console.log('error', error);
     return error;
   }
 };
 
-export const updateUserProfile = async (user: UserType) => {
+export const updateUserProfile = async (user: Profile) => {
   const supabase = createClient();
   try {
     await supabase.from('profiles').upsert({

@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { UserType, fetchUserProfile, updateUserProfile } from '../../_lib/actions';
+import { Profile, fetchUserProfile, updateUserProfile } from '../../_lib/actions';
 import Spinner from '../../_components/Spinner';
 import { calculateAge } from '../../_utils/date';
 
@@ -18,14 +18,14 @@ export default function ProfileForm({
   userId: string | undefined;
 }) {
   const [loading, setLoading] = useState(true);
-  const [currProfile, setCurrProfile] = useState<UserType | null>(null);
+  const [currProfile, setCurrProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
       try {
         const profile = await fetchUserProfile(userId);
-        setCurrProfile(profile as UserType);
+        setCurrProfile(profile as Profile);
         reset(profile as AuthFormInput);
       } catch (error) {
         alert('Error loading user data!');
@@ -39,7 +39,7 @@ export default function ProfileForm({
     }
   }, [userId]);
 
-  async function updateProfile(user: UserType) {
+  async function updateProfile(user: Profile) {
     try {
       setLoading(true);
       updateUserProfile(user);
@@ -57,7 +57,7 @@ export default function ProfileForm({
     formState: { errors, isSubmitting },
   } = useForm<AuthFormInput>();
   const onSubmit: SubmitHandler<AuthFormInput> = async (data: AuthFormInput) => {
-    await updateProfile({ ...currProfile, ...data } as UserType);
+    await updateProfile({ ...currProfile, ...data } as Profile);
   };
 
   return (

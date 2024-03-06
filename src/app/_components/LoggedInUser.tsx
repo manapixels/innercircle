@@ -12,11 +12,11 @@ import {
 import { RiLogoutCircleRLine, RiUser3Fill, RiUser4Fill } from "react-icons/ri";
 import { FaRegCalendarCheck } from 'react-icons/fa6';
 import Link from 'next/link';
-import { UserType, signOut } from '../_lib/actions';
+import { Profile, signOut } from '../_lib/actions';
 
 
 export default function LoggedInUser({ user }: { user: User }) {
-  const profile = user?.user_metadata as UserType;
+  const profile = user?.user_metadata as Profile;
 
   return (
     <div>
