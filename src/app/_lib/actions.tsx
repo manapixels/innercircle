@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { createClient } from '../_utils/supabase/server';
 import { Tables } from './definitions';
 // import { dummyEvents } from '@/app/_lib/dummyData';
@@ -27,7 +26,6 @@ export const signUpNewUser = async (email, password) => {
 };
 
 export const signInWithEmail = async (email, password) => {
-  'use server';
   const supabase = createClient();
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -35,12 +33,10 @@ export const signInWithEmail = async (email, password) => {
   });
 
   if (error) {
-    return redirect('/login?message=Could not authenticate user');
+    alert('Could not authenticate user');
   }
 
-  return redirect('/protected');
-  // if (error) return error
-  // return data
+  return true
 };
 
 export const signOut = async () => {

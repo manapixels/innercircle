@@ -1,4 +1,4 @@
-export default function Spinner({ className }) {
+export default function Spinner({ className = '' }) {
   return (
     <svg
       aria-hidden="true"
