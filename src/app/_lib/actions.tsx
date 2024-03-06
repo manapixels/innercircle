@@ -146,15 +146,15 @@ export const fetchEvents = async () => {
 };
 
 /**
- * Fetch an event by its id
+ * Fetch an event by its slug
  */
-export const fetchEvent = async (id: string) => {
+export const fetchEvent = async (slug: string) => {
   const supabase = createClient();
   try {
     let { data } = await supabase
       .from('events')
       .select(`*`)
-      .eq('id', id)
+      .eq('slug', slug)
       .single();
     return data;
   } catch (error) {

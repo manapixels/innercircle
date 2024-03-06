@@ -17,8 +17,8 @@ export default async function EventsPage() {
         {events?.map((event, i) => {
           return (
             <Link
-              href={`/events/${event.id}`}
-              key={event.id}
+              href={`/events/${event.slug}`}
+              key={event.slug}
               className={`p-3 rounded-lg ${i !== 0 ?? 'border-t'} hover:bg-gray-100 ${hasDatePassed(event.date_end) && 'grayscale opacity-80'} hover:grayscale-0 hover:opacity-100`}
             >
               <div className="w-full relative aspect-square">

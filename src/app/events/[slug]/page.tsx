@@ -5,13 +5,13 @@ export const metadata: Metadata = {
   title: 'innercircle | Event',
 };
 
-export default async function EventDetailsPage({ params: { id } }: { params: { id: string } }) {
+export default async function EventDetailsPage({ params: { slug } }: { params: { slug: string } }) {
 
-  const event = (await fetchEvent(id as string)) as EventType;
+  const event = (await fetchEvent(slug as string)) as EventType;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-6 max-w-7xl mx-auto">
-      {event.id}
+      {event.slug}
     </div>
   );
 }
