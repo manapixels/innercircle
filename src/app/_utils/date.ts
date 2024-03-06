@@ -26,8 +26,8 @@ export function formatDateRange(start_date: string | Date, end_date: string | Da
     }
 }
 
-export function calculateAge(birthYear: number | string | undefined, birthMonth: number | string | undefined): number | undefined {
-    if (birthYear === undefined || birthMonth === undefined) {
+export function calculateAge(birthYear: number | string | undefined | null, birthMonth: number | string | undefined | null): number | undefined {
+    if (birthYear === undefined || birthYear === null || birthMonth === undefined || birthMonth === null) {
         return undefined;
     }
     const currentDate = new Date();
@@ -36,6 +36,9 @@ export function calculateAge(birthYear: number | string | undefined, birthMonth:
     // Convert string inputs to numbers if necessary
     const numericBirthYear = typeof birthYear === 'string' ? parseInt(birthYear, 10) : birthYear;
     const numericBirthMonth = typeof birthMonth === 'string' ? parseInt(birthMonth, 10) : birthMonth;
+    if (isNaN(numericBirthYear) || isNaN(numericBirthMonth)) {
+        return undefined;
+    }
     let age = currentYear - numericBirthYear;
     if (numericBirthMonth > currentMonth) {
         age--;

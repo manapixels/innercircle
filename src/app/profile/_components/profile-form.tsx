@@ -26,7 +26,7 @@ export default function ProfileForm({
       try {
         const profile = await fetchUserProfile(userId);
         setCurrProfile(profile as UserType);
-        reset(profile as UserType);
+        reset(profile as AuthFormInput);
       } catch (error) {
         alert('Error loading user data!');
       } finally {
@@ -55,12 +55,8 @@ export default function ProfileForm({
     reset,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<AuthFormInput>({
-    defaultValues: useMemo(() => {
-      return currProfile ?? undefined;
-    }, [currProfile]),
-  });
-  const onSubmit: SubmitHandler<AuthFormInput> = async (data) => {
+  } = useForm<AuthFormInput>();
+  const onSubmit: SubmitHandler<AuthFormInput> = async (data: AuthFormInput) => {
     await updateProfile({ ...currProfile, ...data } as UserType);
   };
 
