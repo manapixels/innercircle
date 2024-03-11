@@ -4,6 +4,8 @@ import { useUser } from '@/app/_contexts/UserContext';
 import { EventWithCreatorInfo, signUpForEvent } from '@/app/_lib/actions';
 import { hasDatePassed } from '@/app/_utils/date';
 import { useState } from 'react';
+import pluralize from 'pluralize'
+import { BsArrowLeftShort } from 'react-icons/bs';
 
 export default function ReservationForm({
   event,
@@ -11,6 +13,7 @@ export default function ReservationForm({
   event: EventWithCreatorInfo;
 }) {
   const [guests, setGuests] = useState(1);
+  const [isConfirming, setIsConfirming] = useState(false);
   const [loading, setLoading] = useState(false);
   const user = useUser();
 
@@ -33,84 +36,142 @@ export default function ReservationForm({
 
   return (
     <div className="border p-8 rounded-2xl shadow-lg">
-      <div className="text-xl font-medium mb-2">
-        {event?.price
-          ? <span><span className="uppercase">{event?.price_currency}</span> {event?.price} / person</span>
-          : <span>Free</span>}
-      </div>
-      <div className="border flex justify-between items-center p-2 mb-4 rounded-lg relative">
-        <span className="text-sm pl-1">Guests</span>
+      {isConfirming ? (
+        <>
+          <div className="text-sm text-gray-500 mb-6 flex items-center gap-2">
+            <button className="flex-shrink-0 bg-white hover:bg-gray-100 inline-flex items-center justify-center border border-gray-400 rounded-md h-8 w-8 focus:ring-gray-100 focus:ring-2 focus:outline-none p-1"><BsArrowLeftShort size={30} className="fill-gray-500" onClick={() => setIsConfirming(false)} /></button>
+            Order summary
+          </div>
+          <div className="text-sm text-gray-600 flex items-center justify-between mb-6">
+            <span>{guests}x {event?.name} {pluralize('Ticket', guests)}</span>
+            <span>
+              {event?.price ? (
+                <span>
+                  <span className="uppercase">{event?.price_currency}</span>{' '}
+                  {event?.price * guests}
+                </span>
+              ) : (
+                <span>Free</span>
+              )}
+            </span>
+          </div>
+          <div className="text-lg font-medium flex items-center justify-between mb-4">
+              <span>Total</span>
+              <span>
+                {event?.price ? (
+                  <span>
+                    <span className="uppercase">{event?.price_currency}</span>{' '}
+                    {event?.price * guests}
+                  </span>
+                ) : (
+                  <span>Free</span>
+                )}
+              </span>
+          </div>
+          <button
+            className={`bg-base-600 text-white px-4 py-2 rounded-lg w-full block ${
+              hasDatePassed(event?.date_start) || loading ? 'opacity-50' : ''
+            }`}
+            disabled={hasDatePassed(event?.date_start) || loading}
+            onClick={handleReservation}
+          >
+            {loading
+              ? 'Processing...'
+              : hasDatePassed(event?.date_start)
+                ? 'Event has passed'
+                : 'Reserve'}
+          </button>
+        </>
+      ) : (
+        <>
+          <div className="text-xl font-medium mb-2">
+            {event?.price ? (
+              <span>
+                <span className="uppercase">{event?.price_currency}</span>{' '}
+                {event?.price} / person
+              </span>
+            ) : (
+              <span>Free</span>
+            )}
+          </div>
+          <div className="border flex justify-between items-center p-2 mb-4 rounded-lg relative">
+            <span className="text-sm pl-1">Guests</span>
 
-        <button
-          type="button"
-          id="decrement-button"
-          data-input-counter-decrement="counter-input"
-          className="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
-          onClick={() => {
-            if (guests > 1) {
-              setGuests(guests - 1);
-            }
-          }}
-        >
-          <svg
-            className="w-2.5 h-2.5 text-gray-900 dark:text-white"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 18 2"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M1 1h16"
+            <button
+              type="button"
+              id="decrement-button"
+              data-input-counter-decrement="counter-input"
+              className="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+              onClick={() => {
+                if (guests > 1) {
+                  setGuests(guests - 1);
+                }
+              }}
+            >
+              <svg
+                className="w-2.5 h-2.5 text-gray-900 dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 18 2"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M1 1h16"
+                />
+              </svg>
+            </button>
+            <input
+              type="text"
+              id="counter-input"
+              data-input-counter
+              className="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
+              placeholder=""
+              value={guests}
+              onChange={(e) => setGuests(parseInt(e.target.value))}
+              required
             />
-          </svg>
-        </button>
-        <input
-          type="text"
-          id="counter-input"
-          data-input-counter
-          className="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
-          placeholder=""
-          value={guests}
-          onChange={(e) => setGuests(parseInt(e.target.value))}
-          required
-        />
-        <button
-          type="button"
-          id="increment-button"
-          data-input-counter-increment="counter-input"
-          className="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
-          onClick={() => setGuests(guests + 1)}
-        >
-          <svg
-            className="w-2.5 h-2.5 text-gray-900 dark:text-white"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 18 18"
+            <button
+              type="button"
+              id="increment-button"
+              data-input-counter-increment="counter-input"
+              className="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+              onClick={() => setGuests(guests + 1)}
+            >
+              <svg
+                className="w-2.5 h-2.5 text-gray-900 dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 18 18"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 1v16M1 9h16"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <button
+            className={`bg-base-600 text-white px-4 py-2 rounded-lg w-full block ${
+              hasDatePassed(event?.date_start) || loading ? 'opacity-50' : ''
+            }`}
+            disabled={hasDatePassed(event?.date_start) || loading}
+            onClick={() => setIsConfirming(true)}
           >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 1v16M1 9h16"
-            />
-          </svg>
-        </button>
-      </div>
-      <button
-        className={`bg-base-600 text-white px-4 py-2 rounded-lg w-full block ${
-          hasDatePassed(event?.date_start) || loading ? 'opacity-50' : ''
-        }`}
-        disabled={hasDatePassed(event?.date_start) || loading}
-        onClick={handleReservation}
-      >
-        {loading ? 'Processing...' : hasDatePassed(event?.date_start) ? 'Event has passed' : 'Reserve'}
-      </button>
+            {hasDatePassed(event?.date_start)
+                ? 'Event has passed'
+                : 'Next'}
+          </button>
+        </>
+      )}
     </div>
   );
 }
