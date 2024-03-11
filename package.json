@@ -12,7 +12,6 @@
     "generate-types-local": "npx supabase gen types typescript --local --schema public > ./src/app/_lib/definitions.ts"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@supabase/ssr": "^0.1.0",
@@ -24,7 +23,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-focus-lock": "^2.11.1",
-    "react-hook-form": "^7.50.1"
+    "react-hook-form": "^7.50.1",
+    "usehooks-ts": "^3.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",

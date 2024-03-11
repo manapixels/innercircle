@@ -1,5 +1,4 @@
 import { EventWithCreatorInfo, fetchEvent } from '@/app/_lib/actions';
-import { Avatar } from '@chakra-ui/react';
 import { Metadata } from 'next';
 import ReservationForm from '../_components/ReservationForm';
 
@@ -30,13 +29,25 @@ export default async function EventDetailsPage({
           </div>
           <div className="border border-gray-200 px-5 py-3 rounded-lg flex items-center font-medium text-sm">
             Hosted by{' '}
-            <Avatar
-              size="sm"
-              src={event?.created_by.avatar_url || ''}
-              bg="gray.100"
-              className="mx-2"
-              icon={<svg className="fill-gray-500" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12q-1.65 0-2.825-1.175T8 8q0-1.65 1.175-2.825T12 4q1.65 0 2.825 1.175T16 8q0 1.65-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13q1.65 0 3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z"></path></svg>}
-            />
+            {event?.created_by?.avatar_url ? (
+                <img
+                  className="h-10 w-10 rounded-full mx-2"
+                  src={event?.created_by?.avatar_url || ''}
+                  alt=""
+                />
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    className="fill-gray-700"
+                    d="M12 12q-1.65 0-2.825-1.175T8 8q0-1.65 1.175-2.825T12 4q1.65 0 2.825 1.175T16 8q0 1.65-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13q1.65 0 3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z"
+                  ></path>
+                </svg>
+              )}
             {event?.created_by.name}
           </div>
           <div>{event?.description}</div>
