@@ -16,9 +16,9 @@ export default async function Header() {
   } = await supabase.auth.getUser()
 
   return (
-    <header>
+    <header className="max-w-6xl mx-auto">
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between p-6"
+        className="flex items-center justify-between p-6"
         aria-label="Global"
       >
         <div className="flex lg:flex gap-6 items-center">

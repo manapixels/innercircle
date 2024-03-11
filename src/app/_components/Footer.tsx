@@ -4,9 +4,9 @@ import { RiInstagramFill } from 'react-icons/ri';
 
 export default async function Footer() {
   return (
-    <footer>
+    <footer className="max-w-6xl mx-auto">
       <div
-        className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 border-t border-gray-200"
+        className="flex items-center justify-between px-6 py-3 border-t border-gray-200"
       >
         <div className="text-sm">© {new Date().getFullYear()} innercircle</div>
         <div className="rounded-lg flex items-center px-1">
