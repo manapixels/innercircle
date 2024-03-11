@@ -1,6 +1,7 @@
 'use client';
 
-import { EventWithCreatorInfo } from '@/app/_lib/actions';
+import { useUser } from '@/app/_contexts/UserContext';
+import { EventWithCreatorInfo, signUpForEvent } from '@/app/_lib/actions';
 import { hasDatePassed } from '@/app/_utils/date';
 import { useState } from 'react';
 
@@ -11,6 +12,24 @@ export default function ReservationForm({
 }) {
   const [guests, setGuests] = useState(1);
   const [loading, setLoading] = useState(false);
+  const user = useUser();
+
+  const handleReservation = async () => {
+    if (!user?.id) {
+      alert('You must be logged in to make a reservation.');
+      return;
+    }
+
+    setLoading(true);
+    const result = await signUpForEvent(event.id, user.id, guests);
+    setLoading(false);
+
+    if (result) {
+      alert('Reservation successful!');
+    } else {
+      alert('Failed to make a reservation. Please try again.');
+    }
+  };
 
   return (
     <div className="border p-8 rounded-2xl shadow-lg">
@@ -42,9 +61,9 @@ export default function ReservationForm({
           >
             <path
               stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M1 1h16"
             />
           </svg>
@@ -75,9 +94,9 @@ export default function ReservationForm({
           >
             <path
               stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M9 1v16M1 9h16"
             />
           </svg>
@@ -85,11 +104,12 @@ export default function ReservationForm({
       </div>
       <button
         className={`bg-base-600 text-white px-4 py-2 rounded-lg w-full block ${
-          hasDatePassed(event.date_start) ? 'opacity-50' : ''
+          hasDatePassed(event?.date_start) || loading ? 'opacity-50' : ''
         }`}
-        disabled={hasDatePassed(event.date_start)}
+        disabled={hasDatePassed(event?.date_start) || loading}
+        onClick={handleReservation}
       >
-        {hasDatePassed(event.date_start) ? 'Event has passed' : 'Reserve'}
+        {loading ? 'Processing...' : hasDatePassed(event?.date_start) ? 'Event has passed' : 'Reserve'}
       </button>
     </div>
   );
