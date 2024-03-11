@@ -1,7 +1,6 @@
 'use client';
 import { signInWithEmail, signUpNewUser } from '@/app/_lib/actions';
 import { useState } from 'react';
-import { GrFormView, GrFormViewHide } from 'react-icons/gr';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Modal } from '../Modal';
 import { useRouter } from 'next/navigation';
@@ -106,16 +105,40 @@ export default function AuthForm() {
                 aria-invalid={errors.password ? 'true' : 'false'}
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                <GrFormView
+                <svg
                   onClick={() => setShowPassword(!showPassword)}
                   className={`h-6 text-gray-700 ${showPassword ? 'hidden' : 'block'}`}
-                  size="30"
-                />
-                <GrFormViewHide
+                  stroke="currentColor"
+                  fill="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  height="30px"
+                  width="30px"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill="none"
+                    stroke-width="2"
+                    d="M12,17 C9.27272727,17 6,14.2222222 6,12 C6,9.77777778 9.27272727,7 12,7 C14.7272727,7 18,9.77777778 18,12 C18,14.2222222 14.7272727,17 12,17 Z M11,12 C11,12.55225 11.44775,13 12,13 C12.55225,13 13,12.55225 13,12 C13,11.44775 12.55225,11 12,11 C11.44775,11 11,11.44775 11,12 Z"
+                  ></path>
+                </svg>
+                <svg
                   onClick={() => setShowPassword(!showPassword)}
                   className={`h-6 text-gray-700 ${showPassword ? 'block' : 'hidden'}`}
-                  size="30"
-                />
+                  stroke="currentColor"
+                  fill="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  height="200px"
+                  width="200px"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill="none"
+                    stroke-width="2"
+                    d="M3,12 L6,12 C6.5,14.5 9.27272727,17 12,17 C14.7272727,17 17.5,14.5 18,12 L21,12 M12,17 L12,20 M7.5,15.5 L5.5,17.5 M16.5,15.5 L18.5,17.5"
+                  ></path>
+                </svg>
                 {errors.password?.type === 'required' && (
                   <p role="alert">Please enter your password</p>
                 )}

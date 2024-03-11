@@ -5,6 +5,7 @@ const config: Config = {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "!./node_modules",
   ],
   theme: {
     extend: {
@@ -34,6 +35,7 @@ const config: Config = {
   },
   plugins: [],
   darkMode: 'class',
+  mode: 'jit'
 };
 export default config;
 

@@ -4,8 +4,7 @@ import { useUser } from '@/app/_contexts/UserContext';
 import { EventWithCreatorInfo, signUpForEvent } from '@/app/_lib/actions';
 import { hasDatePassed } from '@/app/_utils/date';
 import { useState } from 'react';
-import pluralize from 'pluralize'
-import { BsArrowLeftShort } from 'react-icons/bs';
+import pluralize from 'pluralize';
 
 export default function ReservationForm({
   event,
@@ -39,11 +38,27 @@ export default function ReservationForm({
       {isConfirming ? (
         <>
           <div className="text-sm text-gray-500 mb-6 flex items-center gap-2">
-            <button className="flex-shrink-0 bg-white hover:bg-gray-100 inline-flex items-center justify-center border border-gray-400 rounded-md h-8 w-8 focus:ring-gray-100 focus:ring-2 focus:outline-none p-1"><BsArrowLeftShort size={30} className="fill-gray-500" onClick={() => setIsConfirming(false)} /></button>
+            <button className="flex-shrink-0 bg-white hover:bg-gray-100 inline-flex items-center justify-center border border-gray-400 rounded-md h-8 w-8 focus:ring-gray-100 focus:ring-2 focus:outline-none p-1">
+              <svg
+                className="fill-gray-500"
+                onClick={() => setIsConfirming(false)}
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="m7.85 13l2.85 2.85q.3.3.288.7t-.288.7q-.3.3-.712.313t-.713-.288L4.7 12.7q-.3-.3-.3-.7t.3-.7l4.575-4.575q.3-.3.713-.287t.712.312q.275.3.288.7t-.288.7L7.85 11H19q.425 0 .713.288T20 12q0 .425-.288.713T19 13z"
+                ></path>
+              </svg>
+            </button>
             Order summary
           </div>
           <div className="text-sm text-gray-600 flex items-center justify-between mb-6">
-            <span>{guests}x {event?.name} {pluralize('Ticket', guests)}</span>
+            <span>
+              {guests}x {event?.name} {pluralize('Ticket', guests)}
+            </span>
             <span>
               {event?.price ? (
                 <span>
@@ -56,17 +71,17 @@ export default function ReservationForm({
             </span>
           </div>
           <div className="text-lg font-medium flex items-center justify-between mb-4">
-              <span>Total</span>
-              <span>
-                {event?.price ? (
-                  <span>
-                    <span className="uppercase">{event?.price_currency}</span>{' '}
-                    {event?.price * guests}
-                  </span>
-                ) : (
-                  <span>Free</span>
-                )}
-              </span>
+            <span>Total</span>
+            <span>
+              {event?.price ? (
+                <span>
+                  <span className="uppercase">{event?.price_currency}</span>{' '}
+                  {event?.price * guests}
+                </span>
+              ) : (
+                <span>Free</span>
+              )}
+            </span>
           </div>
           <button
             className={`bg-base-600 text-white px-4 py-2 rounded-lg w-full block ${
@@ -166,9 +181,7 @@ export default function ReservationForm({
             disabled={hasDatePassed(event?.date_start) || loading}
             onClick={() => setIsConfirming(true)}
           >
-            {hasDatePassed(event?.date_start)
-                ? 'Event has passed'
-                : 'Next'}
+            {hasDatePassed(event?.date_start) ? 'Event has passed' : 'Next'}
           </button>
         </>
       )}
