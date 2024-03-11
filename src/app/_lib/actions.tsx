@@ -34,7 +34,7 @@ export const signInWithEmail = async (email, password) => {
     alert('Could not authenticate user');
   }
 
-  return true
+  return true;
 };
 
 export const signOut = async () => {
@@ -53,8 +53,12 @@ export const signOut = async () => {
 export const fetchUserProfile = async (userId) => {
   const supabase = createClient();
   try {
-    let { data } = await supabase.from('profiles').select(`*`).eq('id', userId).single();
-    return data as Profile
+    let { data } = await supabase
+      .from('profiles')
+      .select(`*`)
+      .eq('id', userId)
+      .single();
+    return data as Profile;
   } catch (error) {
     console.log('error', error);
     return error;
@@ -67,11 +71,11 @@ export const updateUserProfile = async (user: Profile) => {
     await supabase.from('profiles').upsert({
       ...user,
       updated_at: new Date().toISOString(),
-    })
+    });
     const { data } = await supabase.auth.updateUser({
-      data: user
-    })
-    return data
+      data: user,
+    });
+    return data;
   } catch (error) {
     console.log('error', error);
     return error;
@@ -82,9 +86,9 @@ export const updateEmail = async (email: string) => {
   const supabase = createClient();
   try {
     const { data } = await supabase.auth.updateUser({
-      email
-    })
-    return data
+      email,
+    });
+    return data;
   } catch (error) {
     console.log('error', error);
     return error;
@@ -95,15 +99,14 @@ export const updatePassword = async (password: string) => {
   const supabase = createClient();
   try {
     const { data } = await supabase.auth.updateUser({
-      password
-    })
-    return data
+      password,
+    });
+    return data;
   } catch (error) {
     console.log('error', error);
     return error;
   }
 };
-
 
 /**
  * Fetch all roles for the current user
@@ -147,7 +150,8 @@ export const fetchEvent = async (slug: string) => {
   try {
     let { data } = await supabase
       .from('events')
-      .select(`
+      .select(
+        `
         id,
         name,
         created_at,
@@ -160,7 +164,8 @@ export const fetchEvent = async (slug: string) => {
         price,
         price_currency,
         slug
-      `)
+      `,
+      )
       .eq('slug', slug)
       .single();
     return data;
@@ -233,5 +238,26 @@ export const deleteEvent = async (event_id) => {
   } catch (error) {
     console.log('error', error);
     return error;
+  }
+};
+
+export const signUpForEvent = async (
+  event_id: string,
+  user_id: string,
+  tickets_bought: number,
+) => {
+  const supabase = createClient();
+  try {
+    const { data, error } = await supabase.rpc('sign_up_for_event', {
+      p_event_id: event_id,
+      p_user_id: user_id,
+      p_tickets_bought: tickets_bought,
+    });
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error signing up for event:', error);
+    return null;
   }
 };

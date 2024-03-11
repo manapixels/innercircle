@@ -72,6 +72,7 @@ comment on table public.events is 'Details for each event.';
 create table public.event_participants (
   event_id          uuid not null references public.events(id) on delete cascade,
   user_id           uuid not null references public.profiles(id) on delete cascade,
+  tickets_bought    integer not null default 0,
   primary key       (event_id, user_id)
 );
 comment on table public.event_participants is 'List of user IDs participating in an event.';
@@ -179,6 +180,43 @@ $$ language plpgsql;
 create trigger set_event_slug_before_insert_or_update
 before insert or update of name on public.events
 for each row execute function public.set_event_slug();
+
+-- Function to handle user sign-up for an event
+create or replace function public.sign_up_for_event(
+    p_event_id uuid,
+    p_user_id uuid,
+    p_tickets_bought integer
+) returns void as $$
+declare
+    v_event_exists int;
+    v_already_signed_up int;
+begin
+    -- Check if the event exists
+    select count(*) into v_event_exists
+    from public.events
+    where id = p_event_id;
+
+    if v_event_exists = 0 then
+        raise exception 'Event does not exist.';
+    end if;
+
+    -- Check if the user has already signed up for the event
+    select count(*) into v_already_signed_up
+    from public.event_participants
+    where event_id = p_event_id and user_id = p_user_id;
+
+    if v_already_signed_up > 0 then
+        -- Update the number of tickets bought if the user has already signed up
+        update public.event_participants
+        set tickets_bought = tickets_bought + p_tickets_bought
+        where event_id = p_event_id and user_id = p_user_id;
+    else
+        -- Insert a new record into event_participants
+        insert into public.event_participants (event_id, user_id, tickets_bought)
+        values (p_event_id, p_user_id, p_tickets_bought);
+    end if;
+end;
+$$ language plpgsql;
 
 -- ...................
 --
