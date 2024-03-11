@@ -37,7 +37,6 @@ export default async function Header() {
           <div className="flex">
             <Link
               href="/events"
-              type="button"
               className={`relative overflow-hidden px-5 py-2.5 text-center hover:bg-gray-100 rounded-md font-medium text-gray-600 ${pathname === '/events' ? 'bg-gray-200 font-semibold text-gray-800' : ' '}`}
             >
               All events
@@ -47,7 +46,6 @@ export default async function Header() {
             </Link>
             <Link
               href="/events?type=speed-dating"
-              type="button"
               className={`relative overflow-hidden px-5 py-2.5 text-center hover:bg-gray-100 rounded-md font-medium text-gray-600 ${pathname === '/events?type=speed-dating' ? 'bg-gray-200 font-semibold text-gray-800' : ''}`}
             >
               Speed Dating
@@ -57,7 +55,6 @@ export default async function Header() {
             </Link>
             <Link
               href="/events?type=retreats"
-              type="button"
               className={`relative overflow-hidden px-5 py-2.5 text-center hover:bg-gray-100 rounded-md font-medium text-gray-600 ${pathname === '/events?type=retreats' ? 'bg-gray-200 font-semibold text-gray-800' : ''}`}
             >
               Retreats

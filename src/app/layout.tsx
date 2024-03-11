@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+
 import Header from '@/app/_components/Header';
-import './globals.css';
 import Footer from './_components/Footer';
 import { UserProvider } from './_contexts/UserContext';
+import './globals.css';
+import 'tippy.js/dist/tippy.css';
 
 const inter = Inter({ subsets: ['latin'] });
 

@@ -133,7 +133,23 @@ export const fetchEvents = async () => {
   try {
     let { data } = await supabase
       .from('events')
-      .select(`*`)
+      .select(
+        `
+        id,
+        name,
+        image_url,
+        created_at,
+        created_by (id, name, avatar_url),
+        description,
+        date_start,
+        date_end,
+        location,
+        location_country,
+        price,
+        price_currency,
+        slug
+      `,
+      )
       .order('created_at', { ascending: false });
     return data;
   } catch (error) {
@@ -154,6 +170,7 @@ export const fetchEvent = async (slug: string) => {
         `
         id,
         name,
+        image_url,
         created_at,
         created_by (id, name, avatar_url),
         description,

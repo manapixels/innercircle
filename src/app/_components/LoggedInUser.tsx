@@ -18,36 +18,32 @@ export default function LoggedInUser({ user }: { user: User }) {
     <AnimatePresence initial={false} mode="wait">
       <div>
         <div className="relative inline-block text-left">
-          <button className="rounded-full focus:outline-none focus:ring">
-            <span className="sr-only">Open options</span>
-
-            <motion.button
-              className="rounded-full bg-gray-100 flex items-center justify-center"
-              style={{ width: '3rem', height: '3rem' }}
-              whileHover={{ scale: 1.08, backgroundColor: 'rgb(232 235 239)' }}
-              onClick={() => setIsOpen(true)}
-            >
-              {profile?.avatar_url ? (
-                <img
-                  className="h-10 w-10 rounded-full"
-                  src={profile?.avatar_url || ''}
-                  alt=""
-                />
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    className="fill-gray-700"
-                    d="M12 12q-1.65 0-2.825-1.175T8 8q0-1.65 1.175-2.825T12 4q1.65 0 2.825 1.175T16 8q0 1.65-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13q1.65 0 3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z"
-                  ></path>
-                </svg>
-              )}
-            </motion.button>
-          </button>
+          <motion.button
+            className="rounded-full bg-gray-100 flex items-center justify-center"
+            style={{ width: '3rem', height: '3rem' }}
+            whileHover={{ scale: 1.08, backgroundColor: 'rgb(232 235 239)' }}
+            onClick={() => setIsOpen(true)}
+          >
+            {profile?.avatar_url ? (
+              <img
+                className="h-10 w-10 rounded-full"
+                src={profile?.avatar_url || ''}
+                alt=""
+              />
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  className="fill-gray-700"
+                  d="M12 12q-1.65 0-2.825-1.175T8 8q0-1.65 1.175-2.825T12 4q1.65 0 2.825 1.175T16 8q0 1.65-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13q1.65 0 3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z"
+                ></path>
+              </svg>
+            )}
+          </motion.button>
           <motion.div
             ref={ref}
             className="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
