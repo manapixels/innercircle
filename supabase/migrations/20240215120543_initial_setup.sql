@@ -218,6 +218,34 @@ begin
 end;
 $$ language plpgsql;
 
+create view events_with_host_data as
+select
+  e.id, e.name, e.image_url, e.created_at, e.date_start, e.date_end, e.location, e.location_country, e.price, e.status, e.slots,
+  json_build_object(
+    'id', p.id,
+    'name', p.name,
+    'avatar_url', p.avatar_url,
+    'events_created', ec.events_created,
+    'guests_hosted', gh.guests_hosted
+  ) as created_by
+from public.events e
+left join public.profiles p on p.id = e.created_by
+left join (
+  select
+    created_by,
+    count(id) as events_created
+  from public.events
+  group by created_by
+) ec on ec.created_by = p.id
+left join (
+  select
+    e.created_by,
+    sum(ep.tickets_bought) as guests_hosted
+  from public.events e
+  join public.event_participants ep on e.id = ep.event_id
+  group by e.created_by
+) gh on gh.created_by = p.id;
+
 -- ...................
 --
 -- Secure the tables

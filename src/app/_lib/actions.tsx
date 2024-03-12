@@ -132,25 +132,11 @@ export const fetchEvents = async () => {
   const supabase = createClient();
   try {
     let { data } = await supabase
-      .from('events')
-      .select(
-        `
-        id,
-        name,
-        image_url,
-        created_at,
-        created_by (id, name, avatar_url),
-        description,
-        date_start,
-        date_end,
-        location,
-        location_country,
-        price,
-        price_currency,
-        slug
-      `,
-      )
+      .from('events_with_host_data')
+      .select('*')
       .order('created_at', { ascending: false });
+
+      console.log('lalala', data)
     return data;
   } catch (error) {
     console.log('error', error);
