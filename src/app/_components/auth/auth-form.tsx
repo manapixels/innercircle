@@ -27,7 +27,7 @@ export default function AuthForm() {
     formState: { errors, isSubmitting },
   } = useForm<AuthFormInput>({
     defaultValues: {
-      email: '1@example.com',
+      email: '1@innercircle.fam',
       password: 'password123',
     },
   });

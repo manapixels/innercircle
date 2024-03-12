@@ -56,7 +56,8 @@ create table public.events (
   date_start        timestamp with time zone default timezone('utc'::text, now()) not null,
   date_end          timestamp with time zone default timezone('utc'::text, now()) not null,
   category          event_categories not null default 'speed-dating',
-  location          text not null,
+  location_name     text not null,
+  location_address  text not null,
   location_country  text not null,
   name              text not null,
   description       text,
@@ -167,7 +168,7 @@ begin
     loop
         select count(*) into slug_count from public.events where slug = new_slug;
         exit when slug_count = 0;
-        new_slug := base_slug || '-' || slug_count;
+        new_slug := new_slug || '-' || slug_count;
         slug_count := slug_count + 1;
     end loop;
 
@@ -220,7 +221,7 @@ $$ language plpgsql;
 
 create view events_with_host_data as
 select
-  e.id, e.name, e.image_url, e.created_at, e.date_start, e.date_end, e.location, e.location_country, e.price, e.status, e.slots,
+  e.id, e.name, e.image_url, e.created_at, e.date_start, e.date_end, e.location_name, e.location_address, e.location_country, e.price, e.status, e.slots,
   json_build_object(
     'id', p.id,
     'name', p.name,

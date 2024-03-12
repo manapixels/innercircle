@@ -5,7 +5,7 @@ BEGIN;
 DO $$ DECLARE
   user_id uuid;
 BEGIN
-  FOR i IN 1..55 LOOP
+  FOR i IN 1..62 LOOP
     user_id := uuid_generate_v4();
     INSERT INTO auth.users (
       id,
@@ -25,7 +25,7 @@ BEGIN
       '00000000-0000-0000-0000-000000000000',
       'authenticated',
       'authenticated',
-      i || '@example.com',
+      i || '@innercircle.fam',
       crypt('password123', gen_salt('bf')),
       now(),
       NULL, '', NULL, '', NULL, '', '', NULL, NULL,
@@ -69,12 +69,13 @@ BEGIN
   INSERT INTO events (
       category, 
       created_at, 
-      date_end, 
       date_start, 
+      date_end, 
       description, 
       id, 
       image_url, 
-      location, 
+      location_name, 
+      location_address,
       location_country, 
       name, 
       price, 
@@ -85,84 +86,141 @@ BEGIN
   VALUES 
   (
       'speed-dating', 
-      '2023-11-01T10:00:00Z', 
-      '2023-11-24T22:00:00Z', 
-      '2023-11-24T19:00:00Z', 
+      '2023-07-02T10:00:00+08:00', 
+      '2023-08-02T20:00:00+08:00', 
+      '2023-08-02T22:00:00+08:00', 
       '', 
-      '295f43cc-c332-40ec-ab5e-467c663241fd', 
-      '/1.jpg', 
-      'No Spoilers Bar, Orchard Cineleisure', 
-      'Singapore', 
-      'Mystery Date, Speed Dating Night', 
-      58, 
-      'completed', 
-      user_id, 
-      50
-  ),
-  (
-      'speed-dating', 
-      '2023-12-01T00:00:00Z', 
-      '2023-12-23T19:00:00Z', 
-      '2023-12-23T00:00:00Z', 
+      '514cec29-5a04-488a-8dad-5d43e861f3b8', 
       '', 
-      'f90d618d-291e-4923-a083-2e44651a069f', 
-      '/2.jpg', 
-      'The Soul Atelier, Suntec', 
+      'The Otherside', 
+      '7 Erskine Rd, Singapore 069320',
       'Singapore', 
-      'Speed Dating Night X''mas Edition', 
+      'Speed Dating Night Debute', 
       48, 
       'completed', 
       user_id, 
-      50
+      46
   ),
   (
       'speed-dating', 
-      '2024-01-01T10:00:00Z', 
-      '2024-01-27T22:00:00Z', 
-      '2024-01-27T19:00:00Z', 
+      '2023-09-01T09:00:00+08:00', 
+      '2023-09-21T19:00:00+08:00', 
+      '2023-09-21T22:00:00+08:00', 
+      '', 
+      'e89dd521-24a9-4ef0-9667-8a3c46433c85', 
+      '', 
+      'The Otherside', 
+      '7 Erskine Rd, Singapore 069320',
+      'Singapore', 
+      'When the Stars Align', 
+      58, 
+      'completed', 
+      user_id, 
+      48
+  ),
+  (
+      'speed-dating', 
+      '2023-11-01T10:00:00+08:00', 
+      '2023-11-24T20:00:00+08:00', 
+      '2023-11-24T22:00:00+08:00', 
+      '', 
+      '295f43cc-c332-40ec-ab5e-467c663241fd', 
+      '/1.jpg', 
+      'Projector X: No Spoilers Bar', 
+      '8 Grange Rd, #05-01, Singapore 239695',
+      'Singapore', 
+      'It''s a Masquerade!', 
+      58, 
+      'completed', 
+      user_id, 
+      47
+  ),
+  (
+      'speed-dating', 
+      '2023-12-01T00:00:00+08:00', 
+      '2023-12-23T19:00:00+08:00', 
+      '2023-12-23T22:00:00+08:00', 
+      '', 
+      'f90d618d-291e-4923-a083-2e44651a069f', 
+      '/2.jpg', 
+      'Suntec City', 
+      'Suntec Tower 3, 8 Temasek Blvd, Singapore 038988',
+      'Singapore', 
+      'Christmas Singles Night', 
+      48, 
+      'completed', 
+      user_id, 
+      56
+  ),
+  (
+      'speed-dating', 
+      '2024-01-01T10:00:00+08:00', 
+      '2024-01-27T19:00:00+08:00', 
+      '2024-01-27T22:00:00+08:00', 
       'kinda like single''s inferno... but not exactly', 
       'a3157df3-4b7b-451a-842b-0fe5e72ffdcf', 
       '/3.jpg', 
       'Suntec Tower 3', 
+      'Suntec Tower 3, 8 Temasek Blvd, Singapore 038988',
       'Singapore', 
-      'Singles Night', 
-      0, 
+      'MBTI X Singles Night', 
+      58, 
       'completed', 
       user_id, 
-      45
+      62
   ),
   (
       'speed-dating', 
-      '2024-02-01T10:00:00Z', 
-      '2024-02-17T14:00:00Z', 
-      '2024-02-17T17:00:00Z', 
-      '', 
-      'a77cd08e-c65c-460d-85bd-b5ce67f1cd9c', 
-      '/4.jpg', 
-      'Suntec Tower 3', 
-      'Singapore', 
-      'Looking for love', 
-      0, 
-      'cancelled', 
-      user_id, 
-      45
-  ),
-  (
-      'speed-dating', 
-      '2024-02-20T10:00:00Z', 
-      '2024-03-16T19:00:00Z', 
-      '2024-03-16T22:00:00Z', 
+      '2024-02-20T10:00:00+08:00', 
+      '2024-03-16T19:00:00+08:00', 
+      '2024-03-16T22:00:00+08:00', 
       '', 
       '9a6654b8-32c3-47a8-bd82-4ad16e299663', 
       '/5.jpg', 
-      'Suntec Tower 3', 
+      'MYSEAT.sg', 
+      '2 Veerasamy Rd, Singapore 207305',
       'Singapore', 
-      'MBTI Rooftop Party', 
-      0, 
+      'MBTI X Singles Night', 
+      58, 
       'reserving', 
       user_id, 
-      45
+      100
+  ),
+  (
+      'speed-dating', 
+      '2024-03-02T09:00:00+08:00', 
+      '2024-03-23T19:00:00+08:00', 
+      '2024-03-23T22:00:00+08:00', 
+      '', 
+      '52e401c2-632c-4d96-9e4f-08d4f1c85ddd', 
+      '/5.jpg', 
+      'MYSEAT.sg', 
+      '2 Veerasamy Rd, Singapore 207305',
+      'Singapore', 
+      'MBTI X Singles Night', 
+      58, 
+      'reserving', 
+      user_id, 
+      100
   );
+END $$;
+
+DO $$
+DECLARE
+  event_record RECORD;
+  user_ids uuid[];
+  i integer;
+BEGIN
+  -- Fetch all event IDs and their slots
+  FOR event_record IN SELECT id, slots FROM public.events LOOP
+    -- Fetch user IDs from the auth.users table, limited by the number of slots for the event
+    SELECT array_agg(id) INTO user_ids FROM auth.users LIMIT event_record.slots;
+
+    -- Loop through the user IDs and sign up each user for the current event
+    FOR i IN 1..array_length(user_ids, 1) LOOP
+      PERFORM public.sign_up_for_event(event_record.id, user_ids[i], 1); -- Assuming each user buys 1 ticket
+    END LOOP;
+  END LOOP;
 END $$;
 
 -- Commit the transaction
