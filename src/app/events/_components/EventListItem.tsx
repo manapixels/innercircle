@@ -18,19 +18,32 @@ export default function EventListItem({
       className={`p-3 rounded-lg hover:bg-gray-100 ${hasDatePassed(event.date_end) && 'grayscale opacity-80'} hover:grayscale-0 hover:opacity-100`}
     >
       <div className="w-full relative aspect-square">
-        <Image
-          src={event?.image_url || ''}
-          alt={`${event?.name}`}
-          className="rounded-lg object-cover w-full h-full"
-          width="300"
-          height="300"
-        />
+        {event?.image_url ? (
+          <Image
+            src={event?.image_url}
+            alt={`${event?.name}`}
+            className="rounded-lg object-cover w-full h-full"
+            width="300"
+            height="300"
+          />
+        ) : (
+          <div className="bg-gray-200 rounded-lg w-full h-full flex justify-center items-center">
+            <Image src="./logo.svg" alt="Inner Circle" width="100" height="100" className="grayscale opacity-20" />
+          </div>
+        )}
         <div className="rounded-full absolute bottom-5 left-5 bg-white w-16 h-16"></div>
         <div className="rounded-full absolute bottom-14 left-14 bg-base-400 w-6 h-6"></div>
 
-        <Tippy content={
-            <div><span className="uppercase tracking-wide text-xs text-gray-300">Your host:</span> {event?.created_by?.name}</div>
-        }>
+        <Tippy
+          content={
+            <div>
+              <span className="uppercase tracking-wide text-xs text-gray-300">
+                Your host:
+              </span>{' '}
+              {event?.created_by?.name}
+            </div>
+          }
+        >
           <Image
             src={
               event?.created_by?.avatar_url
