@@ -221,7 +221,7 @@ $$ language plpgsql;
 
 create view events_with_host_data as
 select
-  e.id, e.name, e.image_url, e.created_at, e.date_start, e.date_end, e.location_name, e.location_address, e.location_country, e.price, e.status, e.slots,
+  e.id, e.name, e.slug, e.image_url, e.created_at, e.date_start, e.date_end, e.location_name, e.location_address, e.location_country, e.price, e.status, e.slots,
   json_build_object(
     'id', p.id,
     'name', p.name,

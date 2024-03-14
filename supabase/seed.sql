@@ -60,7 +60,7 @@ BEGIN
       now(),
       NULL, '', NULL, '', NULL, '', '', NULL, NULL,
       '{"provider":"email","providers":["email"]}'::jsonb,
-      ('{"name":"Shirley Chen","avatar_url":"/users/shirley-chen.jpg","birthmonth":7, "birthyear":1993}')::jsonb,
+      ('{"name":"Shirley Chen","avatar_url":"/users/shirley-chen.png","birthmonth":7, "birthyear":1993}')::jsonb,
       now(),
       now()
     );

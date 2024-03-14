@@ -12,26 +12,36 @@ export interface Database {
       event_participants: {
         Row: {
           event_id: string
+          tickets_bought: number
           user_id: string
         }
         Insert: {
           event_id: string
+          tickets_bought?: number
           user_id: string
         }
         Update: {
           event_id?: string
+          tickets_bought?: number
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "fk_event"
+            foreignKeyName: "event_participants_event_id_fkey"
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "fk_user"
+            foreignKeyName: "event_participants_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events_with_host_data"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_participants_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -43,61 +53,64 @@ export interface Database {
         Row: {
           category: Database["public"]["Enums"]["event_categories"]
           created_at: string
+          created_by: string
           date_end: string
           date_start: string
           description: string | null
           id: string
           image_url: string | null
-          location: string
+          location_address: string
           location_country: string
+          location_name: string
           name: string
           price: number | null
           price_currency: Database["public"]["Enums"]["currencies"]
           slots: number
           slug: string
           status: Database["public"]["Enums"]["event_status"]
-          user_id: string
         }
         Insert: {
           category?: Database["public"]["Enums"]["event_categories"]
           created_at?: string
+          created_by: string
           date_end?: string
           date_start?: string
           description?: string | null
           id?: string
           image_url?: string | null
-          location: string
+          location_address: string
           location_country: string
+          location_name: string
           name: string
           price?: number | null
           price_currency?: Database["public"]["Enums"]["currencies"]
           slots?: number
           slug: string
           status?: Database["public"]["Enums"]["event_status"]
-          user_id: string
         }
         Update: {
           category?: Database["public"]["Enums"]["event_categories"]
           created_at?: string
+          created_by?: string
           date_end?: string
           date_start?: string
           description?: string | null
           id?: string
           image_url?: string | null
-          location?: string
+          location_address?: string
           location_country?: string
+          location_name?: string
           name?: string
           price?: number | null
           price_currency?: Database["public"]["Enums"]["currencies"]
           slots?: number
           slug?: string
           status?: Database["public"]["Enums"]["event_status"]
-          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "events_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "events_created_by_fkey"
+            columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -182,7 +195,24 @@ export interface Database {
       }
     }
     Views: {
-      [_ in never]: never
+      events_with_host_data: {
+        Row: {
+          created_at: string | null
+          created_by: Json | null
+          date_end: string | null
+          date_start: string | null
+          id: string | null
+          image_url: string | null
+          location_address: string | null
+          location_country: string | null
+          location_name: string | null
+          name: string | null
+          price: number | null
+          slots: number | null
+          status: Database["public"]["Enums"]["event_status"] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       authorize: {
@@ -191,6 +221,14 @@ export interface Database {
           user_id: string
         }
         Returns: boolean
+      }
+      sign_up_for_event: {
+        Args: {
+          p_event_id: string
+          p_user_id: string
+          p_tickets_bought: number
+        }
+        Returns: undefined
       }
       slugify: {
         Args: {

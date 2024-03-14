@@ -7,7 +7,7 @@ import { Tables } from './definitions';
 export type Profile = Tables<'profiles'> & { email?: string };
 export type EventType = Tables<'events'>;
 export type EventWithCreatorInfo = EventType & {
-  created_by: Pick<Profile, 'name' | 'avatar_url'>;
+  created_by: Pick<Profile, 'name' | 'avatar_url'> & { events_created?: number, guests_hosted?: number};
 };
 
 export const signUpNewUser = async (email, password) => {
@@ -136,7 +136,6 @@ export const fetchEvents = async () => {
       .select('*')
       .order('created_at', { ascending: false });
 
-      console.log('lalala', data)
     return data;
   } catch (error) {
     console.log('error', error);
@@ -162,7 +161,8 @@ export const fetchEvent = async (slug: string) => {
         description,
         date_start,
         date_end,
-        location,
+        location_name,
+        location_address,
         location_country,
         price,
         price_currency,

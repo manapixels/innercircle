@@ -25,7 +25,7 @@ export default async function EventDetailsPage({
           <div className="text-3xl font-medium mb-2">{event?.name}</div>
           <div className="flex items-center text-gray-600 mb-4">
             <svg className="fill-gray-600" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M12.003 11.73q.668 0 1.14-.475q.472-.475.472-1.143t-.475-1.14q-.476-.472-1.143-.472t-1.14.476q-.472.475-.472 1.143t.475 1.14q.476.472 1.143.472M12 21.019q-3.525-3.117-5.31-5.814q-1.786-2.697-1.786-4.909q0-3.173 2.066-5.234Q9.037 3 12 3t5.03 2.062q2.066 2.061 2.066 5.234q0 2.212-1.785 4.909q-1.786 2.697-5.311 5.814"></path></svg>
-            <span className="ml-1">{event?.location}, {event?.location_country}</span>
+            <span className="ml-1">{event?.location_name}, {event?.location_country}</span>
           </div>
           <div className="border border-gray-200 px-5 py-3 rounded-lg flex items-center font-medium text-sm">
             Hosted by{' '}
