@@ -16,6 +16,8 @@ export default function ReservationForm({
   const [loading, setLoading] = useState(false);
   const user = useUser();
 
+  const eventOver = hasDatePassed(event?.date_start)
+
   const handleReservation = async () => {
     if (!user?.id) {
       alert('You must be logged in to make a reservation.');
@@ -92,7 +94,7 @@ export default function ReservationForm({
           >
             {loading
               ? 'Processing...'
-              : hasDatePassed(event?.date_start)
+              : eventOver
                 ? 'Event has passed'
                 : 'Reserve'}
           </button>
@@ -116,15 +118,16 @@ export default function ReservationForm({
               type="button"
               id="decrement-button"
               data-input-counter-decrement="counter-input"
-              className={`flex-shrink-0 bg-gray-100 ${guests === 1 ? '' : 'hover:bg-gray-200 focus:ring-2'} inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100 focus:outline-none`}
+              className={`flex-shrink-0 bg-gray-100 ${(guests === 1 || eventOver) ? 'pointer-events-none' : 'hover:bg-gray-200 focus:ring-2'} inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100 focus:outline-none`}
               onClick={() => {
                 if (guests > 1) {
                   setGuests(guests - 1);
                 }
               }}
+              disabled={eventOver}
             >
               <svg
-                className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${guests === 1 ? 'opacity-50' : ''}`}
+                className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${(guests === 1 || eventOver) ? 'opacity-50' : ''}`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -147,17 +150,19 @@ export default function ReservationForm({
               placeholder=""
               value={guests}
               onChange={(e) => setGuests(parseInt(e.target.value))}
+              disabled={eventOver}
               required
             />
             <button
               type="button"
               id="increment-button"
               data-input-counter-increment="counter-input"
-              className="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+              className={`flex-shrink-0 bg-gray-100 inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100  focus:outline-none ${eventOver ? 'pointer-events-none' : 'hover:bg-gray-200 focus:ring-2'}`}
               onClick={() => setGuests(guests + 1)}
+              disabled={eventOver}
             >
               <svg
-                className="w-2.5 h-2.5 text-gray-900 dark:text-white"
+                className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${eventOver ? 'opacity-50' : ''}`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
