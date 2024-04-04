@@ -32,7 +32,7 @@ export default function EmailForm({ currEmail }: { currEmail: string | undefined
   };
 
   return (
-    <form className="p-10 border border-gray-300 rounded-lg bg-gray-50" onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="text-xs mb-0.5"><span className="text-gray-400">Current:</span> {currEmail}</div>
       <input
         type="email"

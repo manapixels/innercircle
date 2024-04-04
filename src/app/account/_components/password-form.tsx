@@ -23,7 +23,7 @@ export default function PasswordForm() {
   };
 
   return (
-    <form className="p-10 border border-gray-300 rounded-lg bg-gray-50" onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <input
         type="password"
         id="password"
