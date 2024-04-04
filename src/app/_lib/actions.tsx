@@ -5,6 +5,9 @@ import { Tables } from './definitions';
 // import { dummyEvents } from '@/app/_lib/dummyData';
 
 export type Profile = Tables<'profiles'> & { email?: string };
+export type ProfileWithEventsHosted = Tables<'profiles'> & {
+  events: Tables<'events'>[]
+};
 export type EventType = Tables<'events'>;
 export type EventWithCreatorInfo = EventType & {
   created_by: Pick<Profile, 'id' | 'name' | 'avatar_url'> & { events_created?: number, guests_hosted?: number};
@@ -62,6 +65,25 @@ export const fetchUserProfile = async (userId) => {
   } catch (error) {
     console.log('error', error);
     return error;
+  }
+};
+
+export const fetchProfileWithHostedEvents = async (userId: string) => {
+  const supabase = createClient();
+  console.log(userId)
+  try {
+    const { data, error } = await supabase
+      .from('profiles_with_hosted_events')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (error) throw new Error('Error fetching profile with hosted events');
+
+    return data;
+  } catch (error) {
+    console.error('error', error);
+    return null; // Or handle the error as needed
   }
 };
 

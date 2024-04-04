@@ -219,6 +219,18 @@ begin
 end;
 $$ language plpgsql;
 
+CREATE VIEW profiles_with_hosted_events AS
+SELECT
+  p.id,
+  p.name,
+  p.avatar_url,
+  json_agg(e.*) AS events
+FROM public.profiles p
+LEFT JOIN public.events e ON p.id = e.created_by
+GROUP BY p.id;
+
+
+-- Create a view to list events with host data
 create view events_with_host_data as
 select
   e.id, e.name, e.slug, e.image_url, e.created_at, e.date_start, e.date_end, e.location_name, e.location_address, e.location_country, e.price, e.status, e.slots,

@@ -4,7 +4,7 @@ import { createClient } from '../_utils/supabase/server';
 import EmailForm from './_components/email-form';
 import PasswordForm from './_components/password-form';
 
-export default async function Profile() {
+export default async function AccountPage() {
 
   const supabase = createClient()
 

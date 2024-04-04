@@ -54,7 +54,7 @@ export default function EventListItem({
             zIndex={100}
             className="bg-slate-800 min-w-[220px]"
             delay={[100, 200]}
-            appendTo={document.body}
+            appendTo={document?.body || undefined}
             content={
               <Link href={`/profiles/${event?.created_by?.id}`} className="py-4 px-6 text-center hover:underline">
                 <Image

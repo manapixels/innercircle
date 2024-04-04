@@ -46,6 +46,13 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_profile_with_events_hosted"
+            referencedColumns: ["user_id"]
           }
         ]
       }
@@ -114,6 +121,13 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "user_profile_with_events_hosted"
+            referencedColumns: ["user_id"]
           }
         ]
       }
@@ -190,6 +204,13 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_profile_with_events_hosted"
+            referencedColumns: ["user_id"]
           }
         ]
       }
@@ -209,9 +230,29 @@ export interface Database {
           name: string | null
           price: number | null
           slots: number | null
+          slug: string | null
           status: Database["public"]["Enums"]["event_status"] | null
         }
         Relationships: []
+      }
+      user_profile_with_events_hosted: {
+        Row: {
+          avatar_url: string | null
+          birthmonth: number | null
+          birthyear: number | null
+          hosted_events: Json | null
+          name: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Functions: {
