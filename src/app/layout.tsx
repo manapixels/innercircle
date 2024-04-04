@@ -23,9 +23,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
           <UserProvider>
-            <Header />
-            <div className="px-6 py-8 max-w-6xl mx-auto">{children}</div>
-            <Footer />
+            <div className="flex flex-col min-h-screen w-full">
+              <Header />
+              <div className="flex-grow px-6 py-8 max-w-6xl w-full mx-auto">{children}</div>
+              <Footer />
+            </div>
             <div id="modal-portal"></div>
           </UserProvider>
       </body>

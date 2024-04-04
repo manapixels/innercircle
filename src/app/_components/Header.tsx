@@ -16,13 +16,13 @@ export default async function Header() {
   } = await supabase.auth.getUser()
 
   return (
-    <header className="max-w-6xl mx-auto">
+    <header className="max-w-6xl w-full mx-auto">
       <nav
-        className="flex items-center justify-between p-6"
+        className="grid grid-cols-3 items-center p-6"
         aria-label="Global"
       >
-        <div className="flex lg:flex gap-6 items-center">
-          <a href="/" className="-m-1.5 p-1.5">
+        <div className="justify-self-start">
+          <a href="/" className="-m-1.5 p-1.5 block">
             <Image
               className="relative"
               src="/logo.svg"
@@ -33,21 +33,20 @@ export default async function Header() {
             />
           </a>
         </div>
-        <div className="hidden lg:flex lg:gap-x-4 bg-gray-50 rounded-lg px-3 items-center text-sm">
-          <div className="flex">
-            <Link
-              href="/events"
-              className={`relative overflow-hidden px-5 py-2.5 text-center hover:bg-gray-100 rounded-md font-medium text-gray-600 ${pathname === '/events' ? 'bg-gray-200 font-semibold text-gray-800' : ' '}`}
-            >
-              Events
-              <div
-                className={`w-1 h-1 rounded-full ${pathname === '/events' ? 'bg-base-500' : 'bg-transparent'} absolute bottom-0 left-1/2 transform`}
-              />
-            </Link>
-          </div>
+        <div className="justify-self-center bg-gray-50 rounded-full text-sm">
+          <Link
+            href="/events"
+            className={`block relative overflow-hidden px-5 py-2.5 text-center hover:bg-gray-100 rounded-full font-medium text-gray-600 ${pathname === '/events' ? 'bg-gray-200 font-semibold text-gray-800' : ' '}`}
+          >
+            Events
+            <div
+              className={`w-1 h-1 rounded-full ${pathname === '/events' ? 'bg-base-500' : 'bg-transparent'} absolute bottom-0 left-1/2 transform`}
+            />
+          </Link>
         </div>
-        {user?.id ? <LoggedInUser user={user} /> : <AuthForm />}
-
+        <div className="justify-self-end">
+          {user?.id ? <LoggedInUser user={user} /> : <AuthForm />}
+        </div>
       </nav>
     </header>
   );

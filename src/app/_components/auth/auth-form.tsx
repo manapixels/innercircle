@@ -47,7 +47,7 @@ export default function AuthForm() {
     <button
       type="button"
       onClick={toggleModal}
-      className="text-white bg-black hover:bg-gray-900 focus:ring-4 focus:ring-base-200 font-medium rounded-lg text-md px-7 py-2.5 me-2 mb-2 dark:bg-base-600 dark:hover:bg-base-700 focus:outline-none dark:focus:ring-base-800"
+      className="text-white bg-black hover:bg-gray-900 focus:ring-4 focus:ring-base-200 font-medium rounded-full text-md px-7 py-2.5 me-2 mb-2 dark:bg-base-600 dark:hover:bg-base-700 focus:outline-none dark:focus:ring-base-800"
     >
       Log in <span aria-hidden="true">&rarr;</span>
     </button>

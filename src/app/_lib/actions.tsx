@@ -8,8 +8,8 @@ export type Profile = Tables<'profiles'> & { email?: string };
 export type ProfileWithEventsHosted = Tables<'profiles'> & {
   events: Tables<'events'>[]
 };
-export type EventType = Tables<'events'>;
-export type EventWithCreatorInfo = EventType & {
+export type Event = Tables<'events'>;
+export type EventWithCreatorInfo = Event & {
   created_by: Pick<Profile, 'id' | 'name' | 'avatar_url'> & { events_created?: number, guests_hosted?: number};
 };
 
@@ -78,6 +78,12 @@ export const fetchProfileWithHostedEvents = async (userId: string) => {
       .single();
 
     if (error) throw new Error('Error fetching profile with hosted events');
+
+    if (data && data.events) {
+      data.events.sort((a, b) => new Date(b.date_start).getTime() - new Date(a.date_start).getTime());
+    }
+
+    return data;
 
     return data;
   } catch (error) {
@@ -240,7 +246,7 @@ export const addEvent = async (
         },
       ])
       .select(`*`);
-    return data as EventType[];
+    return data as Event[];
   } catch (error) {
     console.log('error', error);
     return error;
