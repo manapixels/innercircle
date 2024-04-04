@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import {
+  Event,
   ProfileWithEventsHosted,
   fetchProfileWithHostedEvents,
 } from '@/app/_lib/actions';
@@ -13,12 +14,12 @@ export const metadata: Metadata = {
 export default async function ProfilePage({
   params,
 }: {
-  params: { id: string };
+  params: { slug: string };
 }) {
   const profile = (await fetchProfileWithHostedEvents(
-    params.id,
+    params.slug,
   )) as ProfileWithEventsHosted;
-  const events = profile?.events;
+  const events = profile?.events as Event[];
 
   return (
     <div className="flex w-full flex-col md:col-span-4">
@@ -34,7 +35,10 @@ export default async function ProfilePage({
       />
       <div className="text-center mb-8">
         <div className="italic text-gray-500">Hey there, I'm</div>
-      <div className="font-bold text-2xl">{profile?.name}</div>
+        <div className="font-bold text-2xl">{profile?.name}</div>
+        {profile?.user_roles?.map((role, i) => {
+          return <div key={i}>{role}</div>;
+        })}
       </div>
 
       <dl className="grid max-w-screen-xl grid-cols-2 gap-8 py-2 px-4 mx-auto mb-8">

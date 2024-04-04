@@ -1,4 +1,4 @@
-create type public.app_role as enum ('admin', 'participant');
+create type public.app_role as enum ('admin', 'host', 'participant');
 create type public.app_permission as enum ('events.create', 'events.delete');
 create type public.event_status as enum (
   'draft',
@@ -253,13 +253,15 @@ $$ language plpgsql;
 CREATE VIEW profiles_with_hosted_events AS
 SELECT
   p.id,
+  p.username,
   p.name,
   p.avatar_url,
-  json_agg(e.*) AS events
+  array_agg(DISTINCT e.*) AS events,
+  array_agg(DISTINCT r.role) AS user_roles
 FROM public.profiles p
 LEFT JOIN public.events e ON p.id = e.created_by
+LEFT JOIN public.user_roles r ON p.id = r.user_id
 GROUP BY p.id;
-
 
 -- Create a view to list events with host data
 create view events_with_host_data as
@@ -268,6 +270,7 @@ select
   json_build_object(
     'id', p.id,
     'name', p.name,
+    'username', p.username,
     'avatar_url', p.avatar_url,
     'events_created', ec.events_created,
     'guests_hosted', gh.guests_hosted

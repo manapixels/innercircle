@@ -34,6 +34,10 @@ BEGIN
       now(),
       now()
     );
+
+    -- Assign 'participant' role to each user
+    INSERT INTO public.user_roles (user_id, role) VALUES (user_id, 'participant');
+  
   END LOOP;
 
   user_id := uuid_generate_v4();
@@ -64,6 +68,10 @@ BEGIN
       now(),
       now()
     );
+
+  -- Assign 'host' roles to Shirley
+  INSERT INTO public.user_roles (user_id, role) VALUES (user_id, 'host');
+
 
   -- Insert events
   INSERT INTO events (

@@ -51,8 +51,8 @@ export interface Database {
             foreignKeyName: "event_participants_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "user_profile_with_events_hosted"
-            referencedColumns: ["user_id"]
+            referencedRelation: "profiles_with_hosted_events"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -126,8 +126,8 @@ export interface Database {
             foreignKeyName: "events_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
-            referencedRelation: "user_profile_with_events_hosted"
-            referencedColumns: ["user_id"]
+            referencedRelation: "profiles_with_hosted_events"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -137,21 +137,24 @@ export interface Database {
           birthmonth: number | null
           birthyear: number | null
           id: string
-          name: string | null
+          name: string
+          username: string
         }
         Insert: {
           avatar_url?: string | null
           birthmonth?: number | null
           birthyear?: number | null
           id: string
-          name?: string | null
+          name: string
+          username: string
         }
         Update: {
           avatar_url?: string | null
           birthmonth?: number | null
           birthyear?: number | null
           id?: string
-          name?: string | null
+          name?: string
+          username?: string
         }
         Relationships: [
           {
@@ -209,8 +212,8 @@ export interface Database {
             foreignKeyName: "user_roles_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "user_profile_with_events_hosted"
-            referencedColumns: ["user_id"]
+            referencedRelation: "profiles_with_hosted_events"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -235,19 +238,19 @@ export interface Database {
         }
         Relationships: []
       }
-      user_profile_with_events_hosted: {
+      profiles_with_hosted_events: {
         Row: {
           avatar_url: string | null
-          birthmonth: number | null
-          birthyear: number | null
-          hosted_events: Json | null
+          events: unknown[] | null
+          id: string | null
           name: string | null
-          user_id: string | null
+          user_roles: Database["public"]["Enums"]["app_role"][] | null
+          username: string | null
         }
         Relationships: [
           {
             foreignKeyName: "profiles_id_fkey"
-            columns: ["user_id"]
+            columns: ["id"]
             isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
@@ -292,7 +295,7 @@ export interface Database {
     }
     Enums: {
       app_permission: "events.create" | "events.delete"
-      app_role: "admin" | "participant"
+      app_role: "admin" | "host" | "participant"
       currencies: "sgd"
       event_categories: "speed-dating" | "retreats"
       event_status:

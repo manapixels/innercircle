@@ -5,12 +5,10 @@ import { Tables } from './definitions';
 // import { dummyEvents } from '@/app/_lib/dummyData';
 
 export type Profile = Tables<'profiles'> & { email?: string };
-export type ProfileWithEventsHosted = Tables<'profiles'> & {
-  events: Tables<'events'>[]
-};
+export type ProfileWithEventsHosted = Tables<'profiles_with_hosted_events'>;
 export type Event = Tables<'events'>;
 export type EventWithCreatorInfo = Event & {
-  created_by: Pick<Profile, 'id' | 'name' | 'avatar_url'> & { events_created?: number, guests_hosted?: number};
+  created_by: Tables<'profiles'> & { events_created?: number, guests_hosted?: number};
 };
 
 export const signUpNewUser = async (email, password) => {
@@ -68,13 +66,13 @@ export const fetchUserProfile = async (userId) => {
   }
 };
 
-export const fetchProfileWithHostedEvents = async (userId: string) => {
+export const fetchProfileWithHostedEvents = async (username: string) => {
   const supabase = createClient();
   try {
     const { data, error } = await supabase
       .from('profiles_with_hosted_events')
       .select('*')
-      .eq('id', userId)
+      .eq('username', username)
       .single();
 
     if (error) throw new Error('Error fetching profile with hosted events');
@@ -82,8 +80,6 @@ export const fetchProfileWithHostedEvents = async (userId: string) => {
     if (data && data.events) {
       data.events.sort((a, b) => new Date(b.date_start).getTime() - new Date(a.date_start).getTime());
     }
-
-    return data;
 
     return data;
   } catch (error) {

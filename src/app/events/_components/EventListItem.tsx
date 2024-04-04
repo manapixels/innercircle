@@ -11,6 +11,7 @@ export default function EventListItem({
 }: {
   event: EventWithCreatorInfo;
 }) {
+
   return (
     <Link
       href={`/events/${event.slug}`}
@@ -57,7 +58,7 @@ export default function EventListItem({
             appendTo={() => document.body}
             content={
               <Link
-                href={`/profiles/${event?.created_by?.id}`}
+                href={`/profiles/${event?.created_by?.username}`}
                 className="block p-4"
               >
                 <div className="flex flex-row gap-3 items-center mb-5">

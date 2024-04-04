@@ -15,7 +15,7 @@ export default function EventListItemInProfile({
     <Link
       href={`/events/${event.slug}`}
       key={event.slug}
-      className={`p-3 rounded-lg hover:bg-gray-100 ${hasDatePassed(event.date_end) && 'grayscale opacity-80'} hover:grayscale-0 hover:opacity-100`}
+      className="p-3 rounded-lg hover:bg-gray-100"
     >
       <div className="w-full relative aspect-square">
         {event?.image_url ? (
