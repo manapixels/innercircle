@@ -7,7 +7,7 @@ import { Tables } from './definitions';
 export type Profile = Tables<'profiles'> & { email?: string };
 export type EventType = Tables<'events'>;
 export type EventWithCreatorInfo = EventType & {
-  created_by: Pick<Profile, 'name' | 'avatar_url'> & { events_created?: number, guests_hosted?: number};
+  created_by: Pick<Profile, 'id' | 'name' | 'avatar_url'> & { events_created?: number, guests_hosted?: number};
 };
 
 export const signUpNewUser = async (email, password) => {

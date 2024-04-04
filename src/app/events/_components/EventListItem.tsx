@@ -50,9 +50,13 @@ export default function EventListItem({
           <div className="rounded-full absolute bottom-9 left-9 bg-base-400 w-6 h-6"></div>
 
           <Tippy
-            className="bg-slate-800"
+            interactive={true}
+            zIndex={100}
+            className="bg-slate-800 min-w-[220px]"
+            delay={[100, 200]}
+            appendTo={document.body}
             content={
-              <div className="py-4 px-6 text-center">
+              <Link href={`/profiles/${event?.created_by?.id}`} className="py-4 px-6 text-center hover:underline">
                 <Image
                   src={
                     event?.created_by?.avatar_url
@@ -86,7 +90,7 @@ export default function EventListItem({
                     </dd>
                   </div>
                 </dl>
-              </div>
+              </Link>
             }
           >
             <Image
