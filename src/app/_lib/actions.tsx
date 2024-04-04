@@ -70,7 +70,6 @@ export const fetchUserProfile = async (userId) => {
 
 export const fetchProfileWithHostedEvents = async (userId: string) => {
   const supabase = createClient();
-  console.log(userId)
   try {
     const { data, error } = await supabase
       .from('profiles_with_hosted_events')

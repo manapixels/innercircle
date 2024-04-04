@@ -52,41 +52,47 @@ export default function EventListItem({
           <Tippy
             interactive={true}
             zIndex={100}
-            className="bg-slate-800 min-w-[220px]"
+            className="bg-slate-800"
             delay={[100, 200]}
-            appendTo={document?.body || undefined}
+            appendTo={() => document.body}
             content={
-              <Link href={`/profiles/${event?.created_by?.id}`} className="py-4 px-6 text-center hover:underline">
-                <Image
-                  src={
-                    event?.created_by?.avatar_url
-                      ? event.created_by.avatar_url
-                      : '/users/shirley-chen.png'
-                  }
-                  alt=""
-                  width={60}
-                  height={60}
-                  className="rounded-full mx-auto mb-1"
-                />
-                <div className="font-medium">{event?.created_by?.name}</div>
-                <div className="text-xs text-gray-400 mb-3">Your host</div>
+              <Link
+                href={`/profiles/${event?.created_by?.id}`}
+                className="block p-4"
+              >
+                <div className="flex flex-row gap-3 items-center mb-5">
+                  <Image
+                    src={
+                      event?.created_by?.avatar_url
+                        ? event.created_by.avatar_url
+                        : '/users/shirley-chen.png'
+                    }
+                    alt=""
+                    width={60}
+                    height={60}
+                    className="rounded-full"
+                  />
+                  <div>
+                    <div className="font-medium text-[1rem]">{event?.created_by?.name}</div>
+                    <div className="text-xs text-gray-400">Your host</div>
+                  </div>
+                </div>
 
-                <div className="text-xs text-gray-300">Hosted</div>
-                <dl className="grid max-w-screen-xl grid-cols-2 gap-8 py-2 px-4 mx-auto">
-                  <div className="flex flex-col items-center justify-center">
-                    <dt className="mb-2 text-xl font-extrabold">
+                <dl className="flex flex-row gap-3">
+                  <div className="">
+                    <dt className="text-md font-extrabold text-slate-300">
                       {event?.created_by?.events_created}
                     </dt>
-                    <dd className="text-gray-500 dark:text-gray-400 text-sm">
-                      Events
+                    <dd className="text-slate-500 dark:text-gray-400 text-xs">
+                      Events hosted
                     </dd>
                   </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <dt className="mb-2 text-xl font-extrabold">
+                  <div className="">
+                    <dt className="text-md font-extrabold text-slate-300">
                       {event?.created_by?.guests_hosted}
                     </dt>
-                    <dd className="text-gray-500 dark:text-gray-400 text-sm">
-                      Guests
+                    <dd className="text-slate-500 dark:text-gray-400 text-xs">
+                      Guests Hosted
                     </dd>
                   </div>
                 </dl>
