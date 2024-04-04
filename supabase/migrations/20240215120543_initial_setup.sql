@@ -19,13 +19,16 @@ create type public.currencies as enum (
 -- ........
 create table public.profiles (
   id                uuid not null primary key references auth.users(id) on delete cascade,
-  name              text,
+  name              text not null,
   avatar_url        text,
   birthmonth        integer,
-  birthyear         integer
+  birthyear         integer,
+  username          text not null unique
 );
 comment on table public.profiles is 'Profile data for each user.';
 comment on column public.profiles.id is 'References the internal Supabase Auth user.';
+comment on column public.profiles.username is 'Unique slug based on the user name.';
+
 -- ............
 -- USER ROLES
 -- ............
@@ -109,7 +112,7 @@ begin
 end;
 $$ language plpgsql security definer;
 
--- Automatically reates a user entry when a new user signs up via Supabase Auth.
+-- Automatically creates a user entry when a new user signs up via Supabase Auth.
 create or replace function public.handle_new_user() returns trigger as $$ 
 begin
   insert into public.profiles (id, name, avatar_url, birthmonth, birthyear)
@@ -123,6 +126,34 @@ begin
   return new;
 end;
 $$ language plpgsql security definer;
+
+-- Function to generate a unique username slug based on the user's name
+create or replace function public.set_username_slug() returns trigger as $$
+declare
+    base_slug text;
+    new_slug text;
+    slug_count int;
+begin
+    new_slug := slugify(NEW.name);
+    slug_count := 1;
+
+    -- Check if the username slug already exists and append a number to make it unique
+    loop
+        select count(*) into slug_count from public.profiles where username = new_slug;
+        exit when slug_count = 0;
+        new_slug := new_slug || '-' || slug_count;
+        slug_count := slug_count + 1;
+    end loop;
+
+    NEW.username := new_slug;
+    return NEW;
+end;
+$$ language plpgsql;
+
+-- Create a trigger to automatically set the username slug before inserting or updating the user's name
+create trigger set_username_slug_before_insert_or_update
+before insert or update of name on public.profiles
+for each row execute function public.set_username_slug();
 
 create or replace trigger on_auth_user_created
   after insert on auth.users for each row 
