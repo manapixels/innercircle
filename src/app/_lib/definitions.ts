@@ -241,8 +241,9 @@ export interface Database {
       profiles_with_hosted_events: {
         Row: {
           avatar_url: string | null
-          events: unknown[] | null
+          hosted_events: unknown[] | null
           id: string | null
+          joined_events_count: number | null
           name: string | null
           user_roles: Database["public"]["Enums"]["app_role"][] | null
           username: string | null

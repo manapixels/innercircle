@@ -77,8 +77,8 @@ export const fetchProfileWithHostedEvents = async (username: string) => {
 
     if (error) throw new Error('Error fetching profile with hosted events');
 
-    if (data && data.events) {
-      data.events.sort((a, b) => new Date(b.date_start).getTime() - new Date(a.date_start).getTime());
+    if (data && data.hosted_events) {
+      data.hosted_events.sort((a, b) => new Date(b.date_start).getTime() - new Date(a.date_start).getTime());
     }
 
     return data;

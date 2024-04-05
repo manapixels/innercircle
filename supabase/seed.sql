@@ -217,16 +217,27 @@ DO $$
 DECLARE
   event_record RECORD;
   user_ids uuid[];
+  shirley_id uuid;
   i integer;
+  random_decision integer;
 BEGIN
+  -- Fetch Shirley's user ID to exclude her from the event sign-up process
+  SELECT id INTO shirley_id FROM auth.users WHERE email = 'shirley@innercircle.fam';
+
   -- Fetch all event IDs and their slots
   FOR event_record IN SELECT id, slots FROM public.events LOOP
     -- Fetch user IDs from the auth.users table, limited by the number of slots for the event
-    SELECT array_agg(id) INTO user_ids FROM auth.users LIMIT event_record.slots;
+    SELECT array_agg(id) INTO user_ids FROM auth.users WHERE id <> shirley_id LIMIT event_record.slots;
 
-    -- Loop through the user IDs and sign up each user for the current event
+    -- Loop through the user IDs and randomly decide whether to sign up each user for the current event
     FOR i IN 1..array_length(user_ids, 1) LOOP
-      PERFORM public.sign_up_for_event(event_record.id, user_ids[i], 1); -- Assuming each user buys 1 ticket
+      -- Generate a random number (0 or 1)
+      random_decision := floor(random() * 2)::int;
+      
+      -- If random_decision is 1, then sign up the user for the event
+      IF random_decision = 1 THEN
+        PERFORM public.sign_up_for_event(event_record.id, user_ids[i], 1); -- Assuming each user buys 1 ticket
+      END IF;
     END LOOP;
   END LOOP;
 END $$;
