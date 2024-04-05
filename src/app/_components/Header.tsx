@@ -16,7 +16,7 @@ export default async function Header() {
   } = await supabase.auth.getUser()
 
   return (
-    <header className="max-w-6xl w-full mx-auto">
+    <header className="max-w-6xl w-full mx-auto bg-opacity-50 bg-white">
       <nav
         className="grid grid-cols-3 items-center p-6"
         aria-label="Global"

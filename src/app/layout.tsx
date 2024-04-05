@@ -21,11 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${inter.className} antialiased overflow-clip`}>
           <UserProvider>
             <div className="flex flex-col min-h-screen w-full">
               <Header />
-              <div className="flex-grow px-6 py-8 max-w-6xl w-full mx-auto">{children}</div>
+              <div className="flex-grow px-6 py-8 max-w-6xl w-full mx-auto relative">{children}</div>
               <Footer />
             </div>
             <div id="modal-portal"></div>
