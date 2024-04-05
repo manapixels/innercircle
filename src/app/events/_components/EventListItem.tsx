@@ -30,7 +30,7 @@ export default function EventListItem({
         ) : (
           <div className="bg-gray-200 rounded-lg w-full h-full flex justify-center items-center">
             <Image
-              src="./logo.svg"
+              src="/logo.svg"
               alt="Inner Circle"
               width="100"
               height="100"
