@@ -36,9 +36,11 @@ export default async function ProfilePage({
       <div className="text-center mb-8">
         <div className="italic text-gray-500">Hey there, I'm</div>
         <div className="font-bold text-2xl">{profile?.name}</div>
+        <div>
         {profile?.user_roles?.map((role, i) => {
-          return <div key={i}>{role}</div>;
+          return <div key={i} className="inline-block bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 capitalize">{role}</div>;
         })}
+      </div>
       </div>
 
       <dl className="grid max-w-screen-xl grid-cols-2 gap-8 py-2 px-4 mx-auto mb-8">
