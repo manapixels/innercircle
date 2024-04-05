@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -65,25 +66,42 @@ export default async function HomePage() {
         </div>
       </div>
 
-    <div className="absolute inset-0 flex flex-wrap justify-center items-center -z-[1]">
-      {Array.from({ length: 25 }).map((_, index) => {
-        const widthHeight = Math.random() * 0.2 + 0.1;
-        return (
-        <div
-          key={index}
-          className="bg-base-300 rounded-full aspect-square"
-          style={{
-            width: `${widthHeight}rem`, // Random width between 2rem and 7rem
-            height: `${widthHeight}rem`, // Random height between 2rem and 7rem
-            position: 'absolute',
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
-            transform: `translate(-50%, -50%)`,
-          }}
-        ></div>
-        )
-      })}
-    </div>
+      <div className="absolute inset-0 flex flex-wrap justify-center items-center -z-[1]">
+        {Array.from({ length: 25 }).map((_, index) => {
+          const widthHeight = Math.random() * 0.2 + 0.1;
+          return (
+            <div
+              key={index}
+              className="bg-base-300 rounded-full aspect-square"
+              style={{
+                width: `${widthHeight}rem`, // Random width between 2rem and 7rem
+                height: `${widthHeight}rem`, // Random height between 2rem and 7rem
+                position: 'absolute',
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                transform: `translate(-50%, -50%)`,
+              }}
+            ></div>
+          );
+        })}
+      </div>
+
+      <div className="absolute inset-0 flex flex-wrap justify-center items-center -z-[1]">
+        <Image
+          src="/events/background-1.jpg"
+          alt="background"
+          className="w-1/4 transform translate-y-2/4 -translate-x-[95%] rounded-3xl aspect-square"
+          width={300}
+          height={300}
+        />
+        <Image
+          src="/events/background-2.jpg"
+          alt="background"
+          className="w-1/4 transform -translate-y-2/4 translate-x-[85%] rounded-3xl aspect-square"
+          width={300}
+          height={300}
+        />
+      </div>
     </>
   );
 }
