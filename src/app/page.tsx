@@ -66,7 +66,7 @@ export default async function HomePage() {
       </div>
 
     <div className="absolute inset-0 flex flex-wrap justify-center items-center -z-[1]">
-      {Array.from({ length: 50 }).map((_, index) => {
+      {Array.from({ length: 25 }).map((_, index) => {
         const widthHeight = Math.random() * 0.2 + 0.1;
         return (
         <div
