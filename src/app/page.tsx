@@ -90,14 +90,14 @@ export default async function HomePage() {
         <Image
           src="/events/background-1.jpg"
           alt="background"
-          className="w-1/4 transform translate-y-2/4 -translate-x-[95%] rounded-3xl aspect-square"
+          className="w-1/6 transform translate-y-3/4 -translate-x-[140%] rounded-3xl aspect-square"
           width={300}
           height={300}
         />
         <Image
           src="/events/background-2.jpg"
           alt="background"
-          className="w-1/4 transform -translate-y-2/4 translate-x-[85%] rounded-3xl aspect-square"
+          className="w-3/12 transform -translate-y-2/4 translate-x-[120%] rounded-3xl aspect-square"
           width={300}
           height={300}
         />
