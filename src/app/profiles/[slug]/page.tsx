@@ -29,7 +29,6 @@ export default async function ProfilePage({
     gridCols += 1;
     isParticipant = true;
   }
-  // const joined_events = profile?.joined_events as Event[];
 
   return (
     <div className="flex w-full flex-col md:col-span-4">
@@ -63,7 +62,7 @@ export default async function ProfilePage({
         </div>
         <div className="flex flex-col items-center justify-center">
           <dt className="mb-2 text-xl font-extrabold">
-            {hostedEvents?.length}
+            {profile?.guests_hosted}
           </dt>
           <dd className="text-gray-500 dark:text-gray-400 text-sm">Guests hosted</dd>
         </div>

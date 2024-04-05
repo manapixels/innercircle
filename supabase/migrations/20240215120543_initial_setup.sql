@@ -250,7 +250,7 @@ begin
 end;
 $$ language plpgsql;
 
--- Create a view of profiles with their hosted events and roles.
+-- Create a view of profiles with their hosted events, roles, and total guests hosted.
 CREATE VIEW profiles_with_hosted_events AS
 SELECT
   p.id,
@@ -259,11 +259,12 @@ SELECT
   p.avatar_url,
   array_agg(DISTINCT e.*) AS hosted_events,
   array_agg(DISTINCT r.role) AS user_roles,
-  count(DISTINCT ep.event_id) AS joined_events_count
+  count(DISTINCT ep.event_id) AS joined_events_count,
+  sum(ep.tickets_bought) AS guests_hosted
 FROM public.profiles p
 LEFT JOIN public.events e ON p.id = e.created_by
 LEFT JOIN public.user_roles r ON p.id = r.user_id
-LEFT JOIN public.event_participants ep ON p.id = ep.user_id
+LEFT JOIN public.event_participants ep ON e.id = ep.event_id
 GROUP BY p.id;
 
 -- Create a view to list events with host data
