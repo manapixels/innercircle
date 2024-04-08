@@ -120,12 +120,31 @@ export default function CreateEventForm() {
         </div>
         <div className="sm:col-span-2">
           <label
+            htmlFor="description"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Description <span className="text-red-500">*</span>
+          </label>
+          <textarea
+            {...register('description', {
+              required: 'Please enter a description for the event.',
+            })}
+            name="description"
+            id="description"
+            rows={3}
+            className={`mt-1 block w-full border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+          ></textarea>
+          {errors.description && (
+            <span className="text-red-500">{errors.description.message}</span>
+          )}
+        </div>
+        <div className="sm:col-span-2">
+          <label
             htmlFor="autocomplete"
             className="block text-sm font-medium text-gray-700"
           >
             Location <span className="text-red-500">*</span>
           </label>
-         
 
           <div className="flex flex-row gap-4">
             <div className="relative flex-grow">
@@ -231,125 +250,110 @@ export default function CreateEventForm() {
         </div>
 
         <div className="sm:col-span-2">
-            <div className="flex justify-between">
-          <label
-            className="block text-sm font-medium text-gray-700"
-          >
-            Date <span className="text-red-500">*</span>
-          </label>
-          <select
-            {...register('time_zone', {
-              required: 'Please select the time zone of the event.',
-            })}
-            name="time_zone"
-            id="time_zone"
-            defaultValue={guessedTimeZone}
-            required
-            className={`block border ${errors.time_zone ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-1 px-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs bg-gray-50`}
-          >
-            {timeZones.map((zone) => (
-              <option key={zone} value={zone}>
-                {zone}
-              </option>
-            ))}
-          </select>
+          <div className="flex justify-between">
+            <label className="block text-sm font-medium text-gray-700">
+              Date <span className="text-red-500">*</span>
+            </label>
+            <select
+              {...register('time_zone', {
+                required: 'Please select the time zone of the event.',
+              })}
+              name="time_zone"
+              id="time_zone"
+              defaultValue={guessedTimeZone}
+              required
+              className={`block border ${errors.time_zone ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-1 px-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs bg-gray-50`}
+            >
+              {timeZones.map((zone) => (
+                <option key={zone} value={zone}>
+                  {zone}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-4">
             <div>
-          <input
-            {...register('date_start', {
-              required: 'Please select the date of the event.',
-            })}
-            type="date"
-            name="date_start"
-            id="date_start"
-            required
-            className={`mt-1 block w-full border ${errors.date_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-          />
-          {errors.date_start && (
-            <span className="text-red-500">{errors.date_start.message}</span>
-          )}
-          </div>
-          <div>
-            <input
-              {...register('time_start', {
-                required: 'Please enter the start time of the event.',
-              })}
-              type="time"
-              name="time_start"
-              id="time_start"
-              required
-              className={`mt-1 block w-full border ${errors.time_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-            />
-            {errors.time_start && (
-              <span className="text-red-500">{errors.time_start.message}</span>
-            )}
-          </div>
-          <div className="text-center self-center">–</div>
-          <div>
-            <input
-              {...register('time_end', {
-                required: 'Please enter the end time of the event.',
-              })}
-              type="time"
-              name="time_end"
-              id="time_end"
-              required
-              className={`mt-1 block w-full border ${errors.time_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-            />
-            {errors.time_end && (
-              <span className="text-red-500">{errors.time_end.message}</span>
-            )}
-          </div>
-          <div>
-            <input
-              {...register('date_end', {
-                required: 'Please select the end date of the event.',
-                validate: (value) =>
-                  new Date(value) >= new Date(watchStartDate) ||
-                  'End date must be after start date.',
-              })}
-              type="date"
-              name="date_end"
-              id="date_end"
-              required
-              className={`mt-1 block w-full border ${errors.date_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-            />
-            {errors.date_end && (
-              <span className="text-red-500">{errors.date_end.message}</span>
-            )}
-          </div>
+              <input
+                {...register('date_start', {
+                  required: 'Please select the date of the event.',
+                })}
+                type="date"
+                name="date_start"
+                id="date_start"
+                required
+                className={`mt-1 block w-full border ${errors.date_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              />
+              {errors.date_start && (
+                <span className="text-red-500">
+                  {errors.date_start.message}
+                </span>
+              )}
+            </div>
+            <div>
+              <input
+                {...register('time_start', {
+                  required: 'Please enter the start time of the event.',
+                })}
+                type="time"
+                name="time_start"
+                id="time_start"
+                required
+                className={`mt-1 block w-full border ${errors.time_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              />
+              {errors.time_start && (
+                <span className="text-red-500">
+                  {errors.time_start.message}
+                </span>
+              )}
+            </div>
+            <div className="text-center self-center">–</div>
+            <div>
+              <input
+                {...register('time_end', {
+                  required: 'Please enter the end time of the event.',
+                })}
+                type="time"
+                name="time_end"
+                id="time_end"
+                required
+                className={`mt-1 block w-full border ${errors.time_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              />
+              {errors.time_end && (
+                <span className="text-red-500">{errors.time_end.message}</span>
+              )}
+            </div>
+            <div>
+              <input
+                {...register('date_end', {
+                  required: 'Please select the end date of the event.',
+                  validate: (value) =>
+                    new Date(value) >= new Date(watchStartDate) ||
+                    'End date must be after start date.',
+                })}
+                type="date"
+                name="date_end"
+                id="date_end"
+                required
+                className={`mt-1 block w-full border ${errors.date_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              />
+              {errors.date_end && (
+                <span className="text-red-500">{errors.date_end.message}</span>
+              )}
+            </div>
           </div>
         </div>
-        
-        <div>
-          <label
-            htmlFor="description"
+
+<div>
+        <label
+            htmlFor="price"
             className="block text-sm font-medium text-gray-700"
           >
-            Description
+            Price <span className="text-red-500">*</span>
           </label>
-          <textarea
-            {...register('description', {
-              required: 'Please enter a description for the event.',
-            })}
-            name="description"
-            id="description"
-            rows={3}
-            className={`mt-1 block w-full border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-          ></textarea>
-          {errors.description && (
-            <span className="text-red-500">{errors.description.message}</span>
-          )}
-        </div>
         <div className="grid grid-cols-3 gap-4">
-          <label
-            htmlFor="price"
-            className="col-span-2 block text-sm font-medium text-gray-700"
-          >
-            Price (Currency)
-          </label>
+            <div className="col-span-2">
+         
           <input
             {...register('price', {
               required: 'Please enter the price of the event.',
@@ -358,11 +362,13 @@ export default function CreateEventForm() {
             name="price"
             id="price"
             required
-            className="col-span-2 mt-1 block w-full border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
+            className="mt-1 block w-full border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
           />
           {errors.price && (
             <span className="text-red-500">{errors.price.message}</span>
           )}
+          </div>
+          <div>
           <select
             {...register('price_currency', {
               required: 'Please select the currency of the price.',
@@ -379,13 +385,15 @@ export default function CreateEventForm() {
               {errors.price_currency.message}
             </span>
           )}
+          </div>
+        </div>
         </div>
         <div>
           <label
             htmlFor="slots"
             className="block text-sm font-medium text-gray-700"
           >
-            Slots Available
+            Slots Available <span className="text-red-500">*</span>
           </label>
           <input
             {...register('slots', {
@@ -401,15 +409,17 @@ export default function CreateEventForm() {
             <span className="text-red-500">{errors.slots.message}</span>
           )}
         </div>
-        <div>
+      </div>
+      <div className="bg-white bg-opacity-75 border-t border-gray-400 fixed bottom-0 left-0 w-full z-20">
+        <div className="max-w-2xl mx-auto py-4 px-4 text-right">
           <button
             type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="bg-base-600 text-white px-12 py-3 rounded-lg"
           >
             Create Event
           </button>
+          </div>
         </div>
-      </div>
     </form>
   );
 }
