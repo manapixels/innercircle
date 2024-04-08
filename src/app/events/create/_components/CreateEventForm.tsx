@@ -59,7 +59,7 @@ export default function CreateEventForm() {
             htmlFor="name"
             className="block text-sm font-medium text-gray-700"
           >
-            Event Name
+            Event Name <span className="text-red-500">*</span>
           </label>
           <input
             {...register('name', {
@@ -79,7 +79,7 @@ export default function CreateEventForm() {
             htmlFor="location_country"
             className="block text-sm font-medium text-gray-700"
           >
-            Category
+            Category <span className="text-red-500">*</span>
           </label>
           <select
             {...register('category', {
@@ -103,7 +103,7 @@ export default function CreateEventForm() {
             htmlFor="autocomplete"
             className="block text-sm font-medium text-gray-700"
           >
-            Location
+            Location <span className="text-red-500">*</span>
           </label>
 
         <div className="relative">
@@ -134,7 +134,7 @@ export default function CreateEventForm() {
             htmlFor="location_name"
             className="block text-sm font-medium text-gray-700"
           >
-            Location Name
+            Location Name <span className="text-red-500">*</span>
           </label>
           <input
             {...register('location_name', {
@@ -155,7 +155,7 @@ export default function CreateEventForm() {
             htmlFor="location_address"
             className="block text-sm font-medium text-gray-700"
           >
-            Location Address
+            Location Address <span className="text-red-500">*</span>
           </label>
           <input
             {...register('location_address', {
@@ -178,7 +178,7 @@ export default function CreateEventForm() {
             htmlFor="location_country"
             className="block text-sm font-medium text-gray-700"
           >
-            Location Country
+            Location Country <span className="text-red-500">*</span>
           </label>
           <select
             {...register('location_country', {
@@ -202,7 +202,7 @@ export default function CreateEventForm() {
             htmlFor="date"
             className="block text-sm font-medium text-gray-700"
           >
-            Date
+            Date <span className="text-red-500">*</span>
           </label>
           <input
             {...register('date', {
@@ -224,7 +224,7 @@ export default function CreateEventForm() {
               htmlFor="time_start"
               className="block text-sm font-medium text-gray-700"
             >
-              Start Time
+              Start Time <span className="text-red-500">*</span>
             </label>
             <input
               {...register('time_start', {
@@ -245,7 +245,7 @@ export default function CreateEventForm() {
               htmlFor="time_end"
               className="block text-sm font-medium text-gray-700"
             >
-              End Time
+              End Time <span className="text-red-500">*</span>
             </label>
             <input
               {...register('time_end', {
@@ -281,7 +281,7 @@ export default function CreateEventForm() {
             htmlFor="time_zone"
             className="block text-sm font-medium text-gray-700"
           >
-            Time zone
+            Time zone <span className="text-red-500">*</span>
           </label>
           <select
             {...register('time_zone', {

@@ -55,11 +55,14 @@ export function hasDatePassed(inputDate: string | Date): boolean {
 }
 
 export const getTimeZonesWithOffset = () => {
-    return moment.tz.names().map((zone) => {
-        const offset = moment.tz(zone).format('Z'); // Gets the offset (e.g., "+08:00")
-        const offsetFormatted = offset.includes('-') ? offset : `+${offset}`; // Ensure the "+" sign is included
-        return `${zone} (GMT${offsetFormatted})`; // Format the string to include the offset
+    const offsets = moment.tz.names().map((zone) => moment.tz(zone).format('Z')); // Gets the offsets (e.g., "+08:00")
+    const uniqueOffsets = [...new Set(offsets)]; // Remove duplicates
+    const sortedOffsets = uniqueOffsets.sort((a, b) => {
+        const offsetA = parseInt(a.replace(':', ''), 10);
+        const offsetB = parseInt(b.replace(':', ''), 10);
+        return offsetA - offsetB;
     });
+    return sortedOffsets.map(offset => `GMT${offset}`); // Sort logically from GMT-12:00 to GMT+12:00 and format
 };
 
 export const getGuessedUserTimeZone = () => {
