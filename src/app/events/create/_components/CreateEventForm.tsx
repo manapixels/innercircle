@@ -10,6 +10,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 
 type Inputs = {
   name: string;
+  category: string;
   location_name: string;
   location_address: string;
   location_country: string;
@@ -75,17 +76,42 @@ export default function CreateEventForm() {
         </div>
         <div>
           <label
+            htmlFor="location_country"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Category
+          </label>
+          <select
+            {...register('category', {
+              required: 'Please select the category of the event.',
+            })}
+            name="category"
+            id="category"
+            defaultValue="Singapore"
+            className={`mt-1 block w-full border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+          >
+            <option>Speed Dating</option>
+          </select>
+          {errors.category && (
+            <span className="text-red-500">
+              {errors.category.message}
+            </span>
+          )}
+        </div>
+        <div className="sm:col-span-2">
+          <label
             htmlFor="autocomplete"
             className="block text-sm font-medium text-gray-700"
           >
-            Location Search
+            Location
           </label>
 
+        <div className="relative">
+          {/* Fields available: https://developers.google.com/maps/documentation/javascript/place-data-fields */}
           <GooglePlacesAutocomplete
-            className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+            className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pl-8 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
             apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
             onPlaceSelected={handlePlaceSelected}
-            on
             options={{
               types: ['establishment'],
               fields: [
@@ -93,10 +119,15 @@ export default function CreateEventForm() {
                 'formatted_address',
                 'address_components',
                 'url',
+                'website'
               ],
               componentRestrictions: { country: 'SG' },
             }}
           />
+          <div className="absolute top-0 left-0 p-2">
+            <svg width="20px" height="20px" viewBox="0 0 24 24" strokeWidth="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#434a59"><path d="M17 17L21 21" stroke="#434a59" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z" stroke="#434a59" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+          </div>
+        </div>
         </div>
         <div>
           <label
