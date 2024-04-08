@@ -344,49 +344,48 @@ export default function CreateEventForm() {
           </div>
         </div>
 
-<div>
-        <label
+        <div>
+          <label
             htmlFor="price"
             className="block text-sm font-medium text-gray-700"
           >
             Price <span className="text-red-500">*</span>
           </label>
-        <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="col-span-2">
-         
-          <input
-            {...register('price', {
-              required: 'Please enter the price of the event.',
-            })}
-            type="number"
-            name="price"
-            id="price"
-            required
-            className="mt-1 block w-full border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
-          />
-          {errors.price && (
-            <span className="text-red-500">{errors.price.message}</span>
-          )}
+              <input
+                {...register('price', {
+                  required: 'Please enter the price of the event.',
+                })}
+                type="number"
+                name="price"
+                id="price"
+                required
+                className="mt-1 block w-full border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
+              />
+              {errors.price && (
+                <span className="text-red-500">{errors.price.message}</span>
+              )}
+            </div>
+            <div>
+              <select
+                {...register('price_currency', {
+                  required: 'Please select the currency of the price.',
+                })}
+                name="price_currency"
+                id="price_currency"
+                defaultValue="SGD"
+                className={`mt-1 block w-full border ${errors.price_currency ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              >
+                <option>SGD</option>
+              </select>
+              {errors.price_currency && (
+                <span className="text-red-500">
+                  {errors.price_currency.message}
+                </span>
+              )}
+            </div>
           </div>
-          <div>
-          <select
-            {...register('price_currency', {
-              required: 'Please select the currency of the price.',
-            })}
-            name="price_currency"
-            id="price_currency"
-            defaultValue="SGD"
-            className={`mt-1 block w-full border ${errors.price_currency ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-          >
-            <option>SGD</option>
-          </select>
-          {errors.price_currency && (
-            <span className="text-red-500">
-              {errors.price_currency.message}
-            </span>
-          )}
-          </div>
-        </div>
         </div>
         <div>
           <label
@@ -418,8 +417,8 @@ export default function CreateEventForm() {
           >
             Create Event
           </button>
-          </div>
         </div>
+      </div>
     </form>
   );
 }
