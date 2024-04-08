@@ -68,5 +68,5 @@ export const getTimeZonesWithOffset = () => {
 export const getGuessedUserTimeZone = () => {
     const guessedZone = moment.tz.guess();
     const offset = moment.tz(guessedZone).format('Z');
-    return `${guessedZone} (GMT${offset})`;
+    return `GMT${offset}`;
 };
