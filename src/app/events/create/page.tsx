@@ -1,16 +1,17 @@
 import { Metadata } from 'next';
+import CreateEventForm from './_components/CreateEventForm';
 
 export const metadata: Metadata = {
   title: 'innercircle | Create event',
 };
 
 export default async function CreateEventPage() {
-
   return (
-    <div className="flex w-full flex-col md:col-span-4">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        create event page
-      </div>
-    </div>
+    <section className="bg-white dark:bg-gray-900 max-w-2xl py-8 px-4 mx-auto lg:py-16">
+      <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
+        Create a new event
+      </h2>
+      <CreateEventForm />
+    </section>
   );
 }

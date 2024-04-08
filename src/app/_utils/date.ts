@@ -1,3 +1,5 @@
+import moment from 'moment-timezone';
+
 export function formatDateRange(start_date: string | Date, end_date: string | Date): string {
     // Convert string inputs to Date objects if necessary
     const startDate = typeof start_date === 'string' ? new Date(start_date) : start_date;
@@ -51,3 +53,17 @@ export function hasDatePassed(inputDate: string | Date): boolean {
     const dateToCheck = typeof inputDate === 'string' ? new Date(inputDate) : inputDate;
     return dateToCheck < currentDate;
 }
+
+export const getTimeZonesWithOffset = () => {
+    return moment.tz.names().map((zone) => {
+        const offset = moment.tz(zone).format('Z'); // Gets the offset (e.g., "+08:00")
+        const offsetFormatted = offset.includes('-') ? offset : `+${offset}`; // Ensure the "+" sign is included
+        return `${zone} (GMT${offsetFormatted})`; // Format the string to include the offset
+    });
+};
+
+export const getGuessedUserTimeZone = () => {
+    const guessedZone = moment.tz.guess();
+    const offset = moment.tz(guessedZone).format('Z');
+    return `${guessedZone} (GMT${offset})`;
+};

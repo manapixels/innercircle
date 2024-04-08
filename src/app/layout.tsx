@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased overflow-clip`}>
+      <body className={`${inter.className} antialiased`}>
           <UserProvider>
             <div className="flex flex-col min-h-screen w-full">
               <Header />
