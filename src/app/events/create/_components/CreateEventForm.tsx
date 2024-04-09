@@ -86,9 +86,10 @@ export default function CreateEventForm() {
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-      <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-        <FileUpload className="sm:col-span-2" />
-        <div>
+      <div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
+        <FileUpload className="sm:col-span-2" userId="thumbnail" bucketId="event_thumbnails" />
+        <FileUpload className="sm:col-span-4" userId="banner" bucketId="event_banners" />
+        <div className="sm:col-span-6">
           <label
             htmlFor="name"
             className="block text-sm font-medium text-gray-700"
@@ -108,7 +109,7 @@ export default function CreateEventForm() {
             <span className="text-red-500">{errors.name.message}</span>
           )}
         </div>
-        <div>
+        <div className="sm:col-span-6">
           <label
             htmlFor="location_country"
             className="block text-sm font-medium text-gray-700"
@@ -130,7 +131,7 @@ export default function CreateEventForm() {
             <span className="text-red-500">{errors.category.message}</span>
           )}
         </div>
-        <div className="sm:col-span-2">
+        <div className="sm:col-span-6">
           <label
             htmlFor="description"
             className="block text-sm font-medium text-gray-700"
@@ -150,7 +151,7 @@ export default function CreateEventForm() {
             <span className="text-red-500">{errors.description.message}</span>
           )}
         </div>
-        <div className="sm:col-span-2">
+        <div className="sm:col-span-6">
           <label
             htmlFor="autocomplete"
             className="block text-sm font-medium text-gray-700"
@@ -225,7 +226,7 @@ export default function CreateEventForm() {
             </div>
           </div>
         </div>
-        <div className="-mt-3">
+        <div className="-mt-3 sm:col-span-6">
           <input
             {...register('location_name', {
               required: 'Please enter the name of the location.',
@@ -241,8 +242,7 @@ export default function CreateEventForm() {
             <span className="text-red-500">{errors.location_name.message}</span>
           )}
         </div>
-
-        <div className="-mt-3">
+        <div className="-mt-3 sm:col-span-6">
           <input
             {...register('location_address', {
               required: 'Please enter the address of the location.',
@@ -260,8 +260,7 @@ export default function CreateEventForm() {
             </span>
           )}
         </div>
-
-        <div className="sm:col-span-2">
+        <div className="sm:col-span-6">
           <div className="flex justify-between">
             <label className="block text-sm font-medium text-gray-700">
               Date <span className="text-red-500">*</span>
@@ -355,8 +354,7 @@ export default function CreateEventForm() {
             </div>
           </div>
         </div>
-
-        <div>
+        <div className="sm:col-span-6">
           <label
             htmlFor="price"
             className="block text-sm font-medium text-gray-700"
@@ -364,7 +362,7 @@ export default function CreateEventForm() {
             Price <span className="text-red-500">*</span>
           </label>
           <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-2">
+            <div className="col-span-6">
               <input
                 {...register('price', {
                   required: 'Please enter the price of the event.',
@@ -399,7 +397,7 @@ export default function CreateEventForm() {
             </div>
           </div>
         </div>
-        <div>
+        <div className="sm:col-span-6">
           <label
             htmlFor="slots"
             className="block text-sm font-medium text-gray-700"

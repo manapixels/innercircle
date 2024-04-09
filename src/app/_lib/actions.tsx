@@ -287,3 +287,29 @@ export const signUpForEvent = async (
     return null;
   }
 };
+
+/**
+ * Uploads a file to a specified Supabase bucket
+ * @param {string} bucketId - The ID of the bucket where the file will be uploaded
+ * @param {string} userId - The ID of the user, used to rename the file
+ * @param {File} file - The file to be uploaded
+ */
+export const uploadFileToBucket = async (bucketId: string, userId: string, file: File) => {
+  const supabase = createClient();
+  try {
+    // Extract the file extension from the original file name
+    const fileExtension = file.name.split('.').pop();
+    // Rename the file to userId.[original file extension]
+    const fileName = `${userId}.${fileExtension}`;
+    // Upload the file to the specified bucket
+    const { data, error } = await supabase.storage.from(bucketId).upload(fileName, file, {
+      upsert: true,
+    });
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error uploading file to bucket:', error);
+    return null;
+  }
+};

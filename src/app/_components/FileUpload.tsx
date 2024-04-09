@@ -2,11 +2,13 @@
 
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { uploadFileToBucket } from '../_lib/actions';
 
-export function FileUpload({ className }) {
+export function FileUpload({ className, userId, bucketId }) {
   const handleFileAccepted = (file) => {
     // Handle the file, e.g., setting it to state or uploading it
     console.log('handleFileAccepted', file);
+    uploadFileToBucket(bucketId, userId, file)
   };
 
   const onDrop = useCallback(
