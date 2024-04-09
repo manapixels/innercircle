@@ -2,7 +2,7 @@
 
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { uploadFileToBucket } from '../_lib/actions';
+import { downloadFileFromBucket, uploadFileToBucket } from '../_lib/actions';
 import Image from 'next/image';
 
 export function FileUpload({ className, userId, bucketId }) {
@@ -11,12 +11,22 @@ export function FileUpload({ className, userId, bucketId }) {
 
   const handleFileAccepted = async (file) => {
     try {
+      // Create a new FormData object and append the file
+      const formData = new FormData();
+      formData.append('file', file);
+
       // Attempt to upload the file
-      const uploadResult = await uploadFileToBucket(bucketId, userId, file);
+      const uploadResult = await uploadFileToBucket(userId, bucketId, formData);
       // If successful, update the upload status and set the image URL
+      console.log(uploadResult, 'uploadResult')
       setUploaded(true);
       if (uploadResult?.path) {
-        setUploadedImageUrl(uploadResult.path);
+        const data = await downloadFileFromBucket(bucketId, uploadResult.path)
+        console.log(data, 'data')
+        if (data) {
+            const url = URL.createObjectURL(data)
+            setUploadedImageUrl(url);
+        }
       }
     } catch (error) {
       // Handle any errors
@@ -38,6 +48,9 @@ export function FileUpload({ className, userId, bucketId }) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     maxSize: 10 * 1024 * 1024, // 10MB
+    accept: {
+        'image/*': ['.jpeg', '.jpg', '.png']
+      }
   });
 
   return (

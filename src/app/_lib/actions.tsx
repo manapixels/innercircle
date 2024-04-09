@@ -8,7 +8,10 @@ export type Profile = Tables<'profiles'> & { email?: string };
 export type ProfileWithEventsHosted = Tables<'profiles_with_hosted_events'>;
 export type Event = Tables<'events'>;
 export type EventWithCreatorInfo = Event & {
-  created_by: Tables<'profiles'> & { events_created?: number, guests_hosted?: number};
+  created_by: Tables<'profiles'> & {
+    events_created?: number;
+    guests_hosted?: number;
+  };
 };
 
 export const signUpNewUser = async (email, password) => {
@@ -78,7 +81,10 @@ export const fetchProfileWithHostedEvents = async (username: string) => {
     if (error) throw new Error('Error fetching profile with hosted events');
 
     if (data && data.hosted_events) {
-      data.hosted_events.sort((a, b) => new Date(b.date_start).getTime() - new Date(a.date_start).getTime());
+      data.hosted_events.sort(
+        (a, b) =>
+          new Date(b.date_start).getTime() - new Date(a.date_start).getTime(),
+      );
     }
 
     return data;
@@ -294,22 +300,52 @@ export const signUpForEvent = async (
  * @param {string} userId - The ID of the user, used to rename the file
  * @param {File} file - The file to be uploaded
  */
-export const uploadFileToBucket = async (bucketId: string, userId: string, file: File) => {
+export const uploadFileToBucket = async (
+  userId: string,
+  bucketId: string,
+  file: FormData,
+) => {
   const supabase = createClient();
   try {
-    // Extract the file extension from the original file name
-    const fileExtension = file.name.split('.').pop();
+    // Check if the file object is not null and extract the file extension from the original file name
+    const fileObject = file.get('file');
+    if (!fileObject || !(fileObject instanceof File)) {
+      throw new Error(
+        'File is missing or the provided file is not an instance of File',
+      );
+    }
+    const fileExtension = fileObject.name.split('.').pop();
     // Rename the file to userId.[original file extension]
     const fileName = `${userId}.${fileExtension}`;
     // Upload the file to the specified bucket
-    const { data, error } = await supabase.storage.from(bucketId).upload(fileName, file, {
-      upsert: true,
-    });
+    const { data, error } = await supabase.storage
+      .from(bucketId)
+      .upload(fileName, fileObject, {
+        upsert: true,
+      });
 
     if (error) throw error;
     return data;
   } catch (error) {
     console.error('Error uploading file to bucket:', error);
+    return null;
+  }
+};
+
+/**
+ * Downloads a file from a specified Supabase bucket
+ * @param {string} bucketId - The ID of the bucket from where the file will be downloaded
+ * @param {string} fileName - The name of the file to be downloaded
+ */
+export const downloadFileFromBucket = async (bucketId: string, fileName: string) => {
+  const supabase = createClient();
+  try {
+    const { data, error } = await supabase.storage.from(bucketId).download(fileName);
+    if (error) throw error;
+
+    return data;
+  } catch (error) {
+    console.error('Error downloading file from bucket:', error);
     return null;
   }
 };

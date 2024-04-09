@@ -8,6 +8,7 @@ import {
   getGuessedUserTimeZone,
 } from '@/app/_utils/date';
 import { FileUpload } from '@/app/_components/FileUpload';
+import { useUser } from '@/app/_contexts/UserContext';
 
 type Inputs = {
   name: string;
@@ -29,6 +30,7 @@ type Inputs = {
 export default function CreateEventForm() {
   const timeZones = getTimeZonesWithOffset();
   const guessedTimeZone = getGuessedUserTimeZone();
+  const user = useUser();
 
   const handlePlaceSelected = (place) => {
     setValue('location_name', place.name);
@@ -87,8 +89,8 @@ export default function CreateEventForm() {
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
-        <FileUpload className="sm:col-span-2" userId="thumbnail" bucketId="event_thumbnails" />
-        <FileUpload className="sm:col-span-4" userId="banner" bucketId="event_banners" />
+        <FileUpload className="sm:col-span-2" userId={user?.id} bucketId="event_thumbnails" />
+        <FileUpload className="sm:col-span-4" userId={user?.id} bucketId="event_banners" />
         <div className="sm:col-span-6">
           <label
             htmlFor="name"
