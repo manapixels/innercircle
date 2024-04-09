@@ -31,7 +31,6 @@ export default function CreateEventForm() {
   const guessedTimeZone = getGuessedUserTimeZone();
 
   const handlePlaceSelected = (place) => {
-    console.log(place);
     setValue('location_name', place.name);
     setValue('location_address', place.formatted_address);
     const filtered_array = place.address_components.filter(
@@ -51,26 +50,39 @@ export default function CreateEventForm() {
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
-      time_start: '19:00',
+        name: 'MBTI Speed Dating 5.0',
+        category: 'Speed Dating',
+        location_name: 'Burger King HomeTeamNS Khatib',
+        location_address: '2 Yishun Walk, #01-06/07 HomeTeamNS Khatib, Singapore 767944',
+        location_country: 'Singapore',
+        date_start: '2024-06-10',
+        date_end: '2024-06-10',
+        time_start: '19:00',
+        time_end: '22:00',
+        time_zone: 'GMT+08:00',
+        description: 'Dive into a whirlwind of romance at our unique speed dating event, where your MBTI personality type is the key to unlocking meaningful connections. Find your perfect match in a night of engaging conversations and delightful discoveries, all tailored to the fascinating world of MBTI compatibility.',
+        price: 55,
+        price_currency: 'SGD',
+        slots: 50,
     },
   });
   const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
 
   // Watch fields
   const watchStartDate = watch('date_start');
-  const watchStartTime = watch('time_start');
+  const watchEndDate = watch('date_end');
 
   useEffect(() => {
-    setValue('date_end', watchStartDate);
+    if (new Date(watchEndDate) < new Date(watchStartDate)) {
+      setValue('date_end', watchStartDate);
+    }
   }, [watchStartDate, setValue]);
 
   useEffect(() => {
-    // Logic to update time_end and possibly date_end based on time_start
-    // This is application specific and may involve comparing times
-    // For simplicity, let's just copy time_start to time_end
-    setValue('time_end', watchStartTime);
-    // Optionally, adjust date_end if needed
-  }, [watchStartTime, setValue]);
+    if (new Date(watchEndDate) < new Date(watchStartDate)) {
+      setValue('date_start', watchEndDate);
+    }
+  }, [watchEndDate, setValue]);
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -413,7 +425,7 @@ export default function CreateEventForm() {
         <div className="max-w-2xl mx-auto py-4 px-4 text-right">
           <button
             type="submit"
-            className="bg-base-600 text-white px-12 py-3 rounded-lg"
+            className="bg-base-600 text-white px-12 py-3 rounded-full"
           >
             Create Event
           </button>
