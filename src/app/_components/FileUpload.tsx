@@ -1,19 +1,35 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { uploadFileToBucket } from '../_lib/actions';
+import Image from 'next/image';
 
 export function FileUpload({ className, userId, bucketId }) {
-  const handleFileAccepted = (file) => {
-    // Handle the file, e.g., setting it to state or uploading it
-    console.log('handleFileAccepted', file);
-    uploadFileToBucket(bucketId, userId, file)
+  const [uploaded, setUploaded] = useState(false);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+
+  const handleFileAccepted = async (file) => {
+    try {
+      // Attempt to upload the file
+      const uploadResult = await uploadFileToBucket(bucketId, userId, file);
+      // If successful, update the upload status and set the image URL
+      setUploaded(true);
+      if (uploadResult?.path) {
+        setUploadedImageUrl(uploadResult.path);
+      }
+    } catch (error) {
+      // Handle any errors
+      console.error('Upload failed', error);
+      setUploaded(false);
+    }
   };
 
   const onDrop = useCallback(
     (acceptedFiles) => {
-      // Do something with the files
+      // Reset upload status on new drop
+      setUploaded(false);
+      setUploadedImageUrl(''); // Reset the image URL on new drop
       handleFileAccepted(acceptedFiles[0]);
     },
     [handleFileAccepted],
@@ -32,6 +48,13 @@ export function FileUpload({ className, userId, bucketId }) {
       <input {...getInputProps()} />
       {isDragActive ? (
         <p className="text-gray-700">Drop the files here ...</p>
+      ) : uploaded ? (
+        <Image
+          src={uploadedImageUrl}
+          alt="Uploaded Image"
+          width={24}
+          height={24}
+        />
       ) : (
         <div className="space-y-2">
           <div className="flex justify-center text-blue-600 text-3xl">
@@ -60,7 +83,9 @@ export function FileUpload({ className, userId, bucketId }) {
               ></path>
             </svg>
           </div>
-          <p className="text-sm text-gray-700"><strong>Click to upload</strong> or drag and drop</p>
+          <p className="text-sm text-gray-700">
+            <strong>Click to upload</strong> or drag and drop
+          </p>
           <p className="text-sm text-gray-500">Max. File Size: 10MB</p>
         </div>
       )}
