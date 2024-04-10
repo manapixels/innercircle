@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import GooglePlacesAutocomplete from 'react-google-autocomplete';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import {
@@ -30,6 +30,9 @@ type Inputs = {
 };
 
 export default function CreateEventForm() {
+
+    const autocompleteRef = useRef(null);
+
   const timeZones = getTimeZonesWithOffset();
   const guessedTimeZone = getGuessedUserTimeZone();
   const user = useUser();
@@ -44,6 +47,10 @@ export default function CreateEventForm() {
     );
     const country = filtered_array.length ? filtered_array[0].long_name : '';
     setValue('location_country', country);
+
+    if (autocompleteRef.current) {
+        (autocompleteRef.current as any).value = ''; // Clear the input
+    }
   };
 
   const {
@@ -205,6 +212,7 @@ export default function CreateEventForm() {
             <div className="relative flex-grow">
               {/* Fields available: https://developers.google.com/maps/documentation/javascript/place-data-fields */}
               <GooglePlacesAutocomplete
+                ref={autocompleteRef}
                 className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pl-9 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
                 apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
                 onPlaceSelected={handlePlaceSelected}
@@ -396,7 +404,7 @@ export default function CreateEventForm() {
             </div>
           </div>
         </div>
-        <div className="sm:col-span-6">
+        <div className="sm:col-span-3">
           <label
             htmlFor="price"
             className="block text-sm font-medium text-gray-700"
@@ -404,7 +412,7 @@ export default function CreateEventForm() {
             Price <span className="text-red-500">*</span>
           </label>
           <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-6">
+            <div className="col-span-2">
               <input
                 {...register('price', {
                   required: 'Please enter the price of the event.',
@@ -439,7 +447,7 @@ export default function CreateEventForm() {
             </div>
           </div>
         </div>
-        <div className="sm:col-span-6">
+        <div className="sm:col-span-3">
           <label
             htmlFor="slots"
             className="block text-sm font-medium text-gray-700"
