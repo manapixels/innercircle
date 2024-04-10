@@ -87,7 +87,6 @@ export default function CreateEventForm() {
   const watchEndDate = watch('date_end');
 
   const handleThumbnailUpload = (uploadResult: string) => {
-    console.log(uploadResult, 'image')
     setValue('image_thumbnail_url', uploadResult, { shouldValidate: true });
   };
 
@@ -106,8 +105,6 @@ export default function CreateEventForm() {
       setValue('date_start', watchEndDate);
     }
   }, [watchEndDate, setValue]);
-
-  console.log(errors)
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>

@@ -17,8 +17,12 @@ export function FileUpload({
 }) {
   const [uploaded, setUploaded] = useState(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
 
   const handleFileAccepted = async (file) => {
+    setIsUploading(true);
+    setImageLoading(true);
     try {
       // Create a new FormData object and append the file
       const formData = new FormData();
@@ -38,7 +42,9 @@ export function FileUpload({
       // Handle any errors
       console.error('Upload failed', error);
       setUploaded(false);
-    }
+    } finally {
+        setIsUploading(false);
+      }
   };
 
   const onDrop = useCallback(
@@ -62,7 +68,7 @@ export function FileUpload({
   return (
     <div
       {...getRootProps()}
-      className={`relative border-dashed border-2 border-gray-300 rounded-lg p-6 text-center cursor-pointer ${isDragActive ? 'bg-gray-100' : 'bg-gray-50'} hover:bg-gray-100 ${className}`}
+      className={`relative border-dashed border-2 border-gray-300 rounded-lg p-6 text-center cursor-pointer ${(isDragActive || isUploading || imageLoading) ? 'bg-gray-100 animate-pulse' : 'bg-gray-50'} hover:bg-gray-100 ${className}`}
     >
       <input
         name={name}
@@ -80,6 +86,7 @@ export function FileUpload({
                 alt="Uploaded Image"
                 sizes="100vw"
                 fill
+                onLoadingComplete={() => setImageLoading(false)}
             />
           )}
         </div>
