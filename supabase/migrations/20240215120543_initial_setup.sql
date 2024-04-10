@@ -97,11 +97,11 @@ comment on table public.event_participants is 'List of user IDs participating in
 --
 -- ....................
 insert into
-  storage.buckets (id, name)
+  storage.buckets (id, name, public)
 values
-  ('avatars', 'avatars'),
-  ('event_thumbnails', 'event_thumbnails'),
-  ('event_banners', 'event_banners');
+  ('avatars', 'avatars', true),
+  ('event_thumbnails', 'event_thumbnails', true),
+  ('event_banners', 'event_banners', true);
 
 -- ...........
 --
