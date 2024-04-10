@@ -6,6 +6,7 @@ import React, {
   useState,
   useEffect,
   ReactNode,
+  useRef,
 } from 'react';
 
 import { User } from '@supabase/supabase-js';
@@ -16,26 +17,39 @@ const UserContext = createContext<User | null>(null);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>();
+  const listenerRegistered = useRef(false);
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) console.log('[UserContext] Failed to fetch user', error);
-      if (data?.user) setUser(data.user as User);
+    const initializeUser = async () => {
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        if (error)
+          throw new Error(
+            `[UserContext] Failed to fetch user: ${error.message}`,
+          );
+        if (data?.user) setUser(data.user);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log(event);
-        if (session?.user) setUser(session?.user);
-      },
-    );
+    if (!listenerRegistered.current) {
+      const { data: authListener } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          console.log(`Auth event: ${event}`);
+          if (session?.user) setUser(session.user);
+        },
+      );
 
-    getUser();
+      listenerRegistered.current = true;
 
-    return () => {
-      authListener?.subscription.unsubscribe();
-    };
+      // Cleanup function to unsubscribe from the auth state change listener
+      return () => {
+        authListener?.subscription.unsubscribe();
+      };
+    }
+
+    initializeUser();
   }, []);
 
   return (

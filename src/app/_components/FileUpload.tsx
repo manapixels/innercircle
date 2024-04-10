@@ -73,13 +73,15 @@ export function FileUpload({
         <p className="text-gray-700">Drop the files here ...</p>
       ) : uploaded ? (
         <div className="w-full h-full absolute top-0 left-0">
-          <Image
-            className="rounded-md object-cover w-full h-full"
-            src={uploadedImageUrl}
-            alt="Uploaded Image"
-            sizes="100vw"
-            fill
-          />
+          {uploadedImageUrl && (
+            <Image
+                className="rounded-md object-cover w-full h-full"
+                src={uploadedImageUrl}
+                alt="Uploaded Image"
+                sizes="100vw"
+                fill
+            />
+          )}
         </div>
       ) : (
         <div className="space-y-4">

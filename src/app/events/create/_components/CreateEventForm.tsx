@@ -30,8 +30,7 @@ type Inputs = {
 };
 
 export default function CreateEventForm() {
-
-    const autocompleteRef = useRef(null);
+  const autocompleteRef = useRef(null);
 
   const timeZones = getTimeZonesWithOffset();
   const guessedTimeZone = getGuessedUserTimeZone();
@@ -49,7 +48,7 @@ export default function CreateEventForm() {
     setValue('location_country', country);
 
     if (autocompleteRef.current) {
-        (autocompleteRef.current as any).value = ''; // Clear the input
+      (autocompleteRef.current as any).value = ''; // Clear the input
     }
   };
 
