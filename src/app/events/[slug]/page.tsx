@@ -16,8 +16,8 @@ export default async function EventDetailsPage({
   return (
     <div>
       <div
-        className={`w-full h-96 bg-gray-300 bg-center rounded-2xl ${event?.image_url === '' ? 'grayscale opacity-5' : ''}`}
-        style={{ backgroundImage: `url(${event?.image_url === '' ? '/logo.svg' : event?.image_url})` }}
+        className={`w-full h-96 bg-gray-300 bg-center rounded-2xl ${event?.image_banner_url === '' ? 'grayscale opacity-5' : ''}`}
+        style={{ backgroundImage: `url(${event?.image_banner_url === '' ? '/logo.svg' : event?.image_banner_url})` }}
       />
 
       <div className="flex items-center justify-between mt-8">

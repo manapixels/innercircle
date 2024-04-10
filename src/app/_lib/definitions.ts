@@ -65,7 +65,8 @@ export interface Database {
           date_start: string
           description: string | null
           id: string
-          image_url: string | null
+          image_banner_url: string | null
+          image_thumbnail_url: string | null
           location_address: string
           location_country: string
           location_name: string
@@ -84,7 +85,8 @@ export interface Database {
           date_start?: string
           description?: string | null
           id?: string
-          image_url?: string | null
+          image_banner_url?: string | null
+          image_thumbnail_url?: string | null
           location_address: string
           location_country: string
           location_name: string
@@ -103,7 +105,8 @@ export interface Database {
           date_start?: string
           description?: string | null
           id?: string
-          image_url?: string | null
+          image_banner_url?: string | null
+          image_thumbnail_url?: string | null
           location_address?: string
           location_country?: string
           location_name?: string
@@ -226,7 +229,8 @@ export interface Database {
           date_end: string | null
           date_start: string | null
           id: string | null
-          image_url: string | null
+          image_banner_url: string | null
+          image_thumbnail_url: string | null
           location_address: string | null
           location_country: string | null
           location_name: string | null

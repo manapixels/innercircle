@@ -219,36 +219,61 @@ export const fetchEvent = async (slug: string) => {
  * @param {number} price The event price
  * @param {string} price_currency The event price currency
  */
-export const addEvent = async (
+export const addEvent = async ({
   name,
   description,
-  user_id,
+  category,
   date_start,
   date_end,
-  location,
+  location_name,
+  location_address,
   location_country,
   price,
   price_currency,
-) => {
+  slots,
+  created_by,
+  image_thumbnail_url,
+  image_banner_url,
+}: {
+  name: string;
+  description: string;
+  category: string;
+  date_start: string;
+  date_end: string;
+  location_name: string;
+  location_address: string;
+  location_country: string;
+  price: number;
+  price_currency: string;
+  slots: number;
+  created_by: string;
+  image_thumbnail_url: string;
+  image_banner_url: string;
+}) => {
   const supabase = createClient();
   try {
-    let { data } = await supabase
+    let { data, error } = await supabase
       .from('events')
       .insert([
         {
           name,
           description,
-          user_id,
+          category,
           date_start,
           date_end,
-          location,
+          location_name,
+          location_address,
           location_country,
           price,
           price_currency,
+          slots,
+          created_by,
+          image_thumbnail_url,
+          image_banner_url,
         },
-      ])
-      .select(`*`);
-    return data as Event[];
+      ]);
+    if (error) throw error;
+    return data;
   } catch (error) {
     console.log('error', error);
     return error;
@@ -337,10 +362,15 @@ export const uploadFileToBucket = async (
  * @param {string} bucketId - The ID of the bucket from where the file will be downloaded
  * @param {string} fileName - The name of the file to be downloaded
  */
-export const downloadFileFromBucket = async (bucketId: string, fileName: string) => {
+export const downloadFileFromBucket = async (
+  bucketId: string,
+  fileName: string,
+) => {
   const supabase = createClient();
   try {
-    const { data } = await supabase.storage.from(bucketId).getPublicUrl(fileName);
+    const { data } = await supabase.storage
+      .from(bucketId)
+      .getPublicUrl(fileName);
     return data;
   } catch (error) {
     console.error('Error downloading file from bucket:', error);

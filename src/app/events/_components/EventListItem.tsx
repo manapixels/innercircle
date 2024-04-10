@@ -19,9 +19,9 @@ export default function EventListItem({
       className={`p-3 rounded-lg hover:bg-gray-100 ${hasDatePassed(event.date_end) && 'grayscale opacity-80'} hover:grayscale-0 hover:opacity-100`}
     >
       <div className="w-full relative aspect-square">
-        {event?.image_url ? (
+        {event?.image_thumbnail_url ? (
           <Image
-            src={event?.image_url}
+            src={event?.image_thumbnail_url}
             alt={`${event?.name}`}
             className="rounded-lg object-cover w-full h-full"
             width="300"

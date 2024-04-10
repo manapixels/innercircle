@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import GooglePlacesAutocomplete from 'react-google-autocomplete';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import {
@@ -9,6 +9,9 @@ import {
 } from '@/app/_utils/date';
 import { FileUpload } from '@/app/_components/FileUpload';
 import { useUser } from '@/app/_contexts/UserContext';
+import { addEvent } from '@/app/_lib/actions';
+import Spinner from '@/app/_components/Spinner';
+import { slugify } from '@/app/_utils/text';
 
 type Inputs = {
   name: string;
@@ -31,6 +34,7 @@ type Inputs = {
 
 export default function CreateEventForm() {
   const autocompleteRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const timeZones = getTimeZonesWithOffset();
   const guessedTimeZone = getGuessedUserTimeZone();
@@ -80,7 +84,39 @@ export default function CreateEventForm() {
       slots: 50,
     },
   });
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    console.log(data);
+    // Convert GMT+08:00 to +08:00 format for valid Date parsing
+    const timeZoneOffset = data.time_zone.replace('GMT', '');
+    const date_start = new Date(
+      `${data.date_start}T${data.time_start}${timeZoneOffset}`,
+    );
+    const date_end = new Date(
+      `${data.date_end}T${data.time_end}${timeZoneOffset}`,
+    );
+
+    if (user?.id) {
+      setIsLoading(true);
+      const result = await addEvent({
+        name: data.name,
+        description: data.description,
+        category: slugify(data.category),
+        created_by: user.id,
+        date_start: date_start.toISOString(),
+        date_end: date_end.toISOString(),
+        location_name: data.location_name,
+        location_address: data.location_address,
+        location_country: data.location_country,
+        price: data.price,
+        slots: data.slots,
+        price_currency: data.price_currency.toLowerCase(),
+        image_thumbnail_url: data.image_thumbnail_url,
+        image_banner_url: data.image_banner_url,
+      });
+      setIsLoading(false);
+      console.log(result);
+    }
+  };
 
   // Watch fields
   const watchStartDate = watch('date_start');
@@ -501,6 +537,7 @@ export default function CreateEventForm() {
             type="submit"
             className="bg-base-600 text-white px-12 py-3 rounded-full"
           >
+            {isLoading && <Spinner className="mr-1.5" />}
             Create Event
           </button>
         </div>
