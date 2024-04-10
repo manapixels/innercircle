@@ -6,7 +6,7 @@ import { downloadFileFromBucket, uploadFileToBucket } from '../_lib/actions';
 import Image from 'next/image';
 
 export function FileUpload({
-  className,
+  className = '',
   userId,
   bucketId,
   label,
@@ -66,8 +66,8 @@ export function FileUpload({
     >
       <input
         name={name}
-        {...getInputProps()}
         {...register(name, validationSchema)}
+        {...getInputProps()}
       />
       {isDragActive ? (
         <p className="text-gray-700">Drop the files here ...</p>

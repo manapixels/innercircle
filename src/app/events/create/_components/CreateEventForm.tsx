@@ -73,6 +73,8 @@ export default function CreateEventForm() {
       time_zone: 'GMT+08:00',
       description:
         'Dive into a whirlwind of romance at our unique speed dating event, where your MBTI personality type is the key to unlocking meaningful connections. Find your perfect match in a night of engaging conversations and delightful discoveries, all tailored to the fascinating world of MBTI compatibility.',
+      image_thumbnail_url: '',
+      image_banner_url: '',
       price: 55,
       price_currency: 'SGD',
       slots: 50,
@@ -85,11 +87,12 @@ export default function CreateEventForm() {
   const watchEndDate = watch('date_end');
 
   const handleThumbnailUpload = (uploadResult: string) => {
-    setValue('image_thumbnail_url', uploadResult);
+    console.log(uploadResult, 'image')
+    setValue('image_thumbnail_url', uploadResult, { shouldValidate: true });
   };
 
   const handleBannerUpload = (uploadResult: string) => {
-    setValue('image_banner_url', uploadResult);
+    setValue('image_banner_url', uploadResult, { shouldValidate: true });
   };
 
   useEffect(() => {
@@ -104,49 +107,62 @@ export default function CreateEventForm() {
     }
   }, [watchEndDate, setValue]);
 
+  console.log(errors)
+
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
-        <FileUpload
-          className="sm:col-span-2 aspect-square"
-          userId={user?.id}
-          bucketId="event_thumbnails"
-          label="Thumbnail"
-          onUploadComplete={handleThumbnailUpload}
-          register={register}
-          validationSchema={{
-            required: 'Please upload a thumbnail for the event.',
-          }}
-          name="image_thumbnail_url"
-        />
-        {errors.image_thumbnail_url && (
-          <span className="text-red-500">
-            {errors.image_thumbnail_url.message}
-          </span>
-        )}
-
-        <FileUpload
-          className="sm:col-span-4"
-          userId={user?.id}
-          bucketId="event_banners"
-          label="Banner"
-          onUploadComplete={handleBannerUpload}
-          register={register}
-          validationSchema={{
-            required: 'Please upload a banner for the event.',
-          }}
-          name="image_banner_url"
-        />
+        {/* Event thumbnail */}
+        <div className="sm:col-span-2">
+          <FileUpload
+            className="aspect-square h-full"
+            userId={user?.id}
+            bucketId="event_thumbnails"
+            label="Thumbnail"
+            onUploadComplete={handleThumbnailUpload}
+            register={register}
+            validationSchema={{
+              required: 'Upload thumbnail.',
+            }}
+            name="image_thumbnail_url"
+          />
+          {errors.image_thumbnail_url && (
+            <span className="text-red-500 text-sm">
+              {errors.image_thumbnail_url.message}
+            </span>
+          )}
+        </div>
+        {/* Event banner */}
+        <div className="sm:col-span-4">
+          <FileUpload
+            className="h-full"
+            userId={user?.id}
+            bucketId="event_banners"
+            label="Banner"
+            onUploadComplete={handleBannerUpload}
+            register={register}
+            validationSchema={{
+              required: 'Upload banner.',
+            }}
+            name="image_banner_url"
+          />
+          {errors.image_banner_url && (
+            <span className="text-red-500 text-sm">
+              {errors.image_banner_url.message}
+            </span>
+          )}
+        </div>
+        {/* Event name */}
         <div className="sm:col-span-6">
           <label
             htmlFor="name"
             className="block text-sm font-medium text-gray-700"
           >
-            Event Name <span className="text-red-500">*</span>
+            Event Name <span className="text-red-500 text-sm">*</span>
           </label>
           <input
             {...register('name', {
-              required: 'Please enter the name of the event.',
+              required: 'Enter name of event.',
             })}
             type="text"
             name="name"
@@ -154,19 +170,20 @@ export default function CreateEventForm() {
             className={`mt-1 block w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
           />
           {errors.name && (
-            <span className="text-red-500">{errors.name.message}</span>
+            <span className="text-red-500 text-sm">{errors.name.message}</span>
           )}
         </div>
+        {/* Event category */}
         <div className="sm:col-span-6">
           <label
             htmlFor="location_country"
             className="block text-sm font-medium text-gray-700"
           >
-            Category <span className="text-red-500">*</span>
+            Category <span className="text-red-500 text-sm">*</span>
           </label>
           <select
             {...register('category', {
-              required: 'Please select the category of the event.',
+              required: 'Select category of event.',
             })}
             name="category"
             id="category"
@@ -176,19 +193,22 @@ export default function CreateEventForm() {
             <option>Speed Dating</option>
           </select>
           {errors.category && (
-            <span className="text-red-500">{errors.category.message}</span>
+            <span className="text-red-500 text-sm">
+              {errors.category.message}
+            </span>
           )}
         </div>
+        {/* Event description */}
         <div className="sm:col-span-6">
           <label
             htmlFor="description"
             className="block text-sm font-medium text-gray-700"
           >
-            Description <span className="text-red-500">*</span>
+            Description <span className="text-red-500 text-sm">*</span>
           </label>
           <textarea
             {...register('description', {
-              required: 'Please enter a description for the event.',
+              required: 'Enter description for the event.',
             })}
             name="description"
             id="description"
@@ -196,15 +216,18 @@ export default function CreateEventForm() {
             className={`mt-1 block w-full border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
           ></textarea>
           {errors.description && (
-            <span className="text-red-500">{errors.description.message}</span>
+            <span className="text-red-500 text-sm">
+              {errors.description.message}
+            </span>
           )}
         </div>
+        {/* Event location */}
         <div className="sm:col-span-6">
           <label
             htmlFor="autocomplete"
             className="block text-sm font-medium text-gray-700"
           >
-            Location <span className="text-red-500">*</span>
+            Location <span className="text-red-500 text-sm">*</span>
           </label>
 
           <div className="flex flex-row gap-4">
@@ -257,7 +280,7 @@ export default function CreateEventForm() {
             <div>
               <select
                 {...register('location_country', {
-                  required: 'Please select the country of the location.',
+                  required: 'Select country of location.',
                 })}
                 name="location_country"
                 id="location_country"
@@ -268,17 +291,18 @@ export default function CreateEventForm() {
                 <option>Singapore</option>
               </select>
               {errors.location_country && (
-                <span className="text-red-500">
+                <span className="text-red-500 text-sm">
                   {errors.location_country.message}
                 </span>
               )}
             </div>
           </div>
         </div>
+        {/* Event location name */}
         <div className="-mt-3 sm:col-span-6">
           <input
             {...register('location_name', {
-              required: 'Please enter the name of the location.',
+              required: 'Enter name of location.',
             })}
             type="text"
             name="location_name"
@@ -288,13 +312,16 @@ export default function CreateEventForm() {
             className={`mt-1 block w-full border ${errors.location_name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
           />
           {errors.location_name && (
-            <span className="text-red-500">{errors.location_name.message}</span>
+            <span className="text-red-500 text-sm">
+              {errors.location_name.message}
+            </span>
           )}
         </div>
+        {/* Event address */}
         <div className="-mt-3 sm:col-span-6">
           <input
             {...register('location_address', {
-              required: 'Please enter the address of the location.',
+              required: 'Enter address of location.',
             })}
             type="text"
             name="location_address"
@@ -304,19 +331,20 @@ export default function CreateEventForm() {
             className={`mt-1 block w-full border ${errors.location_address ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
           />
           {errors.location_address && (
-            <span className="text-red-500">
+            <span className="text-red-500 text-sm">
               {errors.location_address.message}
             </span>
           )}
         </div>
+        {/* Event date and time */}
         <div className="sm:col-span-6">
           <div className="flex justify-between">
             <label className="block text-sm font-medium text-gray-700">
-              Date <span className="text-red-500">*</span>
+              Date <span className="text-red-500 text-sm">*</span>
             </label>
             <select
               {...register('time_zone', {
-                required: 'Please select the time zone of the event.',
+                required: 'Select time zone of event.',
               })}
               name="time_zone"
               id="time_zone"
@@ -331,90 +359,91 @@ export default function CreateEventForm() {
               ))}
             </select>
           </div>
-
           <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-4">
-            <div>
-              <input
-                {...register('date_start', {
-                  required: 'Please select the date of the event.',
-                })}
-                type="date"
-                name="date_start"
-                id="date_start"
-                required
-                className={`mt-1 block w-full border ${errors.date_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-              />
-              {errors.date_start && (
-                <span className="text-red-500">
-                  {errors.date_start.message}
-                </span>
-              )}
-            </div>
-            <div>
-              <input
-                {...register('time_start', {
-                  required: 'Please enter the start time of the event.',
-                })}
-                type="time"
-                name="time_start"
-                id="time_start"
-                required
-                className={`mt-1 block w-full border ${errors.time_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-              />
-              {errors.time_start && (
-                <span className="text-red-500">
-                  {errors.time_start.message}
-                </span>
-              )}
-            </div>
+            <input
+              {...register('date_start', {
+                required: 'Select date of event.',
+              })}
+              type="date"
+              name="date_start"
+              id="date_start"
+              required
+              className={`mt-1 block w-full border ${errors.date_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+            />
+
+            <input
+              {...register('time_start', {
+                required: 'Enter start time of event.',
+              })}
+              type="time"
+              name="time_start"
+              id="time_start"
+              required
+              className={`mt-1 block w-full border ${errors.time_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+            />
             <div className="text-center self-center">–</div>
-            <div>
-              <input
-                {...register('time_end', {
-                  required: 'Please enter the end time of the event.',
-                })}
-                type="time"
-                name="time_end"
-                id="time_end"
-                required
-                className={`mt-1 block w-full border ${errors.time_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-              />
-              {errors.time_end && (
-                <span className="text-red-500">{errors.time_end.message}</span>
-              )}
-            </div>
-            <div>
-              <input
-                {...register('date_end', {
-                  required: 'Please select the end date of the event.',
-                  validate: (value) =>
-                    new Date(value) >= new Date(watchStartDate) ||
-                    'End date must be after start date.',
-                })}
-                type="date"
-                name="date_end"
-                id="date_end"
-                required
-                className={`mt-1 block w-full border ${errors.date_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-              />
-              {errors.date_end && (
-                <span className="text-red-500">{errors.date_end.message}</span>
-              )}
-            </div>
+
+            <input
+              {...register('time_end', {
+                required: 'Enter end time of event.',
+              })}
+              type="time"
+              name="time_end"
+              id="time_end"
+              required
+              className={`mt-1 block w-full border ${errors.time_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+            />
+
+            <input
+              {...register('date_end', {
+                required: 'Select end date of event.',
+                validate: (value) =>
+                  new Date(value) >= new Date(watchStartDate) ||
+                  'End date must be after start date.',
+              })}
+              type="date"
+              name="date_end"
+              id="date_end"
+              required
+              className={`mt-1 block w-full border ${errors.date_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+            />
+          </div>
+          <div>
+            {errors.date_start && (
+              <span className="text-red-500 text-sm">
+                {errors.date_start.message}
+              </span>
+            )}
+            {errors.time_start && (
+              <span className="text-red-500 text-sm">
+                {errors.time_start.message}
+              </span>
+            )}
+            {errors.time_end && (
+              <span className="text-red-500 text-sm">
+                {errors.time_end.message}
+              </span>
+            )}
+            {errors.date_end && (
+              <span className="text-red-500 text-sm">
+                {errors.date_end.message}
+              </span>
+            )}
           </div>
         </div>
+        {/* Event price and currency */}
         <div className="sm:col-span-3">
           <label
             htmlFor="price"
             className="block text-sm font-medium text-gray-700"
           >
-            Price <span className="text-red-500">*</span>
+            Price <span className="text-red-500 text-sm">*</span>
           </label>
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-2">
               <input
                 {...register('price', {
-                  required: 'Please enter the price of the event.',
+                  required: 'Enter price of event.',
                 })}
                 type="number"
                 name="price"
@@ -422,14 +451,11 @@ export default function CreateEventForm() {
                 required
                 className="mt-1 block w-full border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
               />
-              {errors.price && (
-                <span className="text-red-500">{errors.price.message}</span>
-              )}
             </div>
             <div>
               <select
                 {...register('price_currency', {
-                  required: 'Please select the currency of the price.',
+                  required: 'Select currency of price.',
                 })}
                 name="price_currency"
                 id="price_currency"
@@ -439,23 +465,27 @@ export default function CreateEventForm() {
                 <option>SGD</option>
               </select>
               {errors.price_currency && (
-                <span className="text-red-500">
+                <span className="text-red-500 text-sm">
                   {errors.price_currency.message}
                 </span>
               )}
             </div>
           </div>
+          {errors.price && (
+            <span className="text-red-500 text-sm">{errors.price.message}</span>
+          )}
         </div>
+        {/* Event slots */}
         <div className="sm:col-span-3">
           <label
             htmlFor="slots"
             className="block text-sm font-medium text-gray-700"
           >
-            Slots Available <span className="text-red-500">*</span>
+            Slots Available <span className="text-red-500 text-sm">*</span>
           </label>
           <input
             {...register('slots', {
-              required: 'Please enter the number of slots available.',
+              required: 'Enter number of slots available.',
             })}
             type="number"
             name="slots"
@@ -464,7 +494,7 @@ export default function CreateEventForm() {
             className={`mt-1 block w-full border ${errors.slots ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
           />
           {errors.slots && (
-            <span className="text-red-500">{errors.slots.message}</span>
+            <span className="text-red-500 text-sm">{errors.slots.message}</span>
           )}
         </div>
       </div>
