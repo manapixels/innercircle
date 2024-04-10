@@ -74,11 +74,11 @@ export function FileUpload({
       ) : uploaded ? (
         <div className="w-full h-full absolute top-0 left-0">
           <Image
-            className="rounded-md"
+            className="rounded-md object-cover w-full h-full"
             src={uploadedImageUrl}
             alt="Uploaded Image"
-            layout="fill"
-            objectFit="cover"
+            sizes="100vw"
+            fill
           />
         </div>
       ) : (
