@@ -74,7 +74,8 @@ create table public.events (
   price integer,
   price_currency currencies not null default 'sgd',
   slots integer not null default 0,
-  image_url varchar(255),
+  image_thumbnail_url varchar(255),
+  image_banner_url varchar(255),
   created_by uuid references public.profiles (id) on delete set null not null,
   created_at timestamp with time zone default timezone ('utc'::text, now()) not null
 );
@@ -292,7 +293,8 @@ select
   e.id,
   e.name,
   e.slug,
-  e.image_url,
+  e.image_thumbnail_url,
+  e.image_banner_url,
   e.created_at,
   e.date_start,
   e.date_end,

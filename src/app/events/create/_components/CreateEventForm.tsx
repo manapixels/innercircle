@@ -22,6 +22,8 @@ type Inputs = {
   time_end: string;
   time_zone: string;
   description: string;
+  image_thumbnail_url: string;
+  image_banner_url: string;
   price: number;
   price_currency: string;
   slots: number;
@@ -52,20 +54,22 @@ export default function CreateEventForm() {
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
-        name: 'MBTI Speed Dating 5.0',
-        category: 'Speed Dating',
-        location_name: 'Burger King HomeTeamNS Khatib',
-        location_address: '2 Yishun Walk, #01-06/07 HomeTeamNS Khatib, Singapore 767944',
-        location_country: 'Singapore',
-        date_start: '2024-06-10',
-        date_end: '2024-06-10',
-        time_start: '19:00',
-        time_end: '22:00',
-        time_zone: 'GMT+08:00',
-        description: 'Dive into a whirlwind of romance at our unique speed dating event, where your MBTI personality type is the key to unlocking meaningful connections. Find your perfect match in a night of engaging conversations and delightful discoveries, all tailored to the fascinating world of MBTI compatibility.',
-        price: 55,
-        price_currency: 'SGD',
-        slots: 50,
+      name: 'MBTI Speed Dating 5.0',
+      category: 'Speed Dating',
+      location_name: 'Burger King HomeTeamNS Khatib',
+      location_address:
+        '2 Yishun Walk, #01-06/07 HomeTeamNS Khatib, Singapore 767944',
+      location_country: 'Singapore',
+      date_start: '2024-06-10',
+      date_end: '2024-06-10',
+      time_start: '19:00',
+      time_end: '22:00',
+      time_zone: 'GMT+08:00',
+      description:
+        'Dive into a whirlwind of romance at our unique speed dating event, where your MBTI personality type is the key to unlocking meaningful connections. Find your perfect match in a night of engaging conversations and delightful discoveries, all tailored to the fascinating world of MBTI compatibility.',
+      price: 55,
+      price_currency: 'SGD',
+      slots: 50,
     },
   });
   const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
@@ -73,6 +77,14 @@ export default function CreateEventForm() {
   // Watch fields
   const watchStartDate = watch('date_start');
   const watchEndDate = watch('date_end');
+
+  const handleThumbnailUpload = (uploadResult: string) => {
+    setValue('image_thumbnail_url', uploadResult);
+  };
+
+  const handleBannerUpload = (uploadResult: string) => {
+    setValue('image_banner_url', uploadResult);
+  };
 
   useEffect(() => {
     if (new Date(watchEndDate) < new Date(watchStartDate)) {
@@ -89,8 +101,36 @@ export default function CreateEventForm() {
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
-        <FileUpload className="sm:col-span-2" userId={user?.id} bucketId="event_thumbnails" />
-        <FileUpload className="sm:col-span-4" userId={user?.id} bucketId="event_banners" />
+        <FileUpload
+          className="sm:col-span-2 aspect-square"
+          userId={user?.id}
+          bucketId="event_thumbnails"
+          label="Thumbnail"
+          onUploadComplete={handleThumbnailUpload}
+          register={register}
+          validationSchema={{
+            required: 'Please upload a thumbnail for the event.',
+          }}
+          name="image_thumbnail_url"
+        />
+        {errors.image_thumbnail_url && (
+          <span className="text-red-500">
+            {errors.image_thumbnail_url.message}
+          </span>
+        )}
+
+        <FileUpload
+          className="sm:col-span-4"
+          userId={user?.id}
+          bucketId="event_banners"
+          label="Banner"
+          onUploadComplete={handleBannerUpload}
+          register={register}
+          validationSchema={{
+            required: 'Please upload a banner for the event.',
+          }}
+          name="image_banner_url"
+        />
         <div className="sm:col-span-6">
           <label
             htmlFor="name"

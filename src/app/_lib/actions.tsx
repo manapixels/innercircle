@@ -316,12 +316,12 @@ export const uploadFileToBucket = async (
     }
     const fileExtension = fileObject.name.split('.').pop();
     // Rename the file to userId.[original file extension]
-    const fileName = `${userId}.${fileExtension}`;
+    const fileName = `${userId}-${Math.random()}.${fileExtension}`;
     // Upload the file to the specified bucket
     const { data, error } = await supabase.storage
       .from(bucketId)
       .upload(fileName, fileObject, {
-        upsert: true,
+        upsert: false,
       });
 
     if (error) throw error;
@@ -340,9 +340,7 @@ export const uploadFileToBucket = async (
 export const downloadFileFromBucket = async (bucketId: string, fileName: string) => {
   const supabase = createClient();
   try {
-    const { data, error } = await supabase.storage.from(bucketId).download(fileName);
-    if (error) throw error;
-
+    const { data } = await supabase.storage.from(bucketId).getPublicUrl(fileName);
     return data;
   } catch (error) {
     console.error('Error downloading file from bucket:', error);
