@@ -1,10 +1,13 @@
 'use server';
 
+import { User } from '@supabase/supabase-js';
 import { createClient } from '../_utils/supabase/server';
 import { Tables } from './definitions';
 // import { dummyEvents } from '@/app/_lib/dummyData';
 
+export type UserWithProfile = User & Tables<'profiles'>;
 export type Profile = Tables<'profiles'> & { email?: string };
+export type ProfileWithRoles = Tables<'profiles_with_roles'>;
 export type ProfileWithEventsHosted = Tables<'profiles_with_hosted_events'>;
 export type Event = Tables<'events'>;
 export type EventWithCreatorInfo = Event & {
@@ -75,11 +78,12 @@ export const fetchUserProfile = async (userId) => {
   const supabase = createClient();
   try {
     let { data } = await supabase
-      .from('profiles')
+      .from('profiles_with_roles')
       .select(`*`)
       .eq('id', userId)
       .single();
-    return data as Profile;
+
+    return data as ProfileWithRoles;
   } catch (error) {
     console.log('error', error);
     return error;
@@ -91,7 +95,7 @@ export const fetchUserProfile = async (userId) => {
  * @param {string} username - The username of the profile.
  * @returns The profile data with hosted events or null if an error occurs.
  */
-export const fetchProfileWithHostedEvents = async (username: string) => {
+export const fetchUserProfileWithHostedEvents = async (username: string) => {
   const supabase = createClient();
   try {
     const { data, error } = await supabase

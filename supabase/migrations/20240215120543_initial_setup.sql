@@ -126,13 +126,14 @@ $$ language plpgsql security definer;
 create
 or replace function public.handle_new_user () returns trigger as $$ 
 begin
-  insert into public.profiles (id, name, avatar_url, birthmonth, birthyear)
+  insert into public.profiles (id, name, avatar_url, birthmonth, birthyear, roles)
   values (
       new.id,
       new.raw_user_meta_data->>'name',
       new.raw_user_meta_data->>'avatar_url',
       new.raw_user_meta_data['birthmonth']::integer,
-      new.raw_user_meta_data['birthyear']::integer
+      new.raw_user_meta_data['birthyear']::integer,
+      ARRAY[]::public.user_roles[]
     );
   return new;
 end;
@@ -268,6 +269,24 @@ begin
 end;
 $$ language plpgsql;
 
+
+-- Creates a view of profiles with their roles
+CREATE OR REPLACE VIEW profiles_with_roles AS
+SELECT
+  p.id,
+  p.name,
+  p.avatar_url,
+  p.birthmonth,
+  p.birthyear,
+  p.username,
+  array_agg(ur.role) AS roles
+FROM
+  public.profiles p
+JOIN
+  public.user_roles ur ON ur.user_id = p.id
+GROUP BY
+  p.id;
+
 -- Create a view of profiles with their hosted events, roles, and total guests hosted.
 CREATE VIEW profiles_with_hosted_events AS
 SELECT
@@ -364,6 +383,10 @@ with
 create policy "Users can update own profile." on profiles
 for update
   using (auth.uid () = id);
+
+create policy "Users can view their own roles." on user_roles for
+select
+  using (auth.uid () = user_id);
 
 -- storage
 create policy "Avatar images are publicly accessible." on storage.objects for

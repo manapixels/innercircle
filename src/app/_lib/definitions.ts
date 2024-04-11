@@ -53,6 +53,13 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "profiles_with_hosted_events"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_with_roles"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -130,6 +137,13 @@ export interface Database {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles_with_hosted_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles_with_roles"
             referencedColumns: ["id"]
           }
         ]
@@ -217,6 +231,13 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "profiles_with_hosted_events"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_with_roles"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -251,6 +272,26 @@ export interface Database {
           joined_events_count: number | null
           name: string | null
           user_roles: Database["public"]["Enums"]["app_role"][] | null
+          username: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      profiles_with_roles: {
+        Row: {
+          avatar_url: string | null
+          birthmonth: number | null
+          birthyear: number | null
+          id: string | null
+          name: string | null
+          roles: Database["public"]["Enums"]["app_role"][] | null
           username: string | null
         }
         Relationships: [

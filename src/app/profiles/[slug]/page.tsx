@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import {
   Event,
   ProfileWithEventsHosted,
-  fetchProfileWithHostedEvents,
+  fetchUserProfileWithHostedEvents,
 } from '@/app/_lib/actions';
 import Image from 'next/image';
 import EventListItemInProfile from './_components/EventListItemInProfile';
@@ -16,7 +16,7 @@ export default async function ProfilePage({
 }: {
   params: { slug: string };
 }) {
-  const profile = (await fetchProfileWithHostedEvents(
+  const profile = (await fetchUserProfileWithHostedEvents(
     params.slug,
   )) as ProfileWithEventsHosted;
   const hostedEvents = profile?.hosted_events as Event[];
