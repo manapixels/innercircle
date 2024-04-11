@@ -11,13 +11,13 @@ export default function ReservationForm({
 }: {
   event: EventWithCreatorInfo;
 }) {
-  const [isGroup, setIsGroup] = useState(false)
+  const [isGroup, setIsGroup] = useState(false);
   const [guests, setGuests] = useState(1);
   const [isConfirming, setIsConfirming] = useState(false);
   const [loading, setLoading] = useState(false);
   const user = useUser();
 
-  const eventOver = hasDatePassed(event?.date_start)
+  const eventOver = hasDatePassed(event?.date_start);
 
   const handleReservation = async () => {
     if (!user?.id) {
@@ -115,106 +115,138 @@ export default function ReservationForm({
 
           <div className="my-4 border-b"></div>
 
-          <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">Booking for</h3>
-            <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white rounded-lg sm:flex dark:bg-gray-700 dark:text-white">
-                <li className={`w-full border-2 rounded-md ${!isGroup ? 'border-base-600' : 'border-gray-200'} dark:border-gray-600`}>
-                    <div className="flex items-center ps-3">
-                        <div className={`relative w-4 h-4 rounded-full ${!isGroup ? 'bg-base-600' : 'bg-gray-100'} border ${!isGroup ? 'border-base-600' : 'border-gray-300'} focus:ring-white dark:focus:ring-base-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500 aspect-square`} onClick={() => {
-                          setIsGroup(false)
-                          setGuests(1)
-                        }}>
-                          { !isGroup && <div className="absolute inset-0 rounded-full bg-base-600"></div> }
-                        </div>
-                        <label htmlFor="horizontal-list-radio-1" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer" onClick={() => {
-                          setIsGroup(false)
-                          setGuests(1)
-                        }}>Myself</label>
+          {!eventOver && (
+            <>
+              <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">
+                Booking for
+              </h3>
+              <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white rounded-lg sm:flex dark:bg-gray-700 dark:text-white">
+                <li
+                  className={`w-full border-2 rounded-md ${isGroup ? 'border-base-600' : 'border-gray-200'} dark:border-gray-600`}
+                >
+                  <div className="flex items-center ps-3">
+                    <div
+                      className={`relative w-4 h-4 rounded-full border ${!isGroup ? 'bg-base-600 border-base-600' : 'bg-gray-100 border-gray-300'} focus:ring-white dark:focus:ring-base-600 dark:ring-offset-gray-7000 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500 aspect-square`}
+                      onClick={() => {
+                        setIsGroup(false);
+                        setGuests(1);
+                      }}
+                    >
+                      {!isGroup && (
+                        <div className="absolute inset-0 rounded-full bg-base-600"></div>
+                      )}
                     </div>
+                    <label
+                      htmlFor="horizontal-list-radio-1"
+                      className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
+                      onClick={() => {
+                        setIsGroup(false);
+                        setGuests(1);
+                      }}
+                    >
+                      Myself
+                    </label>
+                  </div>
                 </li>
-                <li className={`w-full border-2 rounded-md ${isGroup ? 'border-base-600' : 'border-gray-200'} dark:border-gray-600`}>
-                    <div className="flex items-center ps-3">
-                        <div className={`relative w-4 h-4 rounded-full ${isGroup ? 'bg-base-600' : 'bg-gray-100'} border ${isGroup ? 'border-base-600' : 'border-gray-300'} focus:ring-white dark:focus:ring-base-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500 aspect-square`} onClick={() => {
-                          setIsGroup(true)
-                          setGuests(2)
-                        }}>
-                          { isGroup && <div className="absolute inset-0 rounded-full bg-base-600"></div> }
-                        </div>
-                        <label htmlFor="horizontal-list-radio-group" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer" onClick={() => {
-                          setIsGroup(true)
-                          setGuests(2)
-                        }}>Group</label>
+                <li
+                  className={`w-full border-2 rounded-md ${isGroup ? 'border-base-600' : 'border-gray-200'} dark:border-gray-600`}
+                >
+                  <div className="flex items-center ps-3">
+                    <div
+                      className={`relative w-4 h-4 rounded-full border ${isGroup ? 'bg-base-600 border-base-600' : 'bg-gray-100 border-gray-300'} focus:ring-white dark:focus:ring-base-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:border-gray-500 aspect-square`}
+                      onClick={() => {
+                        setIsGroup(true);
+                        setGuests(2);
+                      }}
+                    >
+                      {isGroup && (
+                        <div className="absolute inset-0 rounded-full bg-base-600"></div>
+                      )}
                     </div>
+                    <label
+                      htmlFor="horizontal-list-radio-group"
+                      className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
+                      onClick={() => {
+                        setIsGroup(true);
+                        setGuests(2);
+                      }}
+                    >
+                      Group
+                    </label>
+                  </div>
                 </li>
-            </ul>
+              </ul>
+            </>
+          )}
 
           {guests > 1 && (
-          <div className="border flex justify-between items-center p-2 rounded-lg relative">
-            {/* <span className="text-sm pl-1">Guests</span> */}
+            <div className="border flex justify-between items-center p-2 rounded-lg relative">
+              {/* <span className="text-sm pl-1">Guests</span> */}
 
-            <button
-              type="button"
-              id="decrement-button"
-              data-input-counter-decrement="counter-input"
-              className={`flex-shrink-0 bg-gray-100 ${(guests === 2 || eventOver) ? 'pointer-events-none' : 'hover:bg-gray-200 focus:ring-2'} inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100 focus:outline-none`}
-              onClick={() => {
-                if (guests > 2) {
-                  setGuests(guests - 2);
-                }
-              }}
-              disabled={eventOver}
-            >
-              <svg
-                className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${(guests === 2 || eventOver) ? 'opacity-50' : ''}`}
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 18 2"
+              <button
+                type="button"
+                id="decrement-button"
+                data-input-counter-decrement="counter-input"
+                className={`flex-shrink-0 bg-gray-100 ${guests === 2 || eventOver ? 'pointer-events-none' : 'hover:bg-gray-200 focus:ring-2'} inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100 focus:outline-none`}
+                onClick={() => {
+                  if (guests > 2) {
+                    setGuests(guests - 2);
+                  }
+                }}
+                disabled={eventOver}
               >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M1 1h16"
-                />
-              </svg>
-            </button>
-            <input
-              type="text"
-              id="counter-input"
-              data-input-counter
-              className="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
-              placeholder=""
-              value={guests}
-              onChange={(e) => setGuests(parseInt(e.target.value))}
-              disabled={eventOver}
-              required
-            />
-            <button
-              type="button"
-              id="increment-button"
-              data-input-counter-increment="counter-input"
-              className={`flex-shrink-0 bg-gray-100 inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100  focus:outline-none ${eventOver ? 'pointer-events-none' : 'hover:bg-gray-200 focus:ring-2'}`}
-              onClick={() => setGuests(guests + 1)}
-              disabled={eventOver}
-            >
-              <svg
-                className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${eventOver ? 'opacity-50' : ''}`}
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 18 18"
+                <svg
+                  className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${guests === 2 || eventOver ? 'opacity-50' : ''}`}
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 18 2"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M1 1h16"
+                  />
+                </svg>
+              </button>
+              <input
+                type="text"
+                id="counter-input"
+                data-input-counter
+                className="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
+                placeholder=""
+                value={guests}
+                onChange={(e) => setGuests(parseInt(e.target.value))}
+                disabled={eventOver}
+                required
+              />
+              <button
+                type="button"
+                id="increment-button"
+                data-input-counter-increment="counter-input"
+                className={`flex-shrink-0 bg-gray-100 inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100  focus:outline-none ${eventOver ? 'pointer-events-none' : 'hover:bg-gray-200 focus:ring-2'}`}
+                onClick={() => setGuests(guests + 1)}
+                disabled={eventOver}
               >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 1v16M1 9h16"
-                />
-              </svg>
-            </button>
-          </div>
+                <svg
+                  className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${eventOver ? 'opacity-50' : ''}`}
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 18 18"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 1v16M1 9h16"
+                  />
+                </svg>
+              </button>
+            </div>
           )}
 
           <button

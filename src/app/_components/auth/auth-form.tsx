@@ -177,7 +177,7 @@ export default function AuthForm() {
             className={`text-black bg-base-100 hover:bg-base-200 focus:ring-4 focus:outline-none focus:ring-base-300 font-bold rounded-lg text-sm block w-full px-5 py-2.5 text-center dark:bg-base-600 dark:hover:bg-base-700 dark:focus:ring-base-800 ${isSubmitting ? 'disabled:opacity-50' : ''}`}
             disabled={isSubmitting}
           >
-            {isSubmitting && <Spinner />}
+            {isSubmitting && <Spinner className="ml-1.5" />}
             {state === 'login' ? 'Log in' : 'Sign up'}
           </button>
 

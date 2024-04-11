@@ -47,7 +47,7 @@ export default async function EventDetailsPage({
             {event?.created_by?.avatar_url ? (
               <img
                 className="h-10 w-10 rounded-full mx-2"
-                src={event?.created_by?.avatar_url || ''}
+                src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${event.created_by.avatar_url}`}
                 alt=""
               />
             ) : (

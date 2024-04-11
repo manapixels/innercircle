@@ -7,7 +7,7 @@ import AuthForm from './auth/auth-form';
 import LoggedInUser from './LoggedInUser';
 import { useUser } from '../_contexts/UserContext';
 
-export default async function Header() {
+export default function Header() {
   const pathname = usePathname()
   const user = useUser();
 
