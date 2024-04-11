@@ -11,7 +11,6 @@ export default function EventListItem({
 }: {
   event: EventWithCreatorInfo;
 }) {
-
   return (
     <Link
       href={`/events/${event.slug}`}
@@ -21,7 +20,7 @@ export default function EventListItem({
       <div className="w-full relative aspect-square">
         {event?.image_thumbnail_url ? (
           <Image
-          src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/your-bucket-name/${event?.image_thumbnail_url}`}
+            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/event_thumbnails/${event?.image_thumbnail_url}`}
             alt={`${event?.name}`}
             className="rounded-lg object-cover w-full h-full"
             width="300"
@@ -65,8 +64,8 @@ export default function EventListItem({
                   <Image
                     src={
                       event?.created_by?.avatar_url
-                        ? event.created_by.avatar_url
-                        : '/users/shirley-chen.png'
+                        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${event.created_by.avatar_url}`
+                        : '/users/placeholder-avatar.svg'
                     }
                     alt=""
                     width={60}
@@ -74,7 +73,9 @@ export default function EventListItem({
                     className="rounded-full"
                   />
                   <div>
-                    <div className="font-medium text-[1rem]">{event?.created_by?.name}</div>
+                    <div className="font-medium text-[1rem]">
+                      {event?.created_by?.name}
+                    </div>
                     <div className="text-xs text-gray-400">Your host</div>
                   </div>
                 </div>
@@ -103,8 +104,8 @@ export default function EventListItem({
             <Image
               src={
                 event?.created_by?.avatar_url
-                  ? event.created_by.avatar_url
-                  : '/users/shirley-chen.png'
+                  ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${event.created_by.avatar_url}`
+                  : '/users/placeholder-avatar.svg'
               }
               alt={event?.created_by?.name || ''}
               className="rounded-full absolute bottom-0.5 left-0.5 p-1"

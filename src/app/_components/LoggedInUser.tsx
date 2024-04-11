@@ -25,14 +25,16 @@ export default function LoggedInUser({ user }: { user: User }) {
             whileHover={{ scale: 1.08, backgroundColor: 'rgb(232 235 239)' }}
             onClick={() => setIsOpen(true)}
           >
-              <Image
-                className="h-full w-full rounded-full"
-                src={profile?.avatar_url || '/users/placeholder-avatar.svg'}
-                alt=""
-                width={34}
-                height={34}
-              />
-           
+            <Image
+              className="h-full w-full rounded-full"
+              src={
+                `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${profile?.avatar_url}` ||
+                '/users/placeholder-avatar.svg'
+              }
+              alt=""
+              width={34}
+              height={34}
+            />
           </motion.button>
           <motion.div
             ref={ref}
