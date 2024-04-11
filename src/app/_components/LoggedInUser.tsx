@@ -1,15 +1,13 @@
 'use client';
 
-import { User } from '@supabase/supabase-js';
 import Link from 'next/link';
-import { Profile, signOut } from '../_lib/actions';
+import { ProfileWithRoles, signOut } from '../_lib/actions';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import Image from 'next/image';
 
-export default function LoggedInUser({ user }: { user: User }) {
-  const profile = user?.user_metadata as Profile;
+export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const ref = useRef(null);
@@ -28,7 +26,7 @@ export default function LoggedInUser({ user }: { user: User }) {
             <Image
               className="h-full w-full rounded-full"
               src={
-                `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${profile?.avatar_url}` ||
+                `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${user?.avatar_url}` ||
                 '/users/placeholder-avatar.svg'
               }
               alt=""

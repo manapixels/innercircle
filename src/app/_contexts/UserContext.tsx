@@ -63,8 +63,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     initializeUser();
   }, []);
 
-  console.log(user);
-
   return (
     <UserContext.Provider value={user || null}>{children}</UserContext.Provider>
   );
