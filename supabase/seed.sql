@@ -40,7 +40,7 @@ BEGIN
   
   END LOOP;
 
-  user_id := uuid_generate_v4();
+  user_id := 'b02e2f4a-94ed-45ad-a745-435d986db886';
   INSERT INTO auth.users (
       id,
       instance_id,
@@ -64,7 +64,7 @@ BEGIN
       now(),
       NULL, '', NULL, '', NULL, '', '', NULL, NULL,
       '{"provider":"email","providers":["email"]}'::jsonb,
-      ('{"name":"Shirley Chen","avatar_url":"/users/shirley-chen.png","birthmonth":7, "birthyear":1993}')::jsonb,
+      ('{"name":"Shirley Chen","avatar_url":"' || user_id || '.png","birthmonth":7, "birthyear":1993}')::jsonb,
       now(),
       now()
     );
@@ -100,8 +100,8 @@ BEGIN
       '2023-08-02T22:00:00+08:00', 
       '', 
       '514cec29-5a04-488a-8dad-5d43e861f3b8', 
-      '/events/514cec29-5a04-488a-8dad-5d43e861f3b8.png', 
-      '/events/514cec29-5a04-488a-8dad-5d43e861f3b8.png',
+      '514cec29-5a04-488a-8dad-5d43e861f3b8.png', 
+      '514cec29-5a04-488a-8dad-5d43e861f3b8.png',
       'The Otherside', 
       '7 Erskine Rd, Singapore 069320',
       'Singapore', 
@@ -118,8 +118,8 @@ BEGIN
       '2023-09-21T22:00:00+08:00', 
       '', 
       'e89dd521-24a9-4ef0-9667-8a3c46433c85', 
-      '/events/e89dd521-24a9-4ef0-9667-8a3c46433c85.png', 
-      '/events/e89dd521-24a9-4ef0-9667-8a3c46433c85.png',
+      'e89dd521-24a9-4ef0-9667-8a3c46433c85.png', 
+      'e89dd521-24a9-4ef0-9667-8a3c46433c85.png',
       'The Otherside', 
       '7 Erskine Rd, Singapore 069320',
       'Singapore', 
@@ -136,8 +136,8 @@ BEGIN
       '2023-11-24T22:00:00+08:00', 
       '', 
       '295f43cc-c332-40ec-ab5e-467c663241fd', 
-      '/events/295f43cc-c332-40ec-ab5e-467c663241fd.jpg', 
-      '/events/295f43cc-c332-40ec-ab5e-467c663241fd.jpg',
+      '295f43cc-c332-40ec-ab5e-467c663241fd.jpg', 
+      '295f43cc-c332-40ec-ab5e-467c663241fd.jpg',
       'Projector X: No Spoilers Bar', 
       '8 Grange Rd, #05-01, Singapore 239695',
       'Singapore', 
@@ -154,8 +154,8 @@ BEGIN
       '2023-12-23T22:00:00+08:00', 
       '', 
       'f90d618d-291e-4923-a083-2e44651a069f', 
-      '/events/f90d618d-291e-4923-a083-2e44651a069f.jpg', 
-      '/events/f90d618d-291e-4923-a083-2e44651a069f.jpg',
+      'f90d618d-291e-4923-a083-2e44651a069f.jpg', 
+      'f90d618d-291e-4923-a083-2e44651a069f.jpg',
       'Suntec City', 
       'Suntec Tower 3, 8 Temasek Blvd, Singapore 038988',
       'Singapore', 
@@ -172,8 +172,8 @@ BEGIN
       '2024-01-27T22:00:00+08:00', 
       'kinda like single''s inferno... but not exactly', 
       'a3157df3-4b7b-451a-842b-0fe5e72ffdcf', 
-      '/events/a3157df3-4b7b-451a-842b-0fe5e72ffdcf.jpg', 
-      '/events/a3157df3-4b7b-451a-842b-0fe5e72ffdcf.jpg',
+      'a3157df3-4b7b-451a-842b-0fe5e72ffdcf.jpg', 
+      'a3157df3-4b7b-451a-842b-0fe5e72ffdcf.jpg',
       'Suntec Tower 3', 
       'Suntec Tower 3, 8 Temasek Blvd, Singapore 038988',
       'Singapore', 
@@ -190,8 +190,8 @@ BEGIN
       '2024-03-23T22:00:00+08:00', 
       '', 
       '9a6654b8-32c3-47a8-bd82-4ad16e299663', 
-      '/events/9a6654b8-32c3-47a8-bd82-4ad16e299663.jpg', 
-      '/events/9a6654b8-32c3-47a8-bd82-4ad16e299663.jpg',
+      '9a6654b8-32c3-47a8-bd82-4ad16e299663.jpg', 
+      '9a6654b8-32c3-47a8-bd82-4ad16e299663.jpg',
       'MYSEAT.sg', 
       '2 Veerasamy Rd, Singapore 207305',
       'Singapore', 
