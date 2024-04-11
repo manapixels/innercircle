@@ -14,6 +14,12 @@ export type EventWithCreatorInfo = Event & {
   };
 };
 
+/**
+ * Signs up a new user with email and password.
+ * @param {string} email - The email of the new user.
+ * @param {string} password - The password for the new user.
+ * @returns The data or error from the signUp operation.
+ */
 export const signUpNewUser = async (email, password) => {
   const supabase = createClient();
   const { data, error } = await supabase.auth.signUp({
@@ -27,6 +33,12 @@ export const signUpNewUser = async (email, password) => {
   return data;
 };
 
+/**
+ * Signs in a user with email and password.
+ * @param {string} email - The email of the user.
+ * @param {string} password - The password for the user.
+ * @returns A boolean indicating success.
+ */
 export const signInWithEmail = async (email, password) => {
   const supabase = createClient();
   const { error } = await supabase.auth.signInWithPassword({
@@ -41,6 +53,10 @@ export const signInWithEmail = async (email, password) => {
   return true;
 };
 
+/**
+ * Signs out the current user.
+ * @returns A boolean indicating success or the error if failed.
+ */
 export const signOut = async () => {
   const supabase = createClient();
   const { error } = await supabase.auth.signOut();
@@ -51,8 +67,9 @@ export const signOut = async () => {
 };
 
 /**
- * Fetch a single user
- * @param {number} userId
+ * Fetches a single user profile by user ID.
+ * @param {number} userId - The ID of the user.
+ * @returns The user profile data or error.
  */
 export const fetchUserProfile = async (userId) => {
   const supabase = createClient();
@@ -69,6 +86,11 @@ export const fetchUserProfile = async (userId) => {
   }
 };
 
+/**
+ * Fetches a profile with hosted events by username.
+ * @param {string} username - The username of the profile.
+ * @returns The profile data with hosted events or null if an error occurs.
+ */
 export const fetchProfileWithHostedEvents = async (username: string) => {
   const supabase = createClient();
   try {
@@ -94,6 +116,11 @@ export const fetchProfileWithHostedEvents = async (username: string) => {
   }
 };
 
+/**
+ * Updates a user profile.
+ * @param {Profile} user - The user profile data to update.
+ * @returns The updated user data or error.
+ */
 export const updateUserProfile = async (user: Profile) => {
   const supabase = createClient();
   try {
@@ -111,6 +138,11 @@ export const updateUserProfile = async (user: Profile) => {
   }
 };
 
+/**
+ * Updates the email of the current user.
+ * @param {string} email - The new email to update to.
+ * @returns The updated user data or error.
+ */
 export const updateEmail = async (email: string) => {
   const supabase = createClient();
   try {
@@ -124,6 +156,11 @@ export const updateEmail = async (email: string) => {
   }
 };
 
+/**
+ * Updates the password of the current user.
+ * @param {string} password - The new password to update to.
+ * @returns The updated user data or error.
+ */
 export const updatePassword = async (password: string) => {
   const supabase = createClient();
   try {
@@ -138,8 +175,9 @@ export const updatePassword = async (password: string) => {
 };
 
 /**
- * Fetch all roles for the current user
- * @param {function} setState Optionally pass in a hook or callback to set the state
+ * Fetches all roles for the current user.
+ * @param {function} setState - Optionally pass in a hook or callback to set the state.
+ * @returns The roles data or error.
  */
 export const fetchUserRoles = async (setState) => {
   const supabase = createClient();
@@ -154,8 +192,8 @@ export const fetchUserRoles = async (setState) => {
 };
 
 /**
- * Fetch all events and their authors
- * @param {function} setState Optionally pass in a hook or callback to set the state
+ * Fetches all events and their authors.
+ * @returns The events data or error.
  */
 export const fetchEvents = async () => {
   const supabase = createClient();
@@ -173,7 +211,9 @@ export const fetchEvents = async () => {
 };
 
 /**
- * Fetch an event by its slug
+ * Fetches an event by its slug.
+ * @param {string} slug - The slug of the event.
+ * @returns The event data or error.
  */
 export const fetchEvent = async (slug: string) => {
   const supabase = createClient();
@@ -209,16 +249,9 @@ export const fetchEvent = async (slug: string) => {
 };
 
 /**
- * Insert a new event into the DB
- * @param {string} name The event name
- * @param {string} description The event description
- * @param {number} user_id The event creator
- * @param {Date} date_start The event start date
- * @param {Date} date_end The event end date
- * @param {string} location The event location
- * @param {string} location_country The event location country
- * @param {number} price The event price
- * @param {string} price_currency The event price currency
+ * Inserts a new event into the database.
+ * @param {Object} eventDetails - The details of the event to add.
+ * @returns The inserted event data or error.
  */
 export const addEvent = async ({
   name,
@@ -282,8 +315,9 @@ export const addEvent = async ({
 };
 
 /**
- * Delete an event from the DB
- * @param {number} event_id
+ * Deletes an event from the database.
+ * @param {number} event_id - The ID of the event to delete.
+ * @returns The deleted event data or error.
  */
 export const deleteEvent = async (event_id) => {
   const supabase = createClient();
@@ -299,6 +333,13 @@ export const deleteEvent = async (event_id) => {
   }
 };
 
+/**
+ * Signs up a user for an event.
+ * @param {string} event_id - The ID of the event.
+ * @param {string} user_id - The ID of the user.
+ * @param {number} tickets_bought - The number of tickets bought.
+ * @returns The signup data or null if an error occurs.
+ */
 export const signUpForEvent = async (
   event_id: string,
   user_id: string,
@@ -321,10 +362,11 @@ export const signUpForEvent = async (
 };
 
 /**
- * Uploads a file to a specified Supabase bucket
- * @param {string} bucketId - The ID of the bucket where the file will be uploaded
- * @param {string} userId - The ID of the user, used to rename the file
- * @param {File} file - The file to be uploaded
+ * Uploads a file to a specified Supabase bucket.
+ * @param {string} userId - The ID of the user, used to rename the file.
+ * @param {string} bucketId - The ID of the bucket where the file will be uploaded.
+ * @param {FormData} file - The file to be uploaded.
+ * @returns The uploaded file data or null if an error occurs.
  */
 export const uploadFileToBucket = async (
   userId: string,
@@ -359,9 +401,10 @@ export const uploadFileToBucket = async (
 };
 
 /**
- * Downloads a file from a specified Supabase bucket
- * @param {string} bucketId - The ID of the bucket from where the file will be downloaded
- * @param {string} fileName - The name of the file to be downloaded
+ * Downloads a file from a specified Supabase bucket.
+ * @param {string} bucketId - The ID of the bucket from where the file will be downloaded.
+ * @param {string} fileName - The name of the file to be downloaded.
+ * @returns The downloaded file data or null if an error occurs.
  */
 export const downloadFileFromBucket = async (
   bucketId: string,
