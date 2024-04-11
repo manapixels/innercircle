@@ -184,7 +184,8 @@ export const fetchEvent = async (slug: string) => {
         `
         id,
         name,
-        image_url,
+        image_thumbnail_url,
+        image_banner_url,
         created_at,
         created_by (id, name, avatar_url),
         description,
