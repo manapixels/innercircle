@@ -6,9 +6,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import Image from 'next/image';
+import { useUser } from '../_contexts/UserContext';
 
 export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { setUser } = useUser();
 
   const ref = useRef(null);
   useOnClickOutside(ref, () => setIsOpen(false));
@@ -91,7 +93,10 @@ export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
                 role="menuitem"
                 tabIndex={-1}
                 id="menu-item-3"
-                onClick={async () => await signOut()}
+                onClick={async () => {
+                  await signOut();
+                  setUser(undefined);
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

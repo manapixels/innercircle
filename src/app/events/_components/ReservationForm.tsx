@@ -15,18 +15,18 @@ export default function ReservationForm({
   const [guests, setGuests] = useState(1);
   const [isConfirming, setIsConfirming] = useState(false);
   const [loading, setLoading] = useState(false);
-  const user = useUser();
+  const { profile } = useUser();
 
   const eventOver = hasDatePassed(event?.date_start);
 
   const handleReservation = async () => {
-    if (!user?.id) {
+    if (!profile?.id) {
       alert('You must be logged in to make a reservation.');
       return;
     }
 
     setLoading(true);
-    const result = await signUpForEvent(event.id, user.id, guests);
+    const result = await signUpForEvent(event.id, profile.id, guests);
     setLoading(false);
 
     if (result) {

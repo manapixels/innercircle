@@ -38,7 +38,7 @@ export default function CreateEventForm() {
 
   const timeZones = getTimeZonesWithOffset();
   const guessedTimeZone = getGuessedUserTimeZone();
-  const user = useUser();
+  const { profile } = useUser();
 
   const handlePlaceSelected = (place) => {
     setValue('location_name', place.name);
@@ -95,13 +95,13 @@ export default function CreateEventForm() {
       `${data.date_end}T${data.time_end}${timeZoneOffset}`,
     );
 
-    if (user?.id) {
+    if (profile?.id) {
       setIsLoading(true);
       const result = await addEvent({
         name: data.name,
         description: data.description,
         category: slugify(data.category),
-        created_by: user.id,
+        created_by: profile.id,
         date_start: date_start.toISOString(),
         date_end: date_end.toISOString(),
         location_name: data.location_name,
@@ -149,7 +149,7 @@ export default function CreateEventForm() {
         <div className="sm:col-span-2">
           <FileUpload
             className="aspect-square h-full"
-            userId={user?.id}
+            userId={profile?.id}
             bucketId="event_thumbnails"
             label="Thumbnail"
             onUploadComplete={handleThumbnailUpload}
@@ -169,7 +169,7 @@ export default function CreateEventForm() {
         <div className="sm:col-span-4">
           <FileUpload
             className="h-full"
-            userId={user?.id}
+            userId={profile?.id}
             bucketId="event_banners"
             label="Banner"
             onUploadComplete={handleBannerUpload}

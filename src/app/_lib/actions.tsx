@@ -44,7 +44,7 @@ export const signUpNewUser = async (email, password) => {
  */
 export const signInWithEmail = async (email, password) => {
   const supabase = createClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -53,7 +53,7 @@ export const signInWithEmail = async (email, password) => {
     alert('Could not authenticate user');
   }
 
-  return true;
+  return data;
 };
 
 /**

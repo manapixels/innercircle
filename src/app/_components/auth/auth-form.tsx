@@ -1,10 +1,12 @@
 'use client';
+
 import { signInWithEmail, signUpNewUser } from '@/app/_lib/actions';
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Modal } from '../Modal';
 import { useRouter } from 'next/navigation';
 import Spinner from '../Spinner';
+import { useUser } from '@/app/_contexts/UserContext';
 
 interface AuthFormInput {
   email: string;
@@ -20,6 +22,7 @@ export default function AuthForm() {
   const [showModal, setShowModal] = useState(false);
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const router = useRouter();
+  const { setUser } = useUser();
 
   const {
     register,
@@ -33,7 +36,10 @@ export default function AuthForm() {
   });
   const onSubmit: SubmitHandler<AuthFormInput> = async (data) => {
     if (state === 'login') {
-      await signInWithEmail(data.email, data.password);
+      const resp = await signInWithEmail(data.email, data.password);
+      if (resp?.user) {
+        setUser(resp.user);
+      }
       router.refresh();
     } else {
       await signUpNewUser(data.email, data.password);
@@ -177,7 +183,7 @@ export default function AuthForm() {
             className={`text-black bg-base-100 hover:bg-base-200 focus:ring-4 focus:outline-none focus:ring-base-300 font-bold rounded-lg text-sm block w-full px-5 py-2.5 text-center dark:bg-base-600 dark:hover:bg-base-700 dark:focus:ring-base-800 ${isSubmitting ? 'disabled:opacity-50' : ''}`}
             disabled={isSubmitting}
           >
-            {isSubmitting && <Spinner className="ml-1.5" />}
+            {isSubmitting && <Spinner className="mr-1.5" />}
             {state === 'login' ? 'Log in' : 'Sign up'}
           </button>
 

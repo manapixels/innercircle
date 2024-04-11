@@ -2,14 +2,14 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation';
 import AuthForm from './auth/auth-form';
 import LoggedInUser from './LoggedInUser';
 import { useUser } from '../_contexts/UserContext';
 
 export default function Header() {
-  const pathname = usePathname()
-  const user = useUser();
+  const pathname = usePathname();
+  const { profile } = useUser();
 
   return (
     <header className="max-w-6xl w-full mx-auto bg-opacity-50 bg-white">
@@ -38,7 +38,7 @@ export default function Header() {
           </Link>
         </div>
         <div className="justify-self-end flex gap-4 items-center">
-          {user?.roles?.includes('host') && (
+          {profile?.roles?.includes('host') && (
             <Link
               href="/events/create"
               className="inline-block self-center px-4 py-2 text-sm font-medium text-center text-base-700 bg-white border border-base-700 rounded-full hover:border-base-600 hover:text-base-600 focus:ring-4 focus:outline-none focus:ring-base-300 dark:text-base-600 dark:border-base-600 dark:hover:bg-base-600 dark:hover:text-white dark:focus:ring-base-800 italic"
@@ -46,7 +46,7 @@ export default function Header() {
               + Create event
             </Link>
           )}
-          {user?.id ? <LoggedInUser user={user} /> : <AuthForm />}
+          {profile?.id ? <LoggedInUser user={profile} /> : <AuthForm />}
         </div>
       </nav>
     </header>

@@ -9,30 +9,33 @@ import React, {
   useRef,
 } from 'react';
 
+import { User } from '@supabase/supabase-js';
 import { createClient } from '../_utils/supabase/client';
 import { ProfileWithRoles, fetchUserProfile } from '../_lib/actions';
 
 const supabase = createClient();
-const UserContext = createContext<ProfileWithRoles | null>(null);
+const UserContext = createContext<{
+  user: User | undefined;
+  profile: ProfileWithRoles | undefined;
+  setUser: (user: User | undefined) => void;
+}>({ user: undefined, profile: undefined, setUser: () => {} });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<ProfileWithRoles>();
+  const [user, setUser] = useState<User>();
+  const [profile, setProfile] = useState<ProfileWithRoles>();
   const listenerRegistered = useRef(false);
 
   useEffect(() => {
     const initializeUser = async () => {
       try {
-        const { data: authData, error: authError } =
-          await supabase.auth.getUser();
-        if (authError)
+        const { data, error } = await supabase.auth.getUser();
+        if (error)
           throw new Error(
-            `[UserContext] Failed to fetch user: ${authError.message}`,
+            `[UserContext] Failed to fetch user: ${error.message}`,
           );
-        if (authData?.user) {
-          const profile = await fetchUserProfile(authData.user.id);
-          if (profile) {
-            setUser(profile as ProfileWithRoles);
-          }
+        if (data?.user) {
+          setUser(data.user);
+          callAndSetProfile(data.user.id);
         }
       } catch (error) {
         console.error(error);
@@ -41,13 +44,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     if (!listenerRegistered.current) {
       const { data: authListener } = supabase.auth.onAuthStateChange(
-        async (event, session) => {
+        (event, session) => {
           console.log(`Auth event: ${event}`);
           if (session?.user) {
-            const profile = await fetchUserProfile(session.user.id);
-            if (profile) {
-              setUser(profile as ProfileWithRoles);
-            }
+            setUser(session.user);
+            callAndSetProfile(session.user.id);
           }
         },
       );
@@ -63,8 +64,25 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     initializeUser();
   }, []);
 
+  const callAndSetProfile = async (userId: string) => {
+    const profile = await fetchUserProfile(userId);
+    if (profile) {
+      setProfile(profile as ProfileWithRoles);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.id) {
+      callAndSetProfile(user.id);
+    } else if (user === undefined) {
+      setProfile(undefined);
+    }
+  }, [user]);
+
   return (
-    <UserContext.Provider value={user || null}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ user, profile, setUser }}>
+      {children}
+    </UserContext.Provider>
   );
 };
 
