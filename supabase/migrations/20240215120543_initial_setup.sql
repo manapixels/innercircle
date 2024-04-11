@@ -126,14 +126,13 @@ $$ language plpgsql security definer;
 create
 or replace function public.handle_new_user () returns trigger as $$ 
 begin
-  insert into public.profiles (id, name, avatar_url, birthmonth, birthyear, roles)
+  insert into public.profiles (id, name, avatar_url, birthmonth, birthyear)
   values (
       new.id,
       new.raw_user_meta_data->>'name',
       new.raw_user_meta_data->>'avatar_url',
       new.raw_user_meta_data['birthmonth']::integer,
-      new.raw_user_meta_data['birthyear']::integer,
-      ARRAY[]::public.user_roles[]
+      new.raw_user_meta_data['birthyear']::integer
     );
   return new;
 end;
