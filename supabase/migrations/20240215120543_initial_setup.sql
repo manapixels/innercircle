@@ -241,13 +241,24 @@ declare
     v_event_exists int;
     v_already_signed_up int;
 begin
-    -- Check if the event exists
-    select count(*) into v_event_exists
+    -- Check if the event exists and retrieve the number of slots
+    select count(*), slots into v_event_exists, v_event_slots
     from public.events
-    where id = p_event_id;
+    where id = p_event_id
+    group by slots;
 
     if v_event_exists = 0 then
         raise exception 'Event does not exist.';
+    end if;
+
+    -- Calculate the total tickets bought for the event
+    select coalesce(sum(tickets_bought), 0) into v_total_tickets_bought
+    from public.event_participants
+    where event_id = p_event_id;
+
+    -- Check if adding the new tickets exceeds the event's slots
+    if v_total_tickets_bought + p_tickets_bought > v_event_slots then
+        raise exception 'This event is fully signed up.';
     end if;
 
     -- Check if the user has already signed up for the event
