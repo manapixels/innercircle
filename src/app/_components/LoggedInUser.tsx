@@ -52,6 +52,7 @@ export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
                 href="/account"
                 className="text-gray-700 px-4 py-2 text-sm flex gap-1 hover:bg-gray-50"
                 tabIndex={-1}
+                onClick={() => setIsOpen(false)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -71,6 +72,7 @@ export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
                 href="/my-events"
                 className="text-gray-700 px-4 py-2 text-sm flex gap-1 hover:bg-gray-50"
                 tabIndex={-1}
+                onClick={() => setIsOpen(false)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

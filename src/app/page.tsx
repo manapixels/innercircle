@@ -48,8 +48,8 @@ export default async function HomePage() {
                   d="M21 5L2 12.5L9 13.5M21 5L18.5 20L9 13.5M21 5L9 13.5M9 13.5V19L12.2488 15.7229"
                   stroke="#7A6400"
                   strokeWidth="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
               </svg>
               Telegram group
@@ -97,7 +97,7 @@ export default async function HomePage() {
         <Image
           src="/events/background-2.jpg"
           alt="background"
-          className="w-3/12 transform -translate-y-2/4 translate-x-[120%] rounded-3xl aspect-square"
+          className="w-1/6 transform -translate-y-2/4 translate-x-[140%] rounded-3xl aspect-square"
           width={300}
           height={300}
         />
