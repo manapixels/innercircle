@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import AuthForm from './auth/auth-form';
+import AuthForm from './auth/AuthForm';
 import LoggedInUser from './LoggedInUser';
 import { useUser } from '../_contexts/UserContext';
 
