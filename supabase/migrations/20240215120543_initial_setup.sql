@@ -239,7 +239,9 @@ or replace function public.sign_up_for_event (
 ) returns void as $$
 declare
     v_event_exists int;
+    v_event_slots int;
     v_already_signed_up int;
+    v_total_tickets_bought int;
 begin
     -- Check if the event exists and retrieve the number of slots
     select count(*), slots into v_event_exists, v_event_slots
@@ -317,7 +319,7 @@ GROUP BY
   p.id;
 
 -- Create a view to list events with host data
-create view events_with_host_data as
+create or replace view events_with_host_data as
 select
   e.id,
   e.name,
@@ -334,19 +336,14 @@ select
   e.status,
   e.slots,
   json_build_object(
-    'id',
-    p.id,
-    'name',
-    p.name,
-    'username',
-    p.username,
-    'avatar_url',
-    p.avatar_url,
-    'events_created',
-    ec.events_created,
-    'guests_hosted',
-    gh.guests_hosted
-  ) as created_by
+    'id', p.id,
+    'name', p.name,
+    'username', p.username,
+    'avatar_url', p.avatar_url,
+    'events_created', ec.events_created,
+    'guests_hosted', gh.guests_hosted
+  ) as created_by,
+  coalesce(ep.sign_ups, 0) as sign_ups
 from
   public.events e
   left join public.profiles p on p.id = e.created_by
@@ -368,7 +365,16 @@ from
       join public.event_participants ep on e.id = ep.event_id
     group by
       e.created_by
-  ) gh on gh.created_by = p.id;
+  ) gh on gh.created_by = p.id
+  left join (
+    select
+      event_id,
+      sum(tickets_bought) as sign_ups
+    from
+      public.event_participants
+    group by
+      event_id
+  ) ep on e.id = ep.event_id;
 
 -- ...................
 --
@@ -431,7 +437,7 @@ select
   using (true);
 
 create policy "Only hosts and admins can create events." on events for insert
-using (
+with check (
   exists (
     select 1
     from public.user_roles
