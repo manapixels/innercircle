@@ -69,7 +69,7 @@ export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
                 My Account
               </Link>
               <Link
-                href="/my-events"
+                href="/events/my"
                 className="text-gray-700 px-4 py-2 text-sm flex gap-1 hover:bg-gray-50"
                 tabIndex={-1}
                 onClick={() => setIsOpen(false)}
