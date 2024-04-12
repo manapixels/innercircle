@@ -12,7 +12,7 @@ export default function EventListInMyEvents() {
   useEffect(() => {
     const fetchEvents = async () => {
       if (profile?.username) {
-        await fetchUserProfileWithHostedEvents(profile.username).then((_profile, ...na) => {
+        await fetchUserProfileWithHostedEvents(profile.username).then((_profile) => {
           if (_profile?.hosted_events) {
             setHostedEvents(_profile.hosted_events as Event[]);
           }
