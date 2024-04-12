@@ -453,3 +453,24 @@ for update
 create policy "Individuals can delete their own events." on events for delete using (auth.uid () = created_by);
 
 create policy "Authorized user can delete any event." on events for delete using (authorize ('events.delete', auth.uid ()));
+
+-- Policy for viewing and editing by the event creator or an admin
+CREATE POLICY "Event creators and admins can view and edit" ON public.event_participants
+FOR ALL USING (
+  EXISTS (
+    SELECT 1
+    FROM public.events e
+    JOIN public.user_roles ur ON ur.user_id = auth.uid()
+    WHERE e.id = event_participants.event_id AND (e.created_by = auth.uid() OR ur.role = 'admin')
+  )
+);
+
+-- Policy for anyone to add their record when signing up for an event
+CREATE POLICY "Users can add their own sign-up records" ON public.event_participants
+FOR INSERT WITH CHECK (
+  EXISTS (
+    SELECT 1
+    FROM public.events
+    WHERE events.id = event_participants.event_id
+  )
+);
