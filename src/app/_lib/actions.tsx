@@ -11,6 +11,7 @@ export type ProfileWithRoles = Tables<'profiles_with_roles'>;
 export type ProfileWithEventsHosted = Tables<'profiles_with_hosted_events'>;
 export type Event = Tables<'events'>;
 export type EventWithCreatorInfo = Event & {
+  sign_ups: number;
   created_by: Tables<'profiles'> & {
     events_created?: number;
     guests_hosted?: number;

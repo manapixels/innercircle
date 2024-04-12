@@ -333,6 +333,7 @@ select
   e.location_address,
   e.location_country,
   e.price,
+  e.price_currency,
   e.status,
   e.slots,
   json_build_object(

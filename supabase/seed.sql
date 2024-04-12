@@ -5,7 +5,7 @@ BEGIN;
 DO $$ DECLARE
   user_id uuid;
 BEGIN
-  FOR i IN 1..62 LOOP
+  FOR i IN 1..100 LOOP
     user_id := uuid_generate_v4();
     INSERT INTO auth.users (
       id,
@@ -226,27 +226,49 @@ DECLARE
   event_record RECORD;
   user_ids uuid[];
   shirley_id uuid;
-  i integer;
+  event_counter integer := 0;
   random_decision integer;
+  sign_up_result text;
 BEGIN
   -- Fetch Shirley's user ID to exclude her from the event sign-up process
   SELECT id INTO shirley_id FROM auth.users WHERE email = 'shirley@innercircle.fam';
 
   -- Fetch all event IDs and their slots
   FOR event_record IN SELECT id, slots FROM public.events LOOP
-    -- Fetch user IDs from the auth.users table, limited by the number of slots for the event
-    SELECT array_agg(id) INTO user_ids FROM auth.users WHERE id <> shirley_id LIMIT event_record.slots;
+    -- Increment event counter
+    event_counter := event_counter + 1;
 
-    -- Loop through the user IDs and randomly decide whether to sign up each user for the current event
-    FOR i IN 1..array_length(user_ids, 1) LOOP
-      -- Generate a random number (0 or 1)
-      random_decision := floor(random() * 2)::int;
-      
-      -- If random_decision is 1, then sign up the user for the event
-      IF random_decision = 1 THEN
-        PERFORM public.sign_up_for_event(event_record.id, user_ids[i], 1); -- Assuming each user buys 1 ticket
-      END IF;
-    END LOOP;
+    -- For the first 6 events, sign up users equal to the number of slots
+    IF event_counter <= 6 THEN
+      -- Fetch user IDs from the auth.users table, limited by the number of slots for the event
+      SELECT array_agg(id) INTO user_ids FROM auth.users WHERE id <> shirley_id LIMIT event_record.slots;
+
+      RAISE LOG 'Blah %: %', event_record.slots, array_length(user_ids, 1);
+
+      -- Loop through the user IDs and sign up each user for the current event
+      FOR i IN 1..array_length(user_ids, 1) LOOP
+        BEGIN
+          PERFORM public.sign_up_for_event(event_record.id, user_ids[i], 1); -- Assuming each user buys 1 ticket
+        EXCEPTION WHEN OTHERS THEN
+          RAISE LOG 'Error signing up user % for event %: %', user_ids[i], event_record.id, SQLERRM;
+        END;
+      END LOOP;
+    ELSE
+      -- For events after the first 6, retain the original random decision logic
+      -- Fetch user IDs from the auth.users table, limited by the number of slots for the event
+      SELECT array_agg(id) INTO user_ids FROM auth.users WHERE id <> shirley_id LIMIT event_record.slots;
+
+      -- Loop through the user IDs and randomly decide whether to sign up each user for the current event
+      FOR i IN 1..array_length(user_ids, 1) LOOP
+        -- Generate a random number (0 or 1)
+        random_decision := floor(random() * 2)::int;
+        
+        -- If random_decision is 1, then sign up the user for the event
+        IF random_decision = 1 THEN
+          PERFORM public.sign_up_for_event(event_record.id, user_ids[i], 1); -- Assuming each user buys 1 ticket
+        END IF;
+      END LOOP;
+    END IF;
   END LOOP;
 END $$;
 

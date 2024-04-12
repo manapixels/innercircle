@@ -257,6 +257,7 @@ export interface Database {
           location_name: string | null
           name: string | null
           price: number | null
+          sign_ups: number | null
           slots: number | null
           slug: string | null
           status: Database["public"]["Enums"]["event_status"] | null

@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "db-reset": "npx supabase db reset",
+    "db-seed-images": "ts-node supabase/seed-images.js",
     "db-reset-and-seed": "npx supabase db reset && ts-node supabase/seed-images.js",
     "generate-types-online": "npx supabase gen types typescript --project-id 'rshggwxwrmtmsllwrgmz' --schema public > ./src/app/_lib/definitions.ts",
     "generate-types-local": "npx supabase gen types typescript --local --schema public > ./src/app/_lib/definitions.ts"
