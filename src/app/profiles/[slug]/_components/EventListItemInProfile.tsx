@@ -3,9 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDateRange, hasDatePassed } from '@/app/_utils/date';
-import { Event } from '@/app/_lib/actions';
+import { Event, EventWithSignUps } from '@/app/_lib/actions';
 
-export default function EventListItemInProfile({ event }: { event: Event }) {
+export default function EventListItemInProfile({
+  event,
+}: {
+  event: EventWithSignUps;
+}) {
   return (
     <Link
       href={`/events/${event.slug}`}
@@ -51,9 +55,11 @@ export default function EventListItemInProfile({ event }: { event: Event }) {
         <p className="hidden text-sm text-gray-500 sm:block">
           {event.location_name}, {event.location_country}
         </p>
-        <p className="hidden text-sm text-gray-500 sm:block">
-          {formatDateRange(event.date_start, event.date_end)}
-        </p>
+        {event.date_start && event.date_end && (
+          <p className="hidden text-sm text-gray-500 sm:block">
+            {formatDateRange(event.date_start, event.date_end)}
+          </p>
+        )}
       </div>
     </Link>
   );

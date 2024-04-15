@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import {
-  Event,
+  EventWithSignUps,
   ProfileWithEventsHosted,
   fetchUserProfileWithHostedEvents,
 } from '@/app/_lib/actions';
@@ -23,7 +23,7 @@ export default async function ProfilePage({
   const profile = (await fetchUserProfileWithHostedEvents(
     params.slug,
   )) as ProfileWithEventsHosted;
-  const hostedEvents = profile?.hosted_events as Event[];
+  const hostedEvents = profile?.hosted_events as EventWithSignUps[];
   let gridCols = 0,
     isHost = false,
     isParticipant = false;
@@ -115,9 +115,9 @@ export default async function ProfilePage({
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {hostedEvents?.map((event, i) => {
-              return <EventListItemInProfile event={event} key={i} />;
-            })}
+            {hostedEvents?.map((event, i) => (
+              <EventListItemInProfile event={event} key={event.id || i} />
+            ))}
           </div>
         </>
       )}

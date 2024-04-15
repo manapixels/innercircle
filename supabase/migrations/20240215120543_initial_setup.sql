@@ -299,14 +299,17 @@ JOIN
 GROUP BY
   p.id;
 
--- Create a view of profiles with their hosted events, roles, and total guests hosted.
+-- Create a view of profiles with their hosted events, roles, total guests hosted, and sign-ups for each event.
 CREATE VIEW profiles_with_hosted_events AS
 SELECT
   p.id,
   p.username,
   p.name,
   p.avatar_url,
-  array_agg(DISTINCT e.*) AS hosted_events,
+  json_agg(DISTINCT jsonb_build_object(
+    e.*,
+    'sign_ups', (SELECT count(*) FROM public.event_participants ep2 WHERE ep2.event_id = e.id)
+  )) AS hosted_events,
   array_agg(DISTINCT r.role) AS user_roles,
   count(DISTINCT ep.event_id) AS joined_events_count,
   sum(ep.tickets_bought) AS guests_hosted
@@ -324,6 +327,8 @@ select
   e.id,
   e.name,
   e.slug,
+  e.category,
+  e.description,
   e.image_thumbnail_url,
   e.image_banner_url,
   e.created_at,

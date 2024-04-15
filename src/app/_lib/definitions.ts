@@ -245,10 +245,12 @@ export interface Database {
     Views: {
       events_with_host_data: {
         Row: {
+          category: Database["public"]["Enums"]["event_categories"] | null
           created_at: string | null
           created_by: Json | null
           date_end: string | null
           date_start: string | null
+          description: string | null
           id: string | null
           image_banner_url: string | null
           image_thumbnail_url: string | null
@@ -257,6 +259,7 @@ export interface Database {
           location_name: string | null
           name: string | null
           price: number | null
+          price_currency: Database["public"]["Enums"]["currencies"] | null
           sign_ups: number | null
           slots: number | null
           slug: string | null
@@ -268,7 +271,7 @@ export interface Database {
         Row: {
           avatar_url: string | null
           guests_hosted: number | null
-          hosted_events: unknown[] | null
+          hosted_events: Json | null
           id: string | null
           joined_events_count: number | null
           name: string | null

@@ -3,19 +3,20 @@
 import { User } from '@supabase/supabase-js';
 import { createClient } from '../_utils/supabase/server';
 import { Tables } from './definitions';
-// import { dummyEvents } from '@/app/_lib/dummyData';
 
-export type UserWithProfile = User & Tables<'profiles'>;
-export type Profile = Tables<'profiles'> & { email?: string };
-export type ProfileWithRoles = Tables<'profiles_with_roles'>;
-export type ProfileWithEventsHosted = Tables<'profiles_with_hosted_events'>;
 export type Event = Tables<'events'>;
-export type EventWithCreatorInfo = Event & {
-  sign_ups: number;
+export type EventWithSignUps = Tables<'events_with_host_data'>;
+export type EventWithCreatorInfo = EventWithSignUps & {
   created_by: Tables<'profiles'> & {
     events_created?: number;
     guests_hosted?: number;
   };
+};
+export type UserWithProfile = User & Tables<'profiles'>;
+export type Profile = Tables<'profiles'> & { email?: string };
+export type ProfileWithRoles = Tables<'profiles_with_roles'>;
+export type ProfileWithEventsHosted = Tables<'profiles_with_hosted_events'> & {
+  hosted_events: EventWithSignUps[];
 };
 
 /**
@@ -291,26 +292,24 @@ export const addEvent = async ({
 }) => {
   const supabase = createClient();
   try {
-    let { data, error } = await supabase
-      .from('events')
-      .insert([
-        {
-          name,
-          description,
-          category,
-          date_start,
-          date_end,
-          location_name,
-          location_address,
-          location_country,
-          price,
-          price_currency,
-          slots,
-          created_by,
-          image_thumbnail_url,
-          image_banner_url,
-        },
-      ]);
+    let { data, error } = await supabase.from('events').insert([
+      {
+        name,
+        description,
+        category,
+        date_start,
+        date_end,
+        location_name,
+        location_address,
+        location_country,
+        price,
+        price_currency,
+        slots,
+        created_by,
+        image_thumbnail_url,
+        image_banner_url,
+      },
+    ]);
     if (error) throw error;
     return data;
   } catch (error) {
