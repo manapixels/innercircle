@@ -16,7 +16,7 @@ interface EditEventInput {
   name: string;
 }
 
-export default function EditEventForm() {
+export default function EditEventForm({ disabled }: { disabled: boolean }) {
   const [state, setState] = useState('login'); // ['login', 'register']
   const [showPassword, setShowPassword] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -53,9 +53,10 @@ export default function EditEventForm() {
     <button
       type="button"
       onClick={toggleModal}
-      className="text-white bg-black hover:bg-gray-900 focus:ring-4 focus:ring-base-200 font-medium rounded-full text-md px-7 py-2.5 dark:bg-base-600 dark:hover:bg-base-700 focus:outline-none dark:focus:ring-base-800"
+      className={`flex items-center gap-1 text-white focus:ring-4 focus:ring-base-200 font-medium rounded-full text-md px-7 py-2.5 dark:bg-base-600 dark:hover:bg-base-700 focus:outline-none dark:focus:ring-base-800 ${disabled ? 'bg-gray-300 cursor-not-allowed' : 'bg-black hover:bg-gray-900'}`}
+      disabled={disabled}
     >
-      Edit <span aria-hidden="true">&rarr;</span>
+      Edit <svg className="inline-block align-middle" width="16px" height="16px" viewBox="0 0 24 24" stroke-width="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#FFFFFF"><path d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>
     </button>
   );
 

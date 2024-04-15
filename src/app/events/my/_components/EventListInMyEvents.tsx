@@ -23,7 +23,7 @@ export default function EventListInMyEvents() {
   }, [profile]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className={`grid grid-cols-1 gap-6 bg-gray-50 rounded-2xl p-8`}>
       {hostedEvents?.map((event, i) => {
         return <EventListItemInMyEvents event={event} key={i} />;
       })}
