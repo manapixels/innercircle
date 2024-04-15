@@ -304,8 +304,8 @@ SELECT
   p.username,
   p.name,
   p.avatar_url,
-  json_agg(
-    jsonb_set(
+  jsonb_agg(
+    DISTINCT jsonb_set(
       to_jsonb(e),
       '{sign_ups}',
       to_jsonb(

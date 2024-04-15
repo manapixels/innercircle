@@ -11,7 +11,7 @@ export default function EventListItemInMyEvents({
 }) {
   const eventOver = hasDatePassed(event?.date_start);
   const ticketsLeft = (event.slots ?? 0) - (event.sign_ups ?? 0);
-  const percentSold = event.slots ? ticketsLeft / (event.slots ?? 1) : 0;
+  const percentSold = event.slots ? (1 - (ticketsLeft / event.slots)) * 100 : 0;
 
   return (
     <div className={`relative flex gap-4 p-6 rounded-lg bg-white border`}>
@@ -75,16 +75,16 @@ export default function EventListItemInMyEvents({
         <div className="my-2">
           <div className="flex justify-between">
             <span className="text-sm font-medium text-base-700 dark:text-white">
-              {event?.slots} tickets available
+              {event?.slots} tickets for sale
             </span>
             <span className="text-sm font-medium text-base-700 dark:text-white">
-              {ticketsLeft} left
+              {ticketsLeft === 0 ? 'Sold out 🎉' : `${ticketsLeft} left`}
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mb-3">
             <div
-              className="bg-base-600 h-2.5 rounded-full"
-              style={{ width: `${percentSold * 100}%` }}
+              className={`${percentSold === 100 ? 'bg-gray-400' : 'bg-base-600'} h-2.5 rounded-full`}
+              style={{ width: `${percentSold}%` }}
             ></div>
           </div>
         </div>
