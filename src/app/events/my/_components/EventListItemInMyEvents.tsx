@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatDateRange, hasDatePassed } from '@/app/_utils/date';
+import { formatDateRange, hasDatePassed, timeUntil } from '@/app/_utils/date';
 import { Event } from '@/app/_lib/actions';
 import EditEventForm from './EditEventForm';
 
@@ -9,7 +9,7 @@ export default function EventListItemInMyEvents({ event }: { event: Event }) {
 
   return (
     <div
-      className={`relative flex gap-4 p-3 rounded-lg bg-white border`}
+      className={`relative flex gap-4 p-6 rounded-lg bg-white border`}
     >
         <div className="absolute top-0 right-0">
           <span className={`block   text-sm font-medium px-4 py-1.5 rounded align-top ${eventOver ? 'bg-gray-100 text-gray-400' : 'bg-base-600 text-white'}`}>
@@ -40,12 +40,18 @@ export default function EventListItemInMyEvents({ event }: { event: Event }) {
       </div>
 
       <div className="min-w-0 py-2 flex-grow">
-        <p className="truncate text-sm font-semibold">{event.name}</p>
-        <p className="hidden text-sm text-gray-500 sm:block">
+        <p className="truncate text-lg font-semibold">{event.name}</p>
+        <a 
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_name)},${encodeURIComponent(event.location_country)}`} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="hidden text-sm text-gray-500 sm:block hover:text-base-600"
+        >
           {event.location_name}, {event.location_country}
-        </p>
+        </a>
         <p className="hidden text-sm text-gray-500 sm:block">
           {formatDateRange(event.date_start, event.date_end)}
+          {!eventOver && <span className="text-gray-400 ml-2">{timeUntil(event.date_start)} left</span>}
         </p>
         <div className="my-2">
           <div className="flex justify-between">

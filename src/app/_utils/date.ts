@@ -73,3 +73,24 @@ export const getGuessedUserTimeZone = () => {
     const offset = moment.tz(guessedZone).format('Z');
     return `GMT${offset}`;
 };
+
+export function timeUntil(inputDate: string | Date): string {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0); // Reset time to 00:00:00 for accurate day comparison
+    const targetDate = typeof inputDate === 'string' ? new Date(inputDate) : inputDate;
+    targetDate.setHours(0, 0, 0, 0); // Reset time to 00:00:00 for accurate day comparison
+
+    const differenceInTime = targetDate.getTime() - currentDate.getTime();
+    if (differenceInTime < 0) {
+        return ""; // Input date is over
+    }
+
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+    if (differenceInDays < 1) {
+        const differenceInHours = Math.ceil(differenceInTime / (1000 * 3600));
+        return `${differenceInHours} hours`; // Less than 24 hours
+    }
+
+    return `${Math.ceil(differenceInDays)} days`; // More than 24 hours
+}
+

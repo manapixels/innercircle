@@ -12,6 +12,10 @@ body {
   background: var(--background-rgb);
 }
 
+a {
+  @apply text-black hover:text-base-600;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
