@@ -3,13 +3,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDateRange, hasDatePassed } from '@/app/_utils/date';
-import { Event, EventWithSignUps } from '@/app/_lib/actions';
+import { EventWithSignUps } from '@/app/_lib/actions';
 
 export default function EventListItemInProfile({
   event,
 }: {
   event: EventWithSignUps;
 }) {
+
   return (
     <Link
       href={`/events/${event.slug}`}

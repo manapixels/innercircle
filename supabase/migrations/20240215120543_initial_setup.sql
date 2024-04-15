@@ -281,7 +281,6 @@ begin
 end;
 $$ language plpgsql;
 
-
 -- Creates a view of profiles with their roles
 CREATE OR REPLACE VIEW profiles_with_roles AS
 SELECT
@@ -294,8 +293,7 @@ SELECT
   array_agg(ur.role) AS roles
 FROM
   public.profiles p
-JOIN
-  public.user_roles ur ON ur.user_id = p.id
+  JOIN public.user_roles ur ON ur.user_id = p.id
 GROUP BY
   p.id;
 
@@ -306,10 +304,22 @@ SELECT
   p.username,
   p.name,
   p.avatar_url,
-  json_agg(DISTINCT jsonb_build_object(
-    e.*,
-    'sign_ups', (SELECT count(*) FROM public.event_participants ep2 WHERE ep2.event_id = e.id)
-  )) AS hosted_events,
+  json_agg(
+    jsonb_set(
+      to_jsonb(e),
+      '{sign_ups}',
+      to_jsonb(
+        (
+          SELECT
+            count(*)
+          FROM
+            public.event_participants ep2
+          WHERE
+            ep2.event_id = e.id
+        )::integer
+      )
+    )
+  ) AS hosted_events,
   array_agg(DISTINCT r.role) AS user_roles,
   count(DISTINCT ep.event_id) AS joined_events_count,
   sum(ep.tickets_bought) AS guests_hosted
@@ -342,12 +352,18 @@ select
   e.status,
   e.slots,
   json_build_object(
-    'id', p.id,
-    'name', p.name,
-    'username', p.username,
-    'avatar_url', p.avatar_url,
-    'events_created', ec.events_created,
-    'guests_hosted', gh.guests_hosted
+    'id',
+    p.id,
+    'name',
+    p.name,
+    'username',
+    p.username,
+    'avatar_url',
+    p.avatar_url,
+    'events_created',
+    ec.events_created,
+    'guests_hosted',
+    gh.guests_hosted
   ) as created_by,
   coalesce(ep.sign_ups, 0) as sign_ups
 from
@@ -443,14 +459,18 @@ select
   using (true);
 
 create policy "Only hosts and admins can create events." on events for insert
-with check (
-  exists (
-    select 1
-    from public.user_roles
-    where user_roles.user_id = auth.uid()
-    and user_roles.role in ('host', 'admin')
-  )
-);
+with
+  check (
+    exists (
+      select
+        1
+      from
+        public.user_roles
+      where
+        user_roles.user_id = auth.uid ()
+        and user_roles.role in ('host', 'admin')
+    )
+  );
 
 create policy "Individuals can update their own events." on events
 for update
@@ -461,22 +481,32 @@ create policy "Individuals can delete their own events." on events for delete us
 create policy "Authorized user can delete any event." on events for delete using (authorize ('events.delete', auth.uid ()));
 
 -- Policy for viewing and editing by the event creator or an admin
-CREATE POLICY "Event creators and admins can view and edit" ON public.event_participants
-FOR ALL USING (
+CREATE POLICY "Event creators and admins can view and edit" ON public.event_participants FOR ALL USING (
   EXISTS (
-    SELECT 1
-    FROM public.events e
-    JOIN public.user_roles ur ON ur.user_id = auth.uid()
-    WHERE e.id = event_participants.event_id AND (e.created_by = auth.uid() OR ur.role = 'admin')
+    SELECT
+      1
+    FROM
+      public.events e
+      JOIN public.user_roles ur ON ur.user_id = auth.uid ()
+    WHERE
+      e.id = event_participants.event_id
+      AND (
+        e.created_by = auth.uid ()
+        OR ur.role = 'admin'
+      )
   )
 );
 
 -- Policy for anyone to add their record when signing up for an event
-CREATE POLICY "Users can add their own sign-up records" ON public.event_participants
-FOR INSERT WITH CHECK (
-  EXISTS (
-    SELECT 1
-    FROM public.events
-    WHERE events.id = event_participants.event_id
-  )
-);
+CREATE POLICY "Users can add their own sign-up records" ON public.event_participants FOR INSERT
+WITH
+  CHECK (
+    EXISTS (
+      SELECT
+        1
+      FROM
+        public.events
+      WHERE
+        events.id = event_participants.event_id
+    )
+  );

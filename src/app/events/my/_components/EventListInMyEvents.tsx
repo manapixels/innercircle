@@ -8,16 +8,13 @@ import { useEffect, useState } from 'react';
 export default function EventListInMyEvents() {
   const { profile } = useUser();
   const [hostedEvents, setHostedEvents] = useState<EventWithSignUps[] | undefined>();
-
   useEffect(() => {
     const fetchEvents = async () => {
       if (profile?.username) {
-        await fetchUserProfileWithHostedEvents(profile.username).then((_profile) => {
-          if (_profile?.hosted_events) {
-            console.log(_profile.hosted_events)
-            setHostedEvents(_profile.hosted_events as EventWithSignUps[]);
-          }
-        });
+        const result = await fetchUserProfileWithHostedEvents(profile.username);
+        if (result?.hosted_events) {
+          setHostedEvents(result.hosted_events as EventWithSignUps[]);
+        }
       }
     };
     fetchEvents();
