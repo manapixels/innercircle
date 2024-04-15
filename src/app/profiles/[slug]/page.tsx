@@ -6,6 +6,8 @@ import {
 } from '@/app/_lib/actions';
 import Image from 'next/image';
 import EventListItemInProfile from './_components/EventListItemInProfile';
+import { createClient } from '@/app/_utils/supabase/server';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'innercircle | Profile',
@@ -16,6 +18,8 @@ export default async function ProfilePage({
 }: {
   params: { slug: string };
 }) {
+  const supabase = createClient()
+  const { data: user } = await supabase.auth.getUser();
   const profile = (await fetchUserProfileWithHostedEvents(
     params.slug,
   )) as ProfileWithEventsHosted;
@@ -99,7 +103,16 @@ export default async function ProfilePage({
 
       {isHost && (
         <>
-          <h2 className="font-bold text-xl mb-4">Events hosted</h2>
+          <div className={`font-bold text-xl mb-4 flex justify-between items-center`}>
+            <h2>
+              Events hosted
+            </h2>
+            {user?.user?.id === profile?.id && (
+              <Link href="/events/my" className="flex items-center gap-1 text-white bg-base-700 hover:bg-base-600 font-medium text-base rounded-full px-7 py-2.5">
+                Manage my events <svg className="inline-block" width="16px" height="16px" viewBox="0 0 24 24" stroke-width="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#FFFFFF"><path d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+              </Link>
+            )}
+          </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {hostedEvents?.map((event, i) => {
