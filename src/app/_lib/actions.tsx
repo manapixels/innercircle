@@ -319,6 +319,74 @@ export const addEvent = async ({
 };
 
 /**
+ * Updates an existing event in the database.
+ * @param {object} eventDetails - The details of the event to update.
+ * @returns The updated event data or error.
+ */
+export const updateEvent = async ({
+  id,
+  name,
+  description,
+  category,
+  date_start,
+  date_end,
+  location_name,
+  location_address,
+  location_country,
+  price,
+  price_currency,
+  slots,
+  created_by,
+  image_thumbnail_url,
+  image_banner_url,
+}: {
+  id: string;
+  name?: string;
+  description?: string;
+  category?: string;
+  date_start?: string;
+  date_end?: string;
+  location_name?: string;
+  location_address?: string;
+  location_country?: string;
+  price?: number;
+  price_currency?: string;
+  slots?: number;
+  created_by?: string;
+  image_thumbnail_url?: string;
+  image_banner_url?: string;
+}) => {
+  const supabase = createClient();
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .update({
+        name,
+        description,
+        category,
+        date_start,
+        date_end,
+        location_name,
+        location_address,
+        location_country,
+        price,
+        price_currency,
+        slots,
+        created_by,
+        image_thumbnail_url,
+        image_banner_url,
+      })
+      .match({ id });
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.log('error', error);
+    return error;
+  }
+};
+
+/**
  * Deletes an event from the database.
  * @param {number} event_id - The ID of the event to delete.
  * @returns The deleted event data or error.

@@ -114,7 +114,7 @@ export default function EventListItemInMyEvents({
               ></path>
             </svg>
           </Link>
-          <EditEventForm disabled={eventOver} />
+          <EditEventForm event={event} disabled={eventOver} />
         </div>
       </div>
     </div>

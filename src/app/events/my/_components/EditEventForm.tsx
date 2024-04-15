@@ -1,53 +1,174 @@
 'use client';
 
-import { signInWithEmail, signUpNewUser } from '@/app/_lib/actions';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import GooglePlacesAutocomplete from 'react-google-autocomplete';
+import { EventWithSignUps, updateEvent } from '@/app/_lib/actions';
 import { useUser } from '@/app/_contexts/UserContext';
 import { Modal } from '@/app/_components/Modal';
 import Spinner from '@/app/_components/Spinner';
+import {
+  getGuessedUserTimeZone,
+  getTimeZonesWithOffset,
+} from '@/app/_utils/date';
+import { slugify } from '@/app/_utils/text';
+import { FileUpload } from '@/app/_components/FileUpload';
 
-interface EditEventInput {
-  email: string;
-  password: string;
-  birthyear: number;
-  birthmonth: number;
+type Inputs = {
   name: string;
-}
+  category: string;
+  location_name: string;
+  location_address: string;
+  location_country: string;
+  date_start: string;
+  date_end: string;
+  time_start: string;
+  time_end: string;
+  time_zone: string;
+  description: string;
+  image_thumbnail_url: string;
+  image_banner_url: string;
+  price: number;
+  price_currency: string;
+  slots: number;
+};
 
-export default function EditEventForm({ disabled }: { disabled: boolean }) {
-  const [state, setState] = useState('login'); // ['login', 'register']
-  const [showPassword, setShowPassword] = useState(false);
+const formatDatePart = (dateString) => {
+  return new Date(dateString).toISOString().split('T')[0];
+};
+
+const formatTimePart = (dateString) => {
+  return new Date(dateString).toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+};
+
+const detectTimeZone = (date) => {
+  const timeZone = new Date(date)
+    .toLocaleTimeString('en-us', { timeZoneName: 'short' })
+    .split(' ')[2];
+  return timeZone;
+};
+
+export default function EditEventForm({
+  event,
+  disabled,
+}: {
+  event: EventWithSignUps;
+  disabled: boolean;
+}) {
   const [showModal, setShowModal] = useState(false);
-  const [rememberMe, setRememberMe] = useState<boolean>(false);
-  const router = useRouter();
-  const { setUser } = useUser();
+  const toggleModal = () => setShowModal(!showModal);
+
+  const autocompleteRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const timeZones = getTimeZonesWithOffset();
+  const guessedTimeZone = getGuessedUserTimeZone();
+  const { profile } = useUser();
+
+  const handlePlaceSelected = (place) => {
+    setValue('location_name', place.name);
+    setValue('location_address', place.formatted_address);
+    const filtered_array = place.address_components.filter(
+      function (address_component) {
+        return address_component.types.includes('country');
+      },
+    );
+    const country = filtered_array.length ? filtered_array[0].long_name : '';
+    setValue('location_country', country);
+
+    if (autocompleteRef.current) {
+      (autocompleteRef.current as any).value = ''; // Clear the input
+    }
+  };
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<EditEventInput>({
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>({
     defaultValues: {
-      email: 'shirley@innercircle.fam',
-      password: 'password123',
+      name: event?.name || '',
+      category: event?.category || '',
+      location_name: event?.location_name || '',
+      location_address: event?.location_address || '',
+      location_country: event?.location_country || '',
+      date_start: formatDatePart(event.date_start) || '',
+      time_start: formatTimePart(event.date_start) || '',
+      date_end: formatDatePart(event.date_end) || '',
+      time_end: formatTimePart(event.date_end) || '',
+      time_zone: detectTimeZone(event.date_start) || '',
+      description: event?.description || '',
+      image_thumbnail_url: event?.image_thumbnail_url || '',
+      image_banner_url: event?.image_banner_url || '',
+      price: event?.price || 0,
+      price_currency: event?.price_currency || '',
+      slots: event?.slots || 0,
     },
   });
-  const onSubmit: SubmitHandler<EditEventInput> = async (data) => {
-    if (state === 'login') {
-      const resp = await signInWithEmail(data.email, data.password);
-      if (resp?.user) {
-        setUser(resp.user);
-      }
-      router.refresh();
-    } else {
-      await signUpNewUser(data.email, data.password);
-      router.refresh();
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    console.log(data);
+    // Convert GMT+08:00 to +08:00 format for valid Date parsing
+    const timeZoneOffset = data.time_zone.replace('GMT', '');
+    const date_start = new Date(
+      `${data.date_start}T${data.time_start}${timeZoneOffset}`,
+    );
+    const date_end = new Date(
+      `${data.date_end}T${data.time_end}${timeZoneOffset}`,
+    );
+
+    if (profile?.id) {
+      setIsLoading(true);
+      const result = await updateEvent({
+        id: profile.id, // Fixed by adding the required 'id' field
+        name: data.name,
+        description: data.description,
+        category: slugify(data.category),
+        created_by: profile.id,
+        date_start: date_start.toISOString(),
+        date_end: date_end.toISOString(),
+        location_name: data.location_name,
+        location_address: data.location_address,
+        location_country: data.location_country,
+        price: data.price,
+        slots: data.slots,
+        price_currency: data.price_currency.toLowerCase(),
+        image_thumbnail_url: data.image_thumbnail_url,
+        image_banner_url: data.image_banner_url,
+      });
+      setIsLoading(false);
+      console.log(result);
     }
   };
 
-  const toggleModal = () => setShowModal(!showModal);
+  // Watch fields
+  const watchStartDate = watch('date_start');
+  const watchEndDate = watch('date_end');
+
+  const handleThumbnailUpload = (uploadResult: string) => {
+    setValue('image_thumbnail_url', uploadResult, { shouldValidate: true });
+  };
+
+  const handleBannerUpload = (uploadResult: string) => {
+    setValue('image_banner_url', uploadResult, { shouldValidate: true });
+  };
+
+  useEffect(() => {
+    if (new Date(watchEndDate) < new Date(watchStartDate)) {
+      setValue('date_end', watchStartDate);
+    }
+  }, [watchStartDate, setValue]);
+
+  useEffect(() => {
+    if (new Date(watchEndDate) < new Date(watchStartDate)) {
+      setValue('date_start', watchEndDate);
+    }
+  }, [watchEndDate, setValue]);
 
   const btn = (
     <button
@@ -56,7 +177,25 @@ export default function EditEventForm({ disabled }: { disabled: boolean }) {
       className={`flex items-center gap-1 text-white focus:ring-4 focus:ring-base-200 font-medium rounded-full text-md px-7 py-2.5 dark:bg-base-600 dark:hover:bg-base-700 focus:outline-none dark:focus:ring-base-800 ${disabled ? 'bg-gray-300 cursor-not-allowed' : 'bg-black hover:bg-gray-900'}`}
       disabled={disabled}
     >
-      Edit <svg className="inline-block align-middle" width="16px" height="16px" viewBox="0 0 24 24" strokeWidth="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#FFFFFF"><path d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+      Edit{' '}
+      <svg
+        className="inline-block align-middle"
+        width="16px"
+        height="16px"
+        viewBox="0 0 24 24"
+        strokeWidth="1.5"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        color="#FFFFFF"
+      >
+        <path
+          d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5"
+          stroke="#FFFFFF"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        ></path>
+      </svg>
     </button>
   );
 
@@ -69,148 +208,411 @@ export default function EditEventForm({ disabled }: { disabled: boolean }) {
         handleClose={toggleModal}
         backdropDismiss={true}
       >
-        {/* Modal header */}
-        <div className="flex items-center justify-between px-12 py-6 border-b rounded-t dark:border-gray-600">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-            Welcome to <i>innercircle</i>
-          </h3>
-        </div>
-
-        <form
-          className="max-w-lg mx-auto p-10"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div className="mb-5 w-full">
-            <input
-              type="email"
-              id="email"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              required
-              placeholder="Email"
-              {...register('email', {
-                required: true,
-                pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              })}
-              aria-invalid={errors.email ? 'true' : 'false'}
-            />
-            {errors.email?.type === 'required' && (
-              <p role="alert">Please enter your email</p>
-            )}
-            {errors.email?.type === 'pattern' && (
-              <p role="alert">Please enter a valid email</p>
-            )}
-          </div>
-          <div className="mb-5 w-full">
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-                placeholder="Password"
-                {...register('password', { required: true })}
-                aria-invalid={errors.password ? 'true' : 'false'}
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
+            {/* Event thumbnail */}
+            <div className="sm:col-span-2">
+              <FileUpload
+                className="aspect-square h-full"
+                userId={profile?.id}
+                bucketId="event_thumbnails"
+                label="Thumbnail"
+                onUploadComplete={handleThumbnailUpload}
+                register={register}
+                validationSchema={{
+                  required: 'Upload thumbnail.',
+                }}
+                name="image_thumbnail_url"
               />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                <svg
-                  onClick={() => setShowPassword(!showPassword)}
-                  className={`h-6 text-gray-700 ${showPassword ? 'hidden' : 'block'}`}
-                  stroke="currentColor"
-                  fill="currentColor"
-                  strokeWidth="0"
-                  viewBox="0 0 24 24"
-                  height="30px"
-                  width="30px"
-                  xmlns="http://www.w3.org/2000/svg"
+              {errors.image_thumbnail_url && (
+                <span className="text-red-500 text-sm">
+                  {errors.image_thumbnail_url.message}
+                </span>
+              )}
+            </div>
+            {/* Event banner */}
+            <div className="sm:col-span-4">
+              <FileUpload
+                className="h-full"
+                userId={profile?.id}
+                bucketId="event_banners"
+                label="Banner"
+                onUploadComplete={handleBannerUpload}
+                register={register}
+                validationSchema={{
+                  required: 'Upload banner.',
+                }}
+                name="image_banner_url"
+              />
+              {errors.image_banner_url && (
+                <span className="text-red-500 text-sm">
+                  {errors.image_banner_url.message}
+                </span>
+              )}
+            </div>
+            {/* Event name */}
+            <div className="sm:col-span-6">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Event Name <span className="text-red-500 text-sm">*</span>
+              </label>
+              <input
+                {...register('name', {
+                  required: 'Enter name of event.',
+                })}
+                type="text"
+                name="name"
+                id="name"
+                className={`mt-1 block w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              />
+              {errors.name && (
+                <span className="text-red-500 text-sm">
+                  {errors.name.message}
+                </span>
+              )}
+            </div>
+            {/* Event category */}
+            <div className="sm:col-span-6">
+              <label
+                htmlFor="location_country"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Category <span className="text-red-500 text-sm">*</span>
+              </label>
+              <select
+                {...register('category', {
+                  required: 'Select category of event.',
+                })}
+                name="category"
+                id="category"
+                defaultValue="Singapore"
+                className={`mt-1 block w-full border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              >
+                <option>Speed Dating</option>
+              </select>
+              {errors.category && (
+                <span className="text-red-500 text-sm">
+                  {errors.category.message}
+                </span>
+              )}
+            </div>
+            {/* Event description */}
+            <div className="sm:col-span-6">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Description <span className="text-red-500 text-sm">*</span>
+              </label>
+              <textarea
+                {...register('description', {
+                  required: 'Enter description for the event.',
+                })}
+                name="description"
+                id="description"
+                rows={3}
+                className={`mt-1 block w-full border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              ></textarea>
+              {errors.description && (
+                <span className="text-red-500 text-sm">
+                  {errors.description.message}
+                </span>
+              )}
+            </div>
+            {/* Event location */}
+            <div className="sm:col-span-6">
+              <label
+                htmlFor="autocomplete"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Location <span className="text-red-500 text-sm">*</span>
+              </label>
+
+              <div className="flex flex-row gap-4">
+                <div className="relative flex-grow">
+                  {/* Fields available: https://developers.google.com/maps/documentation/javascript/place-data-fields */}
+                  <GooglePlacesAutocomplete
+                    ref={autocompleteRef}
+                    className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pl-9 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                    onPlaceSelected={handlePlaceSelected}
+                    options={{
+                      types: ['establishment'],
+                      fields: [
+                        'name',
+                        'formatted_address',
+                        'address_components',
+                        'url',
+                        'website',
+                      ],
+                      componentRestrictions: { country: 'SG' },
+                    }}
+                  />
+                  <div className="absolute top-0 left-0 p-2 mt-1">
+                    <svg
+                      width="20px"
+                      height="20px"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      color="#434a59"
+                    >
+                      <path
+                        d="M17 17L21 21"
+                        stroke="#434a59"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      ></path>
+                      <path
+                        d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z"
+                        stroke="#434a59"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <select
+                    {...register('location_country', {
+                      required: 'Select country of location.',
+                    })}
+                    name="location_country"
+                    id="location_country"
+                    defaultValue="Singapore"
+                    disabled={true}
+                    className={`mt-1 block w-full border ${errors.location_country ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50 pointer-events-none`}
+                  >
+                    <option>Singapore</option>
+                  </select>
+                  {errors.location_country && (
+                    <span className="text-red-500 text-sm">
+                      {errors.location_country.message}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+            {/* Event location name */}
+            <div className="-mt-3 sm:col-span-6">
+              <input
+                {...register('location_name', {
+                  required: 'Enter name of location.',
+                })}
+                type="text"
+                name="location_name"
+                id="location_name"
+                placeholder="Location name"
+                required
+                className={`mt-1 block w-full border ${errors.location_name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              />
+              {errors.location_name && (
+                <span className="text-red-500 text-sm">
+                  {errors.location_name.message}
+                </span>
+              )}
+            </div>
+            {/* Event address */}
+            <div className="-mt-3 sm:col-span-6">
+              <input
+                {...register('location_address', {
+                  required: 'Enter address of location.',
+                })}
+                type="text"
+                name="location_address"
+                id="location_address"
+                placeholder="Address"
+                required
+                className={`mt-1 block w-full border ${errors.location_address ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              />
+              {errors.location_address && (
+                <span className="text-red-500 text-sm">
+                  {errors.location_address.message}
+                </span>
+              )}
+            </div>
+            {/* Event date and time */}
+            <div className="sm:col-span-6">
+              <div className="flex justify-between">
+                <label className="block text-sm font-medium text-gray-700">
+                  Date <span className="text-red-500 text-sm">*</span>
+                </label>
+                <select
+                  {...register('time_zone', {
+                    required: 'Select time zone of event.',
+                  })}
+                  name="time_zone"
+                  id="time_zone"
+                  defaultValue={guessedTimeZone}
+                  required
+                  className={`block border ${errors.time_zone ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-1 px-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs bg-gray-50`}
                 >
-                  <path
-                    fill="none"
-                    strokeWidth="2"
-                    d="M12,17 C9.27272727,17 6,14.2222222 6,12 C6,9.77777778 9.27272727,7 12,7 C14.7272727,7 18,9.77777778 18,12 C18,14.2222222 14.7272727,17 12,17 Z M11,12 C11,12.55225 11.44775,13 12,13 C12.55225,13 13,12.55225 13,12 C13,11.44775 12.55225,11 12,11 C11.44775,11 11,11.44775 11,12 Z"
-                  ></path>
-                </svg>
-                <svg
-                  onClick={() => setShowPassword(!showPassword)}
-                  className={`h-6 text-gray-700 ${showPassword ? 'block' : 'hidden'}`}
-                  stroke="currentColor"
-                  fill="currentColor"
-                  strokeWidth="0"
-                  viewBox="0 0 24 24"
-                  height="200px"
-                  width="200px"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill="none"
-                    strokeWidth="2"
-                    d="M3,12 L6,12 C6.5,14.5 9.27272727,17 12,17 C14.7272727,17 17.5,14.5 18,12 L21,12 M12,17 L12,20 M7.5,15.5 L5.5,17.5 M16.5,15.5 L18.5,17.5"
-                  ></path>
-                </svg>
-                {errors.password?.type === 'required' && (
-                  <p role="alert">Please enter your password</p>
+                  {timeZones.map((zone) => (
+                    <option key={zone} value={zone}>
+                      {zone}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-4">
+                <input
+                  {...register('date_start', {
+                    required: 'Select date of event.',
+                  })}
+                  type="date"
+                  name="date_start"
+                  id="date_start"
+                  required
+                  className={`mt-1 block w-full border ${errors.date_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                />
+
+                <input
+                  {...register('time_start', {
+                    required: 'Enter start time of event.',
+                  })}
+                  type="time"
+                  name="time_start"
+                  id="time_start"
+                  required
+                  className={`mt-1 block w-full border ${errors.time_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                />
+                <div className="text-center self-center">–</div>
+
+                <input
+                  {...register('time_end', {
+                    required: 'Enter end time of event.',
+                  })}
+                  type="time"
+                  name="time_end"
+                  id="time_end"
+                  required
+                  className={`mt-1 block w-full border ${errors.time_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                />
+
+                <input
+                  {...register('date_end', {
+                    required: 'Select end date of event.',
+                    validate: (value) =>
+                      new Date(value) >= new Date(watchStartDate) ||
+                      'End date must be after start date.',
+                  })}
+                  type="date"
+                  name="date_end"
+                  id="date_end"
+                  required
+                  className={`mt-1 block w-full border ${errors.date_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                />
+              </div>
+              <div>
+                {errors.date_start && (
+                  <span className="text-red-500 text-sm">
+                    {errors.date_start.message}
+                  </span>
+                )}
+                {errors.time_start && (
+                  <span className="text-red-500 text-sm">
+                    {errors.time_start.message}
+                  </span>
+                )}
+                {errors.time_end && (
+                  <span className="text-red-500 text-sm">
+                    {errors.time_end.message}
+                  </span>
+                )}
+                {errors.date_end && (
+                  <span className="text-red-500 text-sm">
+                    {errors.date_end.message}
+                  </span>
                 )}
               </div>
             </div>
-          </div>
-          {state === 'login' && (
-            <div className="flex justify-between mb-5">
-              <div className="flex items-center">
-                <div className="flex items-center h-5">
+            {/* Event price and currency */}
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Price <span className="text-red-500 text-sm">*</span>
+              </label>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-2">
                   <input
-                    id="remember"
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-base-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-base-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 accent-base-500"
+                    {...register('price', {
+                      required: 'Enter price of event.',
+                    })}
+                    type="number"
+                    name="price"
+                    id="price"
+                    required
+                    className="mt-1 block w-full border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
                   />
                 </div>
-                <label
-                  htmlFor="remember"
-                  className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                  Keep me logged in
-                </label>
+                <div>
+                  <select
+                    {...register('price_currency', {
+                      required: 'Select currency of price.',
+                    })}
+                    name="price_currency"
+                    id="price_currency"
+                    defaultValue="SGD"
+                    className={`mt-1 block w-full border ${errors.price_currency ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                  >
+                    <option>SGD</option>
+                  </select>
+                  {errors.price_currency && (
+                    <span className="text-red-500 text-sm">
+                      {errors.price_currency.message}
+                    </span>
+                  )}
+                </div>
               </div>
-              <a
-                className="text-sm text-gray-400 font-medium text-foreground ml-4"
-                href="/forgot-password"
-              >
-                Forgot password?
-              </a>
+              {errors.price && (
+                <span className="text-red-500 text-sm">
+                  {errors.price.message}
+                </span>
+              )}
             </div>
-          )}
-          <button
-            type="submit"
-            className={`text-black bg-base-100 hover:bg-base-200 focus:ring-4 focus:outline-none focus:ring-base-300 font-bold rounded-lg text-sm block w-full px-5 py-2.5 text-center dark:bg-base-600 dark:hover:bg-base-700 dark:focus:ring-base-800 ${isSubmitting ? 'disabled:opacity-50' : ''}`}
-            disabled={isSubmitting}
-          >
-            {isSubmitting && <Spinner className="mr-1.5" />}
-            {state === 'login' ? 'Log in' : 'Sign up'}
-          </button>
-
-          {state === 'login' && (
-            <div className="text-sm text-gray-500 text-center mt-4">
-              No account yet?{' '}
-              <button
-                onClick={() => setState('register')}
-                className="text-gray-900"
-                disabled={isSubmitting}
+            {/* Event slots */}
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="slots"
+                className="block text-sm font-medium text-gray-700"
               >
-                Sign up
+                Slots Available <span className="text-red-500 text-sm">*</span>
+              </label>
+              <input
+                {...register('slots', {
+                  required: 'Enter number of slots available.',
+                })}
+                type="number"
+                name="slots"
+                id="slots"
+                required
+                className={`mt-1 block w-full border ${errors.slots ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              />
+              {errors.slots && (
+                <span className="text-red-500 text-sm">
+                  {errors.slots.message}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="bg-white bg-opacity-75 border-t border-gray-400 fixed bottom-0 left-0 w-full z-20">
+            <div className="max-w-2xl mx-auto py-4 px-4 text-right">
+              <button
+                type="submit"
+                className="bg-base-600 text-white px-12 py-3 rounded-full"
+              >
+                {isLoading && <Spinner className="mr-1.5" />}
+                Update Event
               </button>
             </div>
-          )}
-          {state === 'register' && (
-            <div className="text-xs text-gray-500 text-center mt-4">
-              Already have an account?{' '}
-              <button
-                onClick={() => setState('login')}
-                className="text-gray-900"
-              >
-                Log in
-              </button>
-            </div>
-          )}
+          </div>
         </form>
       </Modal>
     </div>
