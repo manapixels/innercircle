@@ -1,4 +1,4 @@
-import { EventWithCreatorInfo, fetchEvent } from '@/app/_lib/actions';
+import { BUCKET_URL, EventWithCreatorInfo, fetchEvent } from '@/app/_lib/actions';
 import { Metadata } from 'next';
 import ReservationForm from '../_components/ReservationForm';
 
@@ -18,7 +18,7 @@ export default async function EventDetailsPage({
       <div
         className={`w-full h-96 bg-gray-300 bg-center rounded-2xl ${event?.image_banner_url === '' ? 'grayscale opacity-5' : ''}`}
         style={{
-          backgroundImage: `url(${event?.image_banner_url === '' ? '/logo.svg' : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/event_banners/${event?.image_banner_url}`})`,
+          backgroundImage: `url(${event?.image_banner_url === '' ? '/logo.svg' : `${BUCKET_URL}/event_banners/${event?.image_banner_url}`})`,
         }}
       />
 
@@ -47,7 +47,7 @@ export default async function EventDetailsPage({
             {event?.created_by?.avatar_url ? (
               <img
                 className="h-10 w-10 rounded-full mx-2"
-                src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${event.created_by.avatar_url}`}
+                src={`${BUCKET_URL}/avatars/${event.created_by.avatar_url}`}
                 alt=""
               />
             ) : (

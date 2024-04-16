@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDateRange, hasDatePassed, timeUntil } from '@/app/_utils/date';
-import { EventWithSignUps } from '@/app/_lib/actions';
+import { BUCKET_URL, EventWithSignUps } from '@/app/_lib/actions';
 import EditEventForm from './EditEventForm';
 
 export default function EventListItemInMyEvents({
@@ -26,7 +26,7 @@ export default function EventListItemInMyEvents({
       <div className="relative aspect-square">
         {event?.image_thumbnail_url ? (
           <Image
-            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/event_thumbnails/${event?.image_thumbnail_url}`}
+            src={`${BUCKET_URL}/event_thumbnails/${event?.image_thumbnail_url}`}
             alt={`${event?.name}`}
             className="rounded-lg object-cover w-40 h-40 bg-gray-200"
             width="170"

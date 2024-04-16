@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDateRange, hasDatePassed } from '@/app/_utils/date';
-import { EventWithCreatorInfo } from '@/app/_lib/actions';
+import { BUCKET_URL, EventWithCreatorInfo } from '@/app/_lib/actions';
 import Tippy from '@tippyjs/react';
 
 export default function EventListItem({
@@ -23,7 +23,7 @@ export default function EventListItem({
       <div className="w-full relative aspect-square">
         {event?.image_thumbnail_url ? (
           <Image
-            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/event_thumbnails/${event?.image_thumbnail_url}`}
+            src={`${BUCKET_URL}/event_thumbnails/${event?.image_thumbnail_url}`}
             alt={`${event?.name}`}
             className="rounded-lg object-cover w-full h-full"
             width="300"
@@ -67,7 +67,7 @@ export default function EventListItem({
                   <Image
                     src={
                       event?.created_by?.avatar_url
-                        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${event.created_by.avatar_url}`
+                        ? `${BUCKET_URL}/avatars/${event.created_by.avatar_url}`
                         : '/users/placeholder-avatar.svg'
                     }
                     alt=""
@@ -107,7 +107,7 @@ export default function EventListItem({
             <Image
               src={
                 event?.created_by?.avatar_url
-                  ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${event.created_by.avatar_url}`
+                  ? `${BUCKET_URL}/avatars/${event.created_by.avatar_url}`
                   : '/users/placeholder-avatar.svg'
               }
               alt={event?.created_by?.name || ''}

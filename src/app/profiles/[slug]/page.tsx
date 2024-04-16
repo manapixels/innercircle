@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import {
+  BUCKET_URL,
   EventWithSignUps,
   ProfileWithEventsHosted,
   fetchUserProfileWithHostedEvents,
@@ -42,7 +43,7 @@ export default async function ProfilePage({
       <Image
         src={
           profile?.avatar_url
-            ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${profile?.avatar_url}`
+            ? `${BUCKET_URL}/avatars/${profile?.avatar_url}`
             : '/users/placeholder-avatar.svg'
         }
         alt=""

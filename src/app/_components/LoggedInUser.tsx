@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ProfileWithRoles, signOut } from '../_lib/actions';
+import { BUCKET_URL, ProfileWithRoles, signOut } from '../_lib/actions';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
@@ -28,7 +28,7 @@ export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
             <Image
               className="h-full w-full rounded-full"
               src={
-                `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${user?.avatar_url}` ||
+                `${BUCKET_URL}/avatars/${user?.avatar_url}` ||
                 '/users/placeholder-avatar.svg'
               }
               alt=""

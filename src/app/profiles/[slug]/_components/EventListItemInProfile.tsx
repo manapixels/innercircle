@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDateRange, hasDatePassed } from '@/app/_utils/date';
-import { EventWithSignUps } from '@/app/_lib/actions';
+import { BUCKET_URL, EventWithSignUps } from '@/app/_lib/actions';
 
 export default function EventListItemInProfile({
   event,
@@ -20,7 +20,7 @@ export default function EventListItemInProfile({
       <div className="w-full relative aspect-square">
         {event?.image_thumbnail_url ? (
           <Image
-            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/event_thumbnails/${event?.image_thumbnail_url}`}
+            src={`${BUCKET_URL}/event_thumbnails/${event?.image_thumbnail_url}`}
             alt={`${event?.name}`}
             className="rounded-lg object-cover w-full h-full"
             width="300"
