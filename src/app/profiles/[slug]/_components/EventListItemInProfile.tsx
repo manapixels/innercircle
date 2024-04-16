@@ -2,9 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatDateRange, hasDatePassed } from '@/app/_utils/date';
-import { EventWithSignUps } from '@/app/_lib/actions';
-import { BUCKET_URL } from '@/app/_lib/constants';
+import { formatDateRange, hasDatePassed } from '@/_utils/date';
+import { EventWithSignUps } from '@/_lib/actions';
+import { BUCKET_URL } from '@/_lib/constants';
 
 export default function EventListItemInProfile({
   event,
