@@ -123,6 +123,36 @@ export const fetchUserProfileWithHostedEvents = async (username: string) => {
 };
 
 /**
+ * Fetches a profile with hosted events by user ID.
+ * @param {string} id - The ID of the user.
+ * @returns The profile data with hosted events or null if an error occurs.
+ */
+export const fetchUserProfileWithHostedEventsWithId = async (id: string) => {
+  const supabase = createClient();
+  try {
+    const { data, error } = await supabase
+      .from('profiles_with_hosted_events')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw new Error('Error fetching profile with hosted events');
+
+    if (data && data.hosted_events) {
+      data.hosted_events.sort(
+        (a, b) =>
+          new Date(b.date_start).getTime() - new Date(a.date_start).getTime(),
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error('error', error);
+    return null; // Or handle the error as needed
+  }
+};
+
+/**
  * Updates a user profile.
  * @param {Profile} user - The user profile data to update.
  * @returns The updated user data or error.
