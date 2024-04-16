@@ -602,8 +602,8 @@ export default function EditEventForm({
               )}
             </div>
           </div>
-          <div className="bg-white bg-opacity-75 border-t border-gray-400 fixed bottom-0 left-0 w-full z-20">
-            <div className="max-w-2xl mx-auto py-4 px-4 text-right">
+          <div className="bg-white bg-opacity-75 border-t border-gray-400 sticky -mx-5 bottom-0 left-0 w-auto z-20">
+            <div className="py-4 px-10 text-right">
               <button
                 type="submit"
                 className="bg-base-600 text-white px-12 py-3 rounded-full"

@@ -18,7 +18,7 @@ const effect = {
     opacity: 1,
     transition: {
       ease: 'easeInOut',
-      duration: .15,
+      duration: 0.15,
     },
     scale: 1,
   },
@@ -31,9 +31,9 @@ const effect = {
 const Backdrop = ({ children, handleClose }: BackdropProps) => (
   <motion.div
     className="
-      z-50 fixed inset-0
-      flex items-center justify-center
-      bg-black bg-opacity-70 backdrop-filter backdrop-blur-sm
+    z-50 fixed inset-0
+    bg-black bg-opacity-70 backdrop-filter backdrop-blur-sm
+    overflow-y-auto p-4
     "
     onClick={handleClose}
     initial={{ opacity: 0 }}
@@ -55,7 +55,7 @@ const ModalContent = ({
     role="dialog"
     aria-modal={true}
     aria-label={ariaLabel}
-    className={`relative ${className || 'm-5 p-5 bg-white rounded-lg shadow-lg'}`}
+    className={`relative m-auto overflow-y-auto max-w-2xl ${className || 'max-h-full p-5 bg-white rounded-lg shadow-lg'}`}
     variants={effect}
     initial="hidden"
     animate="visible"
@@ -64,29 +64,29 @@ const ModalContent = ({
   >
     {children}
     {handleClose && (
-        <button
-                type="button"
-                onClick={handleClose}
-                className="absolute text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white top-6 right-6"
-                aria-label={`Close ${ariaLabel || 'dialog'}`}
-              >
-                <svg
-                  className="w-3 h-3"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 14 14"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                  />
-                </svg>
-                <span className="sr-only">Close modal</span>
-              </button>
+      <button
+        type="button"
+        onClick={handleClose}
+        className="absolute text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white top-6 right-6"
+        aria-label={`Close ${ariaLabel || 'dialog'}`}
+      >
+        <svg
+          className="w-3 h-3"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 14 14"
+        >
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+          />
+        </svg>
+        <span className="sr-only">Close modal</span>
+      </button>
     )}
   </motion.div>
 );
