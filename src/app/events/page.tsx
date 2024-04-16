@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { EventWithCreatorInfo, fetchEvents } from '@/app/_lib/actions';
+import { EventWithCreatorInfo, fetchEvents } from '@/_lib/actions';
 import EventListItem from './_components/EventListItem';
 
 export const metadata: Metadata = {

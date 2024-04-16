@@ -3,16 +3,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import GooglePlacesAutocomplete from 'react-google-autocomplete';
-import { EventWithSignUps, updateEvent } from '@/app/_lib/actions';
-import { useUser } from '@/app/_contexts/UserContext';
-import { Modal } from '@/app/_components/Modal';
-import Spinner from '@/app/_components/Spinner';
+import { EventWithSignUps, updateEvent } from '@/_lib/actions';
+import { useUser } from '@/_contexts/UserContext';
+import { Modal } from '@/_components/Modal';
+import Spinner from '@/_components/Spinner';
 import {
   getGuessedUserTimeZone,
   getTimeZonesWithOffset,
-} from '@/app/_utils/date';
-import { reverseSlugify, slugify } from '@/app/_utils/text';
-import { FileUpload } from '@/app/_components/FileUpload';
+} from '@/_utils/date';
+import { reverseSlugify, slugify } from '@/_utils/text';
+import { FileUpload } from '@/_components/FileUpload';
 
 type Inputs = {
   name: string;
@@ -150,8 +150,6 @@ export default function EditEventForm({
   // Watch fields
   const watchStartDate = watch('date_start');
   const watchEndDate = watch('date_end');
-  const watchThumbnailUpload = watch('image_thumbnail_url');
-  const watchBannerUpload = watch('image_banner_url');
 
   const handleThumbnailUpload = (uploadResult: string) => {
     setValue('image_thumbnail_url', uploadResult, { shouldValidate: true });
@@ -218,7 +216,7 @@ export default function EditEventForm({
             <div className="sm:col-span-2">
               <FileUpload
                 className="aspect-square h-full"
-                value={watchThumbnailUpload}
+                currValue={event?.image_thumbnail_url}
                 userId={profile?.id}
                 bucketId="event_thumbnails"
                 label="Thumbnail"
@@ -239,7 +237,7 @@ export default function EditEventForm({
             <div className="sm:col-span-4">
               <FileUpload
                 className="h-full"
-                value={watchBannerUpload}
+                currValue={event?.image_banner_url}
                 userId={profile?.id}
                 bucketId="event_banners"
                 label="Banner"

@@ -2,13 +2,13 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { downloadFileFromBucket, uploadFileToBucket } from '@/app/_lib/actions';
-import { BUCKET_URL } from '@/app/_lib/constants';
+import { downloadFileFromBucket, uploadFileToBucket } from '@/_lib/actions';
+import { BUCKET_URL } from '@/_lib/constants';
 import Image from 'next/image';
 
 export function FileUpload({
   className = '',
-  value,
+  currValue,
   userId,
   bucketId,
   label,
@@ -23,10 +23,13 @@ export function FileUpload({
   const [imageLoading, setImageLoading] = useState(false);
 
   useEffect(() => {
-    if (value && value !== uploadedImagePath && value !== "") {
-      setUploadedImagePath(value);
+    console.log('FileUpload', currValue, uploadedImagePath)
+    if (currValue && currValue !== uploadedImagePath && currValue !== "") {
+      setUploadedImagePath(currValue);
     }
-  }, [value])
+  }, [currValue])
+
+  console.log('currValue', currValue)
 
   const handleFileAccepted = async (file) => {
     setIsUploading(true);

@@ -3,11 +3,11 @@ import {
   EventWithSignUps,
   ProfileWithEventsHosted,
   fetchUserProfileWithHostedEvents,
-} from '@/app/_lib/actions';
-import { BUCKET_URL } from '@/app/_lib/constants';
+} from '@/_lib/actions';
+import { BUCKET_URL } from '@/_lib/constants';
 import Image from 'next/image';
 import EventListItemInProfile from './_components/EventListItemInProfile';
-import { createClient } from '@/app/_utils/supabase/server';
+import { createClient } from '@/_utils/supabase/server';
 import Link from 'next/link';
 
 export const metadata: Metadata = {

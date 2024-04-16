@@ -1,5 +1,5 @@
-import { EventWithCreatorInfo, fetchEvent } from '@/app/_lib/actions';
-import { BUCKET_URL } from '@/app/_lib/constants';
+import { EventWithCreatorInfo, fetchEvent } from '@/_lib/actions';
+import { BUCKET_URL } from '@/_lib/constants';
 import { Metadata } from 'next';
 import ReservationForm from '../_components/ReservationForm';
 

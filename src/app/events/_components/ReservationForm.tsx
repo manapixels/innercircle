@@ -1,8 +1,8 @@
 'use client';
 
-import { useUser } from '@/app/_contexts/UserContext';
-import { EventWithCreatorInfo, signUpForEvent } from '@/app/_lib/actions';
-import { hasDatePassed } from '@/app/_utils/date';
+import { useUser } from '@/_contexts/UserContext';
+import { EventWithCreatorInfo, signUpForEvent } from '@/_lib/actions';
+import { hasDatePassed } from '@/_utils/date';
 import { useState } from 'react';
 import pluralize from 'pluralize';
 

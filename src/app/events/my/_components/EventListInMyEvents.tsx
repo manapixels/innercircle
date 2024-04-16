@@ -1,7 +1,7 @@
 'use client';
 
-import { useUser } from '@/app/_contexts/UserContext';
-import { EventWithSignUps, fetchUserProfileWithHostedEvents } from '@/app/_lib/actions';
+import { useUser } from '@/_contexts/UserContext';
+import { EventWithSignUps, fetchUserProfileWithHostedEvents } from '@/_lib/actions';
 import EventListItemInMyEvents from './EventListItemInMyEvents';
 import { useEffect, useState } from 'react';
 
