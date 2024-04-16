@@ -406,7 +406,9 @@ export const updateEvent = async ({
         image_thumbnail_url,
         image_banner_url,
       })
-      .match({ id });
+      .eq('id', id);
+
+    console.log(data, error)
 
     if (error) throw error;
     return data;

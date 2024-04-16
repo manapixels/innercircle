@@ -23,13 +23,11 @@ export function FileUpload({
   const [imageLoading, setImageLoading] = useState(false);
 
   useEffect(() => {
-    console.log('FileUpload', currValue, uploadedImagePath)
     if (currValue && currValue !== uploadedImagePath && currValue !== "") {
       setUploadedImagePath(currValue);
+      setUploaded(true);
     }
   }, [currValue])
-
-  console.log('currValue', currValue)
 
   const handleFileAccepted = async (file) => {
     setIsUploading(true);

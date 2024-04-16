@@ -143,6 +143,7 @@ export default function EditEventForm({
         image_banner_url: data.image_banner_url,
       });
       setIsLoading(false);
+      setTimeout(() => setShowModal(false), 500);
       console.log(result);
     }
   };
