@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { BUCKET_URL, ProfileWithRoles, signOut } from '../_lib/actions';
+import { ProfileWithRoles, signOut } from '@/app/_lib/actions';
+import { BUCKET_URL } from '@/app/_lib/constants';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';

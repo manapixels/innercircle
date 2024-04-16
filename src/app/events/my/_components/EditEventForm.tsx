@@ -11,7 +11,7 @@ import {
   getGuessedUserTimeZone,
   getTimeZonesWithOffset,
 } from '@/app/_utils/date';
-import { slugify } from '@/app/_utils/text';
+import { reverseSlugify, slugify } from '@/app/_utils/text';
 import { FileUpload } from '@/app/_components/FileUpload';
 
 type Inputs = {
@@ -47,7 +47,7 @@ const formatTimePart = (dateString) => {
 
 const detectTimeZone = (date) => {
   const timeZone = new Date(date)
-    .toLocaleTimeString('en-us', { timeZoneName: 'short' })
+    .toLocaleTimeString('en-us', { timeZoneName: 'longOffset' })
     .split(' ')[2];
   return timeZone;
 };
@@ -59,6 +59,7 @@ export default function EditEventForm({
   event: EventWithSignUps;
   disabled: boolean;
 }) {
+
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => setShowModal(!showModal);
 
@@ -94,7 +95,7 @@ export default function EditEventForm({
   } = useForm<Inputs>({
     defaultValues: {
       name: event?.name || '',
-      category: event?.category || '',
+      category: reverseSlugify(event?.category) || '',
       location_name: event?.location_name || '',
       location_address: event?.location_address || '',
       location_country: event?.location_country || '',
@@ -107,7 +108,7 @@ export default function EditEventForm({
       image_thumbnail_url: event?.image_thumbnail_url || '',
       image_banner_url: event?.image_banner_url || '',
       price: event?.price || 0,
-      price_currency: event?.price_currency || '',
+      price_currency: event?.price_currency?.toUpperCase() || '',
       slots: event?.slots || 0,
     },
   });
@@ -149,6 +150,8 @@ export default function EditEventForm({
   // Watch fields
   const watchStartDate = watch('date_start');
   const watchEndDate = watch('date_end');
+  const watchThumbnailUpload = watch('image_thumbnail_url');
+  const watchBannerUpload = watch('image_banner_url');
 
   const handleThumbnailUpload = (uploadResult: string) => {
     setValue('image_thumbnail_url', uploadResult, { shouldValidate: true });
@@ -208,12 +211,14 @@ export default function EditEventForm({
         handleClose={toggleModal}
         backdropDismiss={true}
       >
+        <div className="text-xl font-medium mb-5 py-1">Edit event</div>
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
             {/* Event thumbnail */}
             <div className="sm:col-span-2">
               <FileUpload
                 className="aspect-square h-full"
+                value={watchThumbnailUpload}
                 userId={profile?.id}
                 bucketId="event_thumbnails"
                 label="Thumbnail"
@@ -234,6 +239,7 @@ export default function EditEventForm({
             <div className="sm:col-span-4">
               <FileUpload
                 className="h-full"
+                value={watchBannerUpload}
                 userId={profile?.id}
                 bucketId="event_banners"
                 label="Banner"

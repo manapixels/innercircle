@@ -18,7 +18,6 @@ export type ProfileWithRoles = Tables<'profiles_with_roles'>;
 export type ProfileWithEventsHosted = Tables<'profiles_with_hosted_events'> & {
   hosted_events: EventWithSignUps[];
 };
-export const BUCKET_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public`
 
 /**
  * Signs up a new user with email and password.

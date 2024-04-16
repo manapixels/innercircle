@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { downloadFileFromBucket, uploadFileToBucket } from '../_lib/actions';
+import { downloadFileFromBucket, uploadFileToBucket } from '@/app/_lib/actions';
+import { BUCKET_URL } from '@/app/_lib/constants';
 import Image from 'next/image';
 
 export function FileUpload({
   className = '',
+  value,
   userId,
   bucketId,
   label,
@@ -16,9 +18,15 @@ export function FileUpload({
   name,
 }) {
   const [uploaded, setUploaded] = useState(false);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+  const [uploadedImagePath, setUploadedImagePath] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
+
+  useEffect(() => {
+    if (value && value !== uploadedImagePath && value !== "") {
+      setUploadedImagePath(value);
+    }
+  }, [value])
 
   const handleFileAccepted = async (file) => {
     setIsUploading(true);
@@ -36,7 +44,7 @@ export function FileUpload({
       if (uploadResult?.path) {
         onUploadComplete?.(uploadResult?.path);
         const data = await downloadFileFromBucket(bucketId, uploadResult.path);
-        if (data?.publicUrl) setUploadedImageUrl(data.publicUrl);
+        if (data?.publicUrl) setUploadedImagePath(data.publicUrl);
       }
     } catch (error) {
       // Handle any errors
@@ -51,7 +59,7 @@ export function FileUpload({
     (acceptedFiles) => {
       // Reset upload status on new drop
       setUploaded(false);
-      setUploadedImageUrl(''); // Reset the image URL on new drop
+      setUploadedImagePath(''); // Reset the image URL on new drop
       handleFileAccepted(acceptedFiles[0]);
     },
     [handleFileAccepted],
@@ -79,10 +87,10 @@ export function FileUpload({
         <p className="text-gray-700">Drop the files here ...</p>
       ) : uploaded ? (
         <div className="w-full h-full absolute top-0 left-0">
-          {uploadedImageUrl && (
+          {uploadedImagePath && (
             <Image
                 className="rounded-md object-cover w-full h-full"
-                src={uploadedImageUrl}
+                src={`${BUCKET_URL}/${bucketId}/${uploadedImagePath}`}
                 alt="Uploaded Image"
                 sizes="100vw"
                 fill

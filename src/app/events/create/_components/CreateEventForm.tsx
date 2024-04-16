@@ -149,6 +149,7 @@ export default function CreateEventForm() {
         <div className="sm:col-span-2">
           <FileUpload
             className="aspect-square h-full"
+            value={null}
             userId={profile?.id}
             bucketId="event_thumbnails"
             label="Thumbnail"
@@ -169,6 +170,7 @@ export default function CreateEventForm() {
         <div className="sm:col-span-4">
           <FileUpload
             className="h-full"
+            value={null}
             userId={profile?.id}
             bucketId="event_banners"
             label="Banner"
