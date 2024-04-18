@@ -6,6 +6,7 @@ import GooglePlacesAutocomplete from 'react-google-autocomplete';
 
 import Spinner from '@/_components/ui/Spinner';
 import { FileUpload } from '@/_components/ui/FileUpload';
+import { useToast } from "@/_components/ui/use-toast"
 import { useUser } from '@/_contexts/UserContext';
 import { EventWithSignUps, updateEvent } from '@/_lib/actions';
 import { getGuessedUserTimeZone, getTimeZonesWithOffset } from '@/_lib/_utils/date';
@@ -59,6 +60,7 @@ export default function EditEventForm({
   onSuccess: (event: EventWithSignUps) => void;
   closeModal: () => void;
 }) {
+  const { toast } = useToast()
   const autocompleteRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -140,6 +142,10 @@ export default function EditEventForm({
       });
 
       if (result) {
+        toast({
+          title: "Event updated",
+          description: "Event has been updated successfully.",
+        })
         onSuccess({
           ...result,
           sign_ups: event?.sign_ups,

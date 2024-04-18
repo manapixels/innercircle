@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 
 import Header from '@/_components/Header';
 import Footer from '@/_components/Footer';
+import { Toaster } from '@/_components/ui/toaster';
 import { UserProvider } from '@/_contexts/UserContext';
 import { AuthProvider } from '@/_contexts/AuthContext';
 import './globals.css';
@@ -32,6 +33,7 @@ export default function RootLayout({
                 {children}
               </div>
               <Footer />
+              <Toaster />
             </div>
             <div id="modal-portal"></div>
           </AuthProvider>
