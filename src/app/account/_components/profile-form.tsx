@@ -1,9 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Profile, fetchUserProfile, updateUserProfile } from '../../_lib/actions';
-import Spinner from '../../_components/ui/Spinner';
-import { calculateAge } from '../../_utils/date';
+
+import Spinner from '@/_components/ui/Spinner';
+import { Profile, fetchUserProfile, updateUserProfile } from '@/_lib/actions';
+import { calculateAge } from '@/_lib/_utils/date';
+
 
 interface AuthFormInput {
   email: string;

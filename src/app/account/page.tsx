@@ -1,6 +1,6 @@
 
+import { createClient } from '@/_lib/_utils/supabase/server';
 import ProfileForm from './_components/profile-form'
-import { createClient } from '../_utils/supabase/server';
 import EmailForm from './_components/email-form';
 import PasswordForm from './_components/password-form';
 

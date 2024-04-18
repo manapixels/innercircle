@@ -7,10 +7,9 @@ import React, {
   useEffect,
   ReactNode,
 } from 'react';
-
 import { Session, User } from '@supabase/supabase-js';
-import { createClient } from '../_utils/supabase/client';
-import { ProfileWithRoles, fetchUserProfile } from '../_lib/actions';
+import { ProfileWithRoles, fetchUserProfile } from '@/_lib/actions';
+import { createClient } from '@/_lib/_utils/supabase/client';
 
 const supabase = createClient();
 const UserContext = createContext<{

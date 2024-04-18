@@ -3,13 +3,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import GooglePlacesAutocomplete from 'react-google-autocomplete';
-import { EventWithSignUps, updateEvent } from '@/_lib/actions';
-import { useUser } from '@/_contexts/UserContext';
-import { Modal } from '@/_components/ui/Modal';
+
 import Spinner from '@/_components/ui/Spinner';
-import { getGuessedUserTimeZone, getTimeZonesWithOffset } from '@/_utils/date';
-import { reverseSlugify, slugify } from '@/_utils/text';
 import { FileUpload } from '@/_components/ui/FileUpload';
+import { useUser } from '@/_contexts/UserContext';
+import { EventWithSignUps, updateEvent } from '@/_lib/actions';
+import { getGuessedUserTimeZone, getTimeZonesWithOffset } from '@/_lib/_utils/date';
+import { reverseSlugify, slugify } from '@/_lib/_utils/text';
+
 
 type Inputs = {
   name: string;

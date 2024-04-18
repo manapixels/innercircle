@@ -6,12 +6,12 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import {
   getTimeZonesWithOffset,
   getGuessedUserTimeZone,
-} from '@/_utils/date';
+} from '@/_lib/_utils/date';
 import { FileUpload } from '@/_components/ui/FileUpload';
 import { useUser } from '@/_contexts/UserContext';
 import { addEvent } from '@/_lib/actions';
 import Spinner from '@/_components/ui/Spinner';
-import { slugify } from '@/_utils/text';
+import { slugify } from '@/_lib/_utils/text';
 
 type Inputs = {
   name: string;

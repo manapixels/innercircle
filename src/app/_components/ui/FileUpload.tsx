@@ -2,9 +2,11 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import Image from 'next/image';
+
 import { downloadFileFromBucket, uploadFileToBucket } from '@/_lib/actions';
 import { BUCKET_URL } from '@/_lib/constants';
-import Image from 'next/image';
+
 
 export function FileUpload({
   className = '',

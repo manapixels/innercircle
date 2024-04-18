@@ -1,13 +1,15 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
+import { Modal } from '@/_components/ui/Modal';
 import { useUser } from '@/_contexts/UserContext';
 import {
   EventWithSignUps,
   fetchUserProfileWithHostedEventsWithId,
 } from '@/_lib/actions';
 import EventListItemInMyEvents from './EventListItemInMyEvents';
-import { useEffect, useState } from 'react';
-import { Modal } from '@/_components/ui/Modal';
+
 
 export default function EventListInMyEvents() {
   const { user } = useUser();

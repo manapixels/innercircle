@@ -2,10 +2,12 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatDateRange, hasDatePassed } from '@/_utils/date';
+import Tippy from '@tippyjs/react';
+
 import { EventWithCreatorInfo } from '@/_lib/actions';
 import { BUCKET_URL } from '@/_lib/constants';
-import Tippy from '@tippyjs/react';
+import { formatDateRange, hasDatePassed } from '@/_lib/_utils/date';
+
 
 export default function EventListItem({
   event,

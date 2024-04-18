@@ -3,9 +3,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import AuthForm from './auth/AuthForm';
-import LoggedInUser from './auth/LoggedInUser';
-import { useUser } from '../_contexts/UserContext';
+
+import AuthForm from '@/_components/auth/AuthForm';
+import LoggedInUser from '@/_components/auth/LoggedInUser';
+import { useUser } from '@/_contexts/UserContext';
+
 
 export default function Header() {
   const pathname = usePathname();

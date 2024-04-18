@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatDateRange, hasDatePassed } from '@/_utils/date';
+import { formatDateRange, hasDatePassed } from '@/_lib/_utils/date';
 import { EventWithSignUps } from '@/_lib/actions';
 import { BUCKET_URL } from '@/_lib/constants';
 

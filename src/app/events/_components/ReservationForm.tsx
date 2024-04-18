@@ -1,10 +1,11 @@
 'use client';
 
-import { useUser } from '@/_contexts/UserContext';
-import { EventWithCreatorInfo, signUpForEvent } from '@/_lib/actions';
-import { hasDatePassed } from '@/_utils/date';
 import { useState } from 'react';
 import pluralize from 'pluralize';
+
+import { useUser } from '@/_contexts/UserContext';
+import { EventWithCreatorInfo, signUpForEvent } from '@/_lib/actions';
+import { hasDatePassed } from '@/_lib/_utils/date';
 
 export default function ReservationForm({
   event,
@@ -22,6 +23,10 @@ export default function ReservationForm({
   const handleReservation = async () => {
     if (!profile?.id) {
       alert('You must be logged in to make a reservation.');
+      return;
+    }
+    if (!event?.id) {
+      alert('Event id is undetected');
       return;
     }
 

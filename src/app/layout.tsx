@@ -2,11 +2,12 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import Header from '@/_components/Header';
-import Footer from './_components/Footer';
-import { UserProvider } from './_contexts/UserContext';
+import Footer from '@/_components/Footer';
+import { UserProvider } from '@/_contexts/UserContext';
+import { AuthProvider } from '@/_contexts/AuthContext';
 import './globals.css';
 import 'tippy.js/dist/tippy.css';
-import { AuthProvider } from './_contexts/AuthContext';
+
 
 const inter = Inter({ subsets: ['latin'] });
 

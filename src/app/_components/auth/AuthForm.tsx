@@ -1,13 +1,15 @@
 'use client';
 
-import { signInWithEmail, signUpNewUser } from '@/_lib/actions';
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Modal } from '../ui/Modal';
 import { useRouter } from 'next/navigation';
-import Spinner from '../ui/Spinner';
+
+import { Modal } from '@/_components/ui/Modal';
+import Spinner from '@/_components/ui/Spinner';
 import { useUser } from '@/_contexts/UserContext';
 import { useAuthModal } from '@/_contexts/AuthContext';
+import { signInWithEmail, signUpNewUser } from '@/_lib/actions';
+
 
 interface AuthFormInput {
   email: string;

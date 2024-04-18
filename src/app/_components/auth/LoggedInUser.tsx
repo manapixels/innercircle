@@ -1,13 +1,15 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useOnClickOutside } from 'usehooks-ts';
+
+import { useUser } from '@/_contexts/UserContext';
 import { ProfileWithRoles, signOut } from '@/_lib/actions';
 import { BUCKET_URL } from '@/_lib/constants';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useRef, useState } from 'react';
-import { useOnClickOutside } from 'usehooks-ts';
-import Image from 'next/image';
-import { useUser } from '../../_contexts/UserContext';
+
 
 export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
   const [isOpen, setIsOpen] = useState(false);

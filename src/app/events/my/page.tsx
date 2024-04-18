@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import EventListInMyEvents from './_components/EventListInMyEvents';
 import ProtectedWrapper from '@/_components/auth/ProtectedWrapper';
+import EventListInMyEvents from './_components/EventListInMyEvents';
 
 export const metadata: Metadata = {
   title: 'innercircle | Profile',

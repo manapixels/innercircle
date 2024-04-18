@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatDateRange, hasDatePassed, timeUntil } from '@/_utils/date';
+import { formatDateRange, hasDatePassed, timeUntil } from '@/_lib/_utils/date';
 import { EventWithSignUps } from '@/_lib/actions';
 import { BUCKET_URL } from '@/_lib/constants';
 import EditEventForm from './EditEventForm';

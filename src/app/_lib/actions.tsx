@@ -1,7 +1,7 @@
 'use server';
 
 import { User } from '@supabase/supabase-js';
-import { createClient } from '../_utils/supabase/server';
+import { createClient } from '@/_lib/_utils/supabase/server';
 import { Tables } from './definitions';
 
 export type Event = Tables<'events'>;
