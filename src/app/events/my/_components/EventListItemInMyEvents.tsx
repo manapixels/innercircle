@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDateRange, hasDatePassed, timeUntil } from '@/_utils/date';
@@ -9,15 +8,28 @@ import EditEventForm from './EditEventForm';
 export default function EventListItemInMyEvents({
   event,
   updateEventInList,
+  openModal,
+  closeModal,
 }: {
   event: EventWithSignUps;
   updateEventInList: (event: EventWithSignUps) => void;
+  openModal: (content: React.ReactNode) => void;
+  closeModal: () => void;
 }) {
   const eventOver = hasDatePassed(event?.date_start);
   const ticketsLeft = (event.slots ?? 0) - (event.sign_ups ?? 0);
   const percentSold = event.slots ? (1 - ticketsLeft / event.slots) * 100 : 0;
 
-  useEffect(() => {}, []);
+  const handleEditClick = () => {
+    const modalContent = (
+      <EditEventForm
+        event={event}
+        onSuccess={updateEventInList}
+        closeModal={closeModal}
+      />
+    );
+    openModal(modalContent);
+  };
 
   return (
     <div className={`relative flex gap-4 p-6 rounded-lg bg-white border`}>
@@ -120,11 +132,32 @@ export default function EventListItemInMyEvents({
               ></path>
             </svg>
           </Link>
-          <EditEventForm
-            event={event}
+          <button
+            type="button"
+            onClick={handleEditClick}
+            className={`flex items-center gap-1 text-white focus:ring-4 focus:ring-base-200 font-medium rounded-full text-md px-7 py-2.5 dark:bg-base-600 dark:hover:bg-base-700 focus:outline-none dark:focus:ring-base-800 ${eventOver ? 'bg-gray-300 cursor-not-allowed' : 'bg-black hover:bg-gray-900'}`}
             disabled={eventOver}
-            onSuccess={updateEventInList}
-          />
+          >
+            Edit{' '}
+            <svg
+              className="inline-block align-middle"
+              width="16px"
+              height="16px"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              color="#FFFFFF"
+            >
+              <path
+                d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5"
+                stroke="#FFFFFF"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+            </svg>
+          </button>
         </div>
       </div>
     </div>

@@ -7,10 +7,7 @@ import { EventWithSignUps, updateEvent } from '@/_lib/actions';
 import { useUser } from '@/_contexts/UserContext';
 import { Modal } from '@/_components/Modal';
 import Spinner from '@/_components/Spinner';
-import {
-  getGuessedUserTimeZone,
-  getTimeZonesWithOffset,
-} from '@/_utils/date';
+import { getGuessedUserTimeZone, getTimeZonesWithOffset } from '@/_utils/date';
 import { reverseSlugify, slugify } from '@/_utils/text';
 import { FileUpload } from '@/_components/FileUpload';
 
@@ -54,17 +51,13 @@ const detectTimeZone = (date) => {
 
 export default function EditEventForm({
   event,
-  disabled,
-  onSuccess
+  onSuccess,
+  closeModal,
 }: {
   event: EventWithSignUps;
-  disabled: boolean;
   onSuccess: (event: EventWithSignUps) => void;
+  closeModal: () => void;
 }) {
-
-  const [showModal, setShowModal] = useState(false);
-  const toggleModal = () => setShowModal(!showModal);
-
   const autocompleteRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -148,11 +141,11 @@ export default function EditEventForm({
       if (result) {
         onSuccess({
           ...result,
-          sign_ups: event?.sign_ups
-         } as EventWithSignUps);
+          sign_ups: event?.sign_ups,
+        } as EventWithSignUps);
         setTimeout(() => {
           setIsLoading(false);
-          setShowModal(false);
+          closeModal();
         }, 500);
       } else {
         setIsLoading(false);
@@ -184,454 +177,417 @@ export default function EditEventForm({
     }
   }, [watchEndDate, setValue]);
 
-  const btn = (
-    <button
-      type="button"
-      onClick={toggleModal}
-      className={`flex items-center gap-1 text-white focus:ring-4 focus:ring-base-200 font-medium rounded-full text-md px-7 py-2.5 dark:bg-base-600 dark:hover:bg-base-700 focus:outline-none dark:focus:ring-base-800 ${disabled ? 'bg-gray-300 cursor-not-allowed' : 'bg-black hover:bg-gray-900'}`}
-      disabled={disabled}
-    >
-      Edit{' '}
-      <svg
-        className="inline-block align-middle"
-        width="16px"
-        height="16px"
-        viewBox="0 0 24 24"
-        strokeWidth="1.5"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        color="#FFFFFF"
-      >
-        <path
-          d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5"
-          stroke="#FFFFFF"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        ></path>
-      </svg>
-    </button>
-  );
-
   return (
     <div>
-      {btn}
+      <div className="text-xl font-medium mb-5 py-1">Edit event</div>
+      <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+        <div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
+          {/* Event thumbnail */}
+          <div className="sm:col-span-2">
+            <FileUpload
+              className="aspect-square h-full"
+              currValue={event?.image_thumbnail_url}
+              userId={profile?.id}
+              bucketId="event_thumbnails"
+              label="Thumbnail"
+              onUploadComplete={handleThumbnailUpload}
+              register={register}
+              validationSchema={{
+                required: 'Upload thumbnail.',
+              }}
+              name="image_thumbnail_url"
+            />
+            {errors.image_thumbnail_url && (
+              <span className="text-red-500 text-sm">
+                {errors.image_thumbnail_url.message}
+              </span>
+            )}
+          </div>
+          {/* Event banner */}
+          <div className="sm:col-span-4">
+            <FileUpload
+              className="h-full"
+              currValue={event?.image_banner_url}
+              userId={profile?.id}
+              bucketId="event_banners"
+              label="Banner"
+              onUploadComplete={handleBannerUpload}
+              register={register}
+              validationSchema={{
+                required: 'Upload banner.',
+              }}
+              name="image_banner_url"
+            />
+            {errors.image_banner_url && (
+              <span className="text-red-500 text-sm">
+                {errors.image_banner_url.message}
+              </span>
+            )}
+          </div>
+          {/* Event name */}
+          <div className="sm:col-span-6">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Event Name <span className="text-red-500 text-sm">*</span>
+            </label>
+            <input
+              {...register('name', {
+                required: 'Enter name of event.',
+              })}
+              type="text"
+              name="name"
+              id="name"
+              className={`mt-1 block w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+            />
+            {errors.name && (
+              <span className="text-red-500 text-sm">
+                {errors.name.message}
+              </span>
+            )}
+          </div>
+          {/* Event category */}
+          <div className="sm:col-span-6">
+            <label
+              htmlFor="location_country"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Category <span className="text-red-500 text-sm">*</span>
+            </label>
+            <select
+              {...register('category', {
+                required: 'Select category of event.',
+              })}
+              name="category"
+              id="category"
+              defaultValue="Singapore"
+              className={`mt-1 block w-full border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+            >
+              <option>Speed Dating</option>
+            </select>
+            {errors.category && (
+              <span className="text-red-500 text-sm">
+                {errors.category.message}
+              </span>
+            )}
+          </div>
+          {/* Event description */}
+          <div className="sm:col-span-6">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Description <span className="text-red-500 text-sm">*</span>
+            </label>
+            <textarea
+              {...register('description', {
+                required: 'Enter description for the event.',
+              })}
+              name="description"
+              id="description"
+              rows={3}
+              className={`mt-1 block w-full border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+            ></textarea>
+            {errors.description && (
+              <span className="text-red-500 text-sm">
+                {errors.description.message}
+              </span>
+            )}
+          </div>
+          {/* Event location */}
+          <div className="sm:col-span-6">
+            <label
+              htmlFor="autocomplete"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Location <span className="text-red-500 text-sm">*</span>
+            </label>
 
-      <Modal
-        isOpen={showModal}
-        handleClose={toggleModal}
-        backdropDismiss={true}
-      >
-        <div className="text-xl font-medium mb-5 py-1">Edit event</div>
-        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
-            {/* Event thumbnail */}
-            <div className="sm:col-span-2">
-              <FileUpload
-                className="aspect-square h-full"
-                currValue={event?.image_thumbnail_url}
-                userId={profile?.id}
-                bucketId="event_thumbnails"
-                label="Thumbnail"
-                onUploadComplete={handleThumbnailUpload}
-                register={register}
-                validationSchema={{
-                  required: 'Upload thumbnail.',
-                }}
-                name="image_thumbnail_url"
-              />
-              {errors.image_thumbnail_url && (
-                <span className="text-red-500 text-sm">
-                  {errors.image_thumbnail_url.message}
-                </span>
-              )}
+            <div className="flex flex-row gap-4">
+              <div className="relative flex-grow">
+                {/* Fields available: https://developers.google.com/maps/documentation/javascript/place-data-fields */}
+                <GooglePlacesAutocomplete
+                  ref={autocompleteRef}
+                  className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pl-9 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                  apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                  onPlaceSelected={handlePlaceSelected}
+                  options={{
+                    types: ['establishment'],
+                    fields: [
+                      'name',
+                      'formatted_address',
+                      'address_components',
+                      'url',
+                      'website',
+                    ],
+                    componentRestrictions: { country: 'SG' },
+                  }}
+                />
+                <div className="absolute top-0 left-0 p-2 mt-1">
+                  <svg
+                    width="20px"
+                    height="20px"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    color="#434a59"
+                  >
+                    <path
+                      d="M17 17L21 21"
+                      stroke="#434a59"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                    <path
+                      d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z"
+                      stroke="#434a59"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <select
+                  {...register('location_country', {
+                    required: 'Select country of location.',
+                  })}
+                  name="location_country"
+                  id="location_country"
+                  defaultValue="Singapore"
+                  disabled={true}
+                  className={`mt-1 block w-full border ${errors.location_country ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50 pointer-events-none`}
+                >
+                  <option>Singapore</option>
+                </select>
+                {errors.location_country && (
+                  <span className="text-red-500 text-sm">
+                    {errors.location_country.message}
+                  </span>
+                )}
+              </div>
             </div>
-            {/* Event banner */}
-            <div className="sm:col-span-4">
-              <FileUpload
-                className="h-full"
-                currValue={event?.image_banner_url}
-                userId={profile?.id}
-                bucketId="event_banners"
-                label="Banner"
-                onUploadComplete={handleBannerUpload}
-                register={register}
-                validationSchema={{
-                  required: 'Upload banner.',
-                }}
-                name="image_banner_url"
-              />
-              {errors.image_banner_url && (
-                <span className="text-red-500 text-sm">
-                  {errors.image_banner_url.message}
-                </span>
-              )}
-            </div>
-            {/* Event name */}
-            <div className="sm:col-span-6">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Event Name <span className="text-red-500 text-sm">*</span>
-              </label>
-              <input
-                {...register('name', {
-                  required: 'Enter name of event.',
-                })}
-                type="text"
-                name="name"
-                id="name"
-                className={`mt-1 block w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-              />
-              {errors.name && (
-                <span className="text-red-500 text-sm">
-                  {errors.name.message}
-                </span>
-              )}
-            </div>
-            {/* Event category */}
-            <div className="sm:col-span-6">
-              <label
-                htmlFor="location_country"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Category <span className="text-red-500 text-sm">*</span>
+          </div>
+          {/* Event location name */}
+          <div className="-mt-3 sm:col-span-6">
+            <input
+              {...register('location_name', {
+                required: 'Enter name of location.',
+              })}
+              type="text"
+              name="location_name"
+              id="location_name"
+              placeholder="Location name"
+              required
+              className={`mt-1 block w-full border ${errors.location_name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+            />
+            {errors.location_name && (
+              <span className="text-red-500 text-sm">
+                {errors.location_name.message}
+              </span>
+            )}
+          </div>
+          {/* Event address */}
+          <div className="-mt-3 sm:col-span-6">
+            <input
+              {...register('location_address', {
+                required: 'Enter address of location.',
+              })}
+              type="text"
+              name="location_address"
+              id="location_address"
+              placeholder="Address"
+              required
+              className={`mt-1 block w-full border ${errors.location_address ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+            />
+            {errors.location_address && (
+              <span className="text-red-500 text-sm">
+                {errors.location_address.message}
+              </span>
+            )}
+          </div>
+          {/* Event date and time */}
+          <div className="sm:col-span-6">
+            <div className="flex justify-between">
+              <label className="block text-sm font-medium text-gray-700">
+                Date <span className="text-red-500 text-sm">*</span>
               </label>
               <select
-                {...register('category', {
-                  required: 'Select category of event.',
+                {...register('time_zone', {
+                  required: 'Select time zone of event.',
                 })}
-                name="category"
-                id="category"
-                defaultValue="Singapore"
-                className={`mt-1 block w-full border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                name="time_zone"
+                id="time_zone"
+                defaultValue={guessedTimeZone}
+                required
+                className={`block border ${errors.time_zone ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-1 px-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs bg-gray-50`}
               >
-                <option>Speed Dating</option>
+                {timeZones.map((zone) => (
+                  <option key={zone} value={zone}>
+                    {zone}
+                  </option>
+                ))}
               </select>
-              {errors.category && (
-                <span className="text-red-500 text-sm">
-                  {errors.category.message}
-                </span>
-              )}
             </div>
-            {/* Event description */}
-            <div className="sm:col-span-6">
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Description <span className="text-red-500 text-sm">*</span>
-              </label>
-              <textarea
-                {...register('description', {
-                  required: 'Enter description for the event.',
-                })}
-                name="description"
-                id="description"
-                rows={3}
-                className={`mt-1 block w-full border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-              ></textarea>
-              {errors.description && (
-                <span className="text-red-500 text-sm">
-                  {errors.description.message}
-                </span>
-              )}
-            </div>
-            {/* Event location */}
-            <div className="sm:col-span-6">
-              <label
-                htmlFor="autocomplete"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Location <span className="text-red-500 text-sm">*</span>
-              </label>
-
-              <div className="flex flex-row gap-4">
-                <div className="relative flex-grow">
-                  {/* Fields available: https://developers.google.com/maps/documentation/javascript/place-data-fields */}
-                  <GooglePlacesAutocomplete
-                    ref={autocompleteRef}
-                    className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pl-9 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-                    onPlaceSelected={handlePlaceSelected}
-                    options={{
-                      types: ['establishment'],
-                      fields: [
-                        'name',
-                        'formatted_address',
-                        'address_components',
-                        'url',
-                        'website',
-                      ],
-                      componentRestrictions: { country: 'SG' },
-                    }}
-                  />
-                  <div className="absolute top-0 left-0 p-2 mt-1">
-                    <svg
-                      width="20px"
-                      height="20px"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      color="#434a59"
-                    >
-                      <path
-                        d="M17 17L21 21"
-                        stroke="#434a59"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      ></path>
-                      <path
-                        d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z"
-                        stroke="#434a59"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      ></path>
-                    </svg>
-                  </div>
-                </div>
-                <div>
-                  <select
-                    {...register('location_country', {
-                      required: 'Select country of location.',
-                    })}
-                    name="location_country"
-                    id="location_country"
-                    defaultValue="Singapore"
-                    disabled={true}
-                    className={`mt-1 block w-full border ${errors.location_country ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50 pointer-events-none`}
-                  >
-                    <option>Singapore</option>
-                  </select>
-                  {errors.location_country && (
-                    <span className="text-red-500 text-sm">
-                      {errors.location_country.message}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-            {/* Event location name */}
-            <div className="-mt-3 sm:col-span-6">
+            <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-4">
               <input
-                {...register('location_name', {
-                  required: 'Enter name of location.',
+                {...register('date_start', {
+                  required: 'Select date of event.',
                 })}
-                type="text"
-                name="location_name"
-                id="location_name"
-                placeholder="Location name"
+                type="date"
+                name="date_start"
+                id="date_start"
                 required
-                className={`mt-1 block w-full border ${errors.location_name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                className={`mt-1 block w-full border ${errors.date_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
               />
-              {errors.location_name && (
-                <span className="text-red-500 text-sm">
-                  {errors.location_name.message}
-                </span>
-              )}
-            </div>
-            {/* Event address */}
-            <div className="-mt-3 sm:col-span-6">
+
               <input
-                {...register('location_address', {
-                  required: 'Enter address of location.',
+                {...register('time_start', {
+                  required: 'Enter start time of event.',
                 })}
-                type="text"
-                name="location_address"
-                id="location_address"
-                placeholder="Address"
+                type="time"
+                name="time_start"
+                id="time_start"
                 required
-                className={`mt-1 block w-full border ${errors.location_address ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                className={`mt-1 block w-full border ${errors.time_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
               />
-              {errors.location_address && (
+              <div className="text-center self-center">–</div>
+
+              <input
+                {...register('time_end', {
+                  required: 'Enter end time of event.',
+                })}
+                type="time"
+                name="time_end"
+                id="time_end"
+                required
+                className={`mt-1 block w-full border ${errors.time_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              />
+
+              <input
+                {...register('date_end', {
+                  required: 'Select end date of event.',
+                  validate: (value) =>
+                    new Date(value) >= new Date(watchStartDate) ||
+                    'End date must be after start date.',
+                })}
+                type="date"
+                name="date_end"
+                id="date_end"
+                required
+                className={`mt-1 block w-full border ${errors.date_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+              />
+            </div>
+            <div>
+              {errors.date_start && (
                 <span className="text-red-500 text-sm">
-                  {errors.location_address.message}
+                  {errors.date_start.message}
+                </span>
+              )}
+              {errors.time_start && (
+                <span className="text-red-500 text-sm">
+                  {errors.time_start.message}
+                </span>
+              )}
+              {errors.time_end && (
+                <span className="text-red-500 text-sm">
+                  {errors.time_end.message}
+                </span>
+              )}
+              {errors.date_end && (
+                <span className="text-red-500 text-sm">
+                  {errors.date_end.message}
                 </span>
               )}
             </div>
-            {/* Event date and time */}
-            <div className="sm:col-span-6">
-              <div className="flex justify-between">
-                <label className="block text-sm font-medium text-gray-700">
-                  Date <span className="text-red-500 text-sm">*</span>
-                </label>
-                <select
-                  {...register('time_zone', {
-                    required: 'Select time zone of event.',
-                  })}
-                  name="time_zone"
-                  id="time_zone"
-                  defaultValue={guessedTimeZone}
-                  required
-                  className={`block border ${errors.time_zone ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-1 px-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs bg-gray-50`}
-                >
-                  {timeZones.map((zone) => (
-                    <option key={zone} value={zone}>
-                      {zone}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-4">
+          </div>
+          {/* Event price and currency */}
+          <div className="sm:col-span-3">
+            <label
+              htmlFor="price"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Price <span className="text-red-500 text-sm">*</span>
+            </label>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-span-2">
                 <input
-                  {...register('date_start', {
-                    required: 'Select date of event.',
+                  {...register('price', {
+                    required: 'Enter price of event.',
                   })}
-                  type="date"
-                  name="date_start"
-                  id="date_start"
+                  type="number"
+                  name="price"
+                  id="price"
                   required
-                  className={`mt-1 block w-full border ${errors.date_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-                />
-
-                <input
-                  {...register('time_start', {
-                    required: 'Enter start time of event.',
-                  })}
-                  type="time"
-                  name="time_start"
-                  id="time_start"
-                  required
-                  className={`mt-1 block w-full border ${errors.time_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-                />
-                <div className="text-center self-center">–</div>
-
-                <input
-                  {...register('time_end', {
-                    required: 'Enter end time of event.',
-                  })}
-                  type="time"
-                  name="time_end"
-                  id="time_end"
-                  required
-                  className={`mt-1 block w-full border ${errors.time_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-                />
-
-                <input
-                  {...register('date_end', {
-                    required: 'Select end date of event.',
-                    validate: (value) =>
-                      new Date(value) >= new Date(watchStartDate) ||
-                      'End date must be after start date.',
-                  })}
-                  type="date"
-                  name="date_end"
-                  id="date_end"
-                  required
-                  className={`mt-1 block w-full border ${errors.date_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                  className="mt-1 block w-full border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
                 />
               </div>
               <div>
-                {errors.date_start && (
+                <select
+                  {...register('price_currency', {
+                    required: 'Select currency of price.',
+                  })}
+                  name="price_currency"
+                  id="price_currency"
+                  defaultValue="SGD"
+                  className={`mt-1 block w-full border ${errors.price_currency ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                >
+                  <option>SGD</option>
+                </select>
+                {errors.price_currency && (
                   <span className="text-red-500 text-sm">
-                    {errors.date_start.message}
-                  </span>
-                )}
-                {errors.time_start && (
-                  <span className="text-red-500 text-sm">
-                    {errors.time_start.message}
-                  </span>
-                )}
-                {errors.time_end && (
-                  <span className="text-red-500 text-sm">
-                    {errors.time_end.message}
-                  </span>
-                )}
-                {errors.date_end && (
-                  <span className="text-red-500 text-sm">
-                    {errors.date_end.message}
+                    {errors.price_currency.message}
                   </span>
                 )}
               </div>
             </div>
-            {/* Event price and currency */}
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="price"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Price <span className="text-red-500 text-sm">*</span>
-              </label>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-2">
-                  <input
-                    {...register('price', {
-                      required: 'Enter price of event.',
-                    })}
-                    type="number"
-                    name="price"
-                    id="price"
-                    required
-                    className="mt-1 block w-full border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
-                  />
-                </div>
-                <div>
-                  <select
-                    {...register('price_currency', {
-                      required: 'Select currency of price.',
-                    })}
-                    name="price_currency"
-                    id="price_currency"
-                    defaultValue="SGD"
-                    className={`mt-1 block w-full border ${errors.price_currency ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-                  >
-                    <option>SGD</option>
-                  </select>
-                  {errors.price_currency && (
-                    <span className="text-red-500 text-sm">
-                      {errors.price_currency.message}
-                    </span>
-                  )}
-                </div>
-              </div>
-              {errors.price && (
-                <span className="text-red-500 text-sm">
-                  {errors.price.message}
-                </span>
-              )}
-            </div>
-            {/* Event slots */}
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="slots"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Slots Available <span className="text-red-500 text-sm">*</span>
-              </label>
-              <input
-                {...register('slots', {
-                  required: 'Enter number of slots available.',
-                })}
-                type="number"
-                name="slots"
-                id="slots"
-                required
-                className={`mt-1 block w-full border ${errors.slots ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-              />
-              {errors.slots && (
-                <span className="text-red-500 text-sm">
-                  {errors.slots.message}
-                </span>
-              )}
-            </div>
+            {errors.price && (
+              <span className="text-red-500 text-sm">
+                {errors.price.message}
+              </span>
+            )}
           </div>
-          <div className="bg-white bg-opacity-75 border-t border-gray-400 sticky -mx-5 bottom-0 left-0 w-auto z-20">
-            <div className="py-4 px-10 text-right">
-              <button
-                type="submit"
-                className="bg-base-600 text-white px-12 py-3 rounded-full"
-              >
-                {isLoading && <Spinner className="mr-1.5" />}
-                Update Event
-              </button>
-            </div>
+          {/* Event slots */}
+          <div className="sm:col-span-3">
+            <label
+              htmlFor="slots"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Slots Available <span className="text-red-500 text-sm">*</span>
+            </label>
+            <input
+              {...register('slots', {
+                required: 'Enter number of slots available.',
+              })}
+              type="number"
+              name="slots"
+              id="slots"
+              required
+              className={`mt-1 block w-full border ${errors.slots ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+            />
+            {errors.slots && (
+              <span className="text-red-500 text-sm">
+                {errors.slots.message}
+              </span>
+            )}
           </div>
-        </form>
-      </Modal>
+        </div>
+        <div className="bg-white bg-opacity-75 border-t border-gray-400 sticky -mx-5 bottom-0 left-0 w-auto z-20">
+          <div className="py-4 px-10 text-right">
+            <button
+              type="submit"
+              className="bg-base-600 text-white px-12 py-3 rounded-full"
+            >
+              {isLoading && <Spinner className="mr-1.5" />}
+              Update Event
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
   );
 }
