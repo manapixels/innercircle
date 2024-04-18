@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { updatePassword } from '../../_lib/actions';
-import Spinner from '../../_components/Spinner';
+import Spinner from '../../_components/ui/Spinner';
 
 interface PasswordFormInput {
   password: string;

@@ -7,10 +7,10 @@ import {
   getTimeZonesWithOffset,
   getGuessedUserTimeZone,
 } from '@/_utils/date';
-import { FileUpload } from '@/_components/FileUpload';
+import { FileUpload } from '@/_components/ui/FileUpload';
 import { useUser } from '@/_contexts/UserContext';
 import { addEvent } from '@/_lib/actions';
-import Spinner from '@/_components/Spinner';
+import Spinner from '@/_components/ui/Spinner';
 import { slugify } from '@/_utils/text';
 
 type Inputs = {

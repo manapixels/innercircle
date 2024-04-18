@@ -7,7 +7,7 @@ import {
 } from '@/_lib/actions';
 import EventListItemInMyEvents from './EventListItemInMyEvents';
 import { useEffect, useState } from 'react';
-import { Modal } from '@/_components/Modal';
+import { Modal } from '@/_components/ui/Modal';
 
 export default function EventListInMyEvents() {
   const { user } = useUser();
