@@ -7,6 +7,7 @@ import { Modal } from '../Modal';
 import { useRouter } from 'next/navigation';
 import Spinner from '../Spinner';
 import { useUser } from '@/_contexts/UserContext';
+import { useAuthModal } from '@/_contexts/AuthContext';
 
 interface AuthFormInput {
   email: string;
@@ -19,7 +20,7 @@ interface AuthFormInput {
 export default function AuthForm() {
   const [state, setState] = useState('login'); // ['login', 'register']
   const [showPassword, setShowPassword] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const { showModal, setShowModal } = useAuthModal();
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const router = useRouter();
   const { setUser } = useUser();
