@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDateRange, hasDatePassed, timeUntil } from '@/_utils/date';
@@ -7,12 +8,16 @@ import EditEventForm from './EditEventForm';
 
 export default function EventListItemInMyEvents({
   event,
+  updateEventInList,
 }: {
   event: EventWithSignUps;
+  updateEventInList: (event: EventWithSignUps) => void;
 }) {
   const eventOver = hasDatePassed(event?.date_start);
   const ticketsLeft = (event.slots ?? 0) - (event.sign_ups ?? 0);
-  const percentSold = event.slots ? (1 - (ticketsLeft / event.slots)) * 100 : 0;
+  const percentSold = event.slots ? (1 - ticketsLeft / event.slots) * 100 : 0;
+
+  useEffect(() => {}, []);
 
   return (
     <div className={`relative flex gap-4 p-6 rounded-lg bg-white border`}>
@@ -115,7 +120,11 @@ export default function EventListItemInMyEvents({
               ></path>
             </svg>
           </Link>
-          <EditEventForm event={event} disabled={eventOver} />
+          <EditEventForm
+            event={event}
+            disabled={eventOver}
+            onSuccess={updateEventInList}
+          />
         </div>
       </div>
     </div>

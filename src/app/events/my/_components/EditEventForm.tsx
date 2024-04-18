@@ -55,9 +55,11 @@ const detectTimeZone = (date) => {
 export default function EditEventForm({
   event,
   disabled,
+  onSuccess
 }: {
   event: EventWithSignUps;
   disabled: boolean;
+  onSuccess: (event: EventWithSignUps) => void;
 }) {
 
   const [showModal, setShowModal] = useState(false);
@@ -123,14 +125,14 @@ export default function EditEventForm({
       `${data.date_end}T${data.time_end}${timeZoneOffset}`,
     );
 
-    if (profile?.id) {
+    if (event?.id && profile?.id) {
       setIsLoading(true);
       const result = await updateEvent({
-        id: profile.id, // Fixed by adding the required 'id' field
+        id: event.id,
         name: data.name,
         description: data.description,
         category: slugify(data.category),
-        created_by: profile.id,
+        created_by: profile?.id,
         date_start: date_start.toISOString(),
         date_end: date_end.toISOString(),
         location_name: data.location_name,
@@ -142,9 +144,19 @@ export default function EditEventForm({
         image_thumbnail_url: data.image_thumbnail_url,
         image_banner_url: data.image_banner_url,
       });
-      setIsLoading(false);
-      setTimeout(() => setShowModal(false), 500);
-      console.log(result);
+
+      if (result) {
+        onSuccess({
+          ...result,
+          sign_ups: event?.sign_ups
+         } as EventWithSignUps);
+        setTimeout(() => {
+          setIsLoading(false);
+          setShowModal(false);
+        }, 500);
+      } else {
+        setIsLoading(false);
+      }
     }
   };
 

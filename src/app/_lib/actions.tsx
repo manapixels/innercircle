@@ -406,9 +406,11 @@ export const updateEvent = async ({
         image_thumbnail_url,
         image_banner_url,
       })
-      .eq('id', id);
+      .match({ id })
+      .select('*')
+      .single();
 
-    console.log(data, error)
+    console.log(data, error);
 
     if (error) throw error;
     return data;
