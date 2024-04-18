@@ -410,8 +410,6 @@ export const updateEvent = async ({
       .select('*')
       .single();
 
-    console.log(data, error);
-
     if (error) throw error;
     return data;
   } catch (error) {

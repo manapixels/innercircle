@@ -143,8 +143,8 @@ export default function EditEventForm({
 
       if (result) {
         toast({
-          title: "Event updated",
           description: "Event has been updated successfully.",
+          className: "bg-green-700 text-white border-transparent"
         })
         onSuccess({
           ...result,
