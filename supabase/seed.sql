@@ -94,7 +94,7 @@ BEGIN
   ) 
   VALUES 
   (
-      'speed-dating', 
+      ARRAY['speed-dating']::public.event_categories[], 
       '2023-07-02T10:00:00+08:00', 
       '2023-08-02T20:00:00+08:00', 
       '2023-08-02T22:00:00+08:00', 
@@ -112,7 +112,7 @@ BEGIN
       46
   ),
   (
-      'speed-dating', 
+      ARRAY['speed-dating']::public.event_categories[],  
       '2023-09-01T09:00:00+08:00', 
       '2023-09-21T19:00:00+08:00', 
       '2023-09-21T22:00:00+08:00', 
@@ -130,7 +130,7 @@ BEGIN
       48
   ),
   (
-      'speed-dating', 
+      ARRAY['speed-dating']::public.event_categories[],  
       '2023-11-01T10:00:00+08:00', 
       '2023-11-24T20:00:00+08:00', 
       '2023-11-24T22:00:00+08:00', 
@@ -148,7 +148,7 @@ BEGIN
       47
   ),
   (
-      'speed-dating', 
+      ARRAY['speed-dating']::public.event_categories[],  
       '2023-12-01T00:00:00+08:00', 
       '2023-12-23T19:00:00+08:00', 
       '2023-12-23T22:00:00+08:00', 
@@ -166,7 +166,7 @@ BEGIN
       56
   ),
   (
-      'speed-dating', 
+      ARRAY['speed-dating']::public.event_categories[],  
       '2024-01-01T10:00:00+08:00', 
       '2024-01-27T19:00:00+08:00', 
       '2024-01-27T22:00:00+08:00', 
@@ -184,7 +184,7 @@ BEGIN
       62
   ),
   (
-      'speed-dating', 
+      ARRAY['speed-dating']::public.event_categories[],  
       '2024-02-20T10:00:00+08:00', 
       '2024-03-23T19:00:00+08:00', 
       '2024-03-23T22:00:00+08:00', 
@@ -202,7 +202,7 @@ BEGIN
       100
   ),
   (
-      'speed-dating', 
+      ARRAY['speed-dating']::public.event_categories[],  
       '2024-03-02T09:00:00+08:00', 
       '2024-05-02T19:00:00+08:00', 
       '2024-05-02T22:00:00+08:00', 

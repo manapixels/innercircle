@@ -1,21 +1,29 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import {
+  useForm,
+  SubmitHandler,
+  Controller,
+  SubmitErrorHandler,
+} from 'react-hook-form';
 import GooglePlacesAutocomplete from 'react-google-autocomplete';
 
 import Spinner from '@/_components/ui/Spinner';
 import { FileUpload } from '@/_components/ui/FileUpload';
-import { useToast } from "@/_components/ui/use-toast"
+import { useToast } from '@/_components/ui/use-toast';
 import { useUser } from '@/_contexts/UserContext';
-import { EventWithSignUps, updateEvent } from '@/_lib/actions';
-import { getGuessedUserTimeZone, getTimeZonesWithOffset } from '@/_lib/_utils/date';
+import { Event, EventWithSignUps, updateEvent } from '@/_lib/actions';
+import {
+  getGuessedUserTimeZone,
+  getTimeZonesWithOffset,
+} from '@/_lib/_utils/date';
 import { reverseSlugify, slugify } from '@/_lib/_utils/text';
-
+import { ToggleGroup, ToggleGroupItem } from '@/_components/ui/ToggleGroup';
 
 type Inputs = {
   name: string;
-  category: string;
+  category: string[];
   location_name: string;
   location_address: string;
   location_country: string;
@@ -60,9 +68,10 @@ export default function EditEventForm({
   onSuccess: (event: EventWithSignUps) => void;
   closeModal: () => void;
 }) {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const autocompleteRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showErrorSummary, setShowErrorSummary] = useState(false);
 
   const timeZones = getTimeZonesWithOffset();
   const guessedTimeZone = getGuessedUserTimeZone();
@@ -88,12 +97,13 @@ export default function EditEventForm({
     register,
     handleSubmit,
     setValue,
+    control,
     watch,
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
       name: event?.name || '',
-      category: reverseSlugify(event?.category) || '',
+      category: event?.category || [],
       location_name: event?.location_name || '',
       location_address: event?.location_address || '',
       location_country: event?.location_country || '',
@@ -111,6 +121,8 @@ export default function EditEventForm({
     },
   });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    setShowErrorSummary(false);
+
     console.log(data);
     // Convert GMT+08:00 to +08:00 format for valid Date parsing
     const timeZoneOffset = data.time_zone.replace('GMT', '');
@@ -121,13 +133,24 @@ export default function EditEventForm({
       `${data.date_end}T${data.time_end}${timeZoneOffset}`,
     );
 
-    if (event?.id && profile?.id) {
+    if (
+      event?.id &&
+      profile?.id &&
+      data.image_banner_url &&
+      data.image_thumbnail_url &&
+      data.price &&
+      data.description
+    ) {
       setIsLoading(true);
       const result = await updateEvent({
         id: event.id,
         name: data.name,
         description: data.description,
-        category: slugify(data.category),
+        category:
+          data.category &&
+          (data.category.map((category) =>
+            slugify(category),
+          ) as Event['category']),
         created_by: profile?.id,
         date_start: date_start.toISOString(),
         date_end: date_end.toISOString(),
@@ -136,16 +159,17 @@ export default function EditEventForm({
         location_country: data.location_country,
         price: data.price,
         slots: data.slots,
-        price_currency: data.price_currency.toLowerCase(),
+        price_currency:
+          data.price_currency.toLowerCase() as Event['price_currency'],
         image_thumbnail_url: data.image_thumbnail_url,
         image_banner_url: data.image_banner_url,
       });
 
       if (result) {
         toast({
-          description: "Event has been updated successfully.",
-          className: "bg-green-700 text-white border-transparent"
-        })
+          description: 'Event has been updated successfully.',
+          className: 'bg-green-700 text-white border-transparent',
+        });
         onSuccess({
           ...result,
           sign_ups: event?.sign_ups,
@@ -157,12 +181,37 @@ export default function EditEventForm({
       } else {
         setIsLoading(false);
       }
+    } else {
+      toast({
+        description:
+          "Sorry for the bug. Some params are missing and the event can't be created.",
+        className: 'bg-red-700 text-white border-transparent',
+      });
+    }
+  };
+
+  const onError: SubmitErrorHandler<Inputs> = (_errors) => {
+    if (Object.keys(_errors).length > 0) {
+      setShowErrorSummary(true); // Show the error summary
+
+      const firstErrorField = Object.keys(_errors)[0];
+      const errorElement = document.querySelector(
+        `[name="${firstErrorField}"]`,
+      );
+
+      if (errorElement instanceof HTMLElement) {
+        errorElement.scrollIntoView({ behavior: 'smooth' });
+        errorElement.focus();
+      }
     }
   };
 
   // Watch fields
   const watchStartDate = watch('date_start');
   const watchEndDate = watch('date_end');
+  const watchCategory = watch('category');
+
+  console.log(watchCategory);
 
   const handleThumbnailUpload = (uploadResult: string) => {
     setValue('image_thumbnail_url', uploadResult, { shouldValidate: true });
@@ -187,7 +236,7 @@ export default function EditEventForm({
   return (
     <div>
       <div className="text-xl font-medium mb-5 py-1">Edit event</div>
-      <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+      <form className="space-y-6" onSubmit={handleSubmit(onSubmit, onError)}>
         <div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
           {/* Event thumbnail */}
           <div className="sm:col-span-2">
@@ -262,7 +311,42 @@ export default function EditEventForm({
             >
               Category <span className="text-red-500 text-sm">*</span>
             </label>
-            <select
+            <Controller
+              control={control}
+              name="category"
+              rules={{ required: 'Select at least one category.' }}
+              render={({ field }) => (
+                <div className="flex items-center gap-2 mt-1">
+                  {['speed-dating', 'retreats'].map((category) => (
+                    <label
+                      key={category}
+                      className={`${field.value.includes(category) ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800 cursor-pointer`}
+                    >
+                      <input
+                        type="checkbox"
+                        value={category}
+                        className="sr-only"
+                        checked={field.value.includes(category)}
+                        onChange={() => {
+                          const newValue = field.value.includes(category)
+                            ? field.value.filter((v) => v !== category)
+                            : [...field.value, category];
+                          field.onChange(newValue);
+                        }}
+                      />
+                      {category
+                        .split('-')
+                        .map(
+                          (word) =>
+                            word.charAt(0).toUpperCase() + word.slice(1),
+                        )
+                        .join(' ')}
+                    </label>
+                  ))}
+                </div>
+              )}
+            />
+            {/* <select
               {...register('category', {
                 required: 'Select category of event.',
               })}
@@ -272,13 +356,14 @@ export default function EditEventForm({
               className={`mt-1 block w-full border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
             >
               <option>Speed Dating</option>
-            </select>
+            </select> */}
             {errors.category && (
               <span className="text-red-500 text-sm">
                 {errors.category.message}
               </span>
             )}
           </div>
+
           {/* Event description */}
           <div className="sm:col-span-6">
             <label
@@ -584,7 +669,22 @@ export default function EditEventForm({
           </div>
         </div>
         <div className="bg-white bg-opacity-75 border-t border-gray-400 sticky -mx-5 bottom-0 left-0 w-auto z-20">
-          <div className="py-4 px-10 text-right">
+          <div className="py-4 px-10 flex justify-between items-end">
+            <div>
+              {showErrorSummary && Object.keys(errors).length > 0 && (
+                <div
+                  className="p-4 text-sm text-red-700 bg-red-100 rounded-lg"
+                  role="alert"
+                >
+                  <strong>Please correct the following errors:</strong>
+                  <ul>
+                    {Object.keys(errors).map((errorField, index) => (
+                      <li key={index}>{errors[errorField].message}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
             <button
               type="submit"
               className="bg-base-600 text-white px-12 py-3 rounded-full"

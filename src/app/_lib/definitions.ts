@@ -65,7 +65,7 @@ export interface Database {
       }
       events: {
         Row: {
-          category: Database["public"]["Enums"]["event_categories"]
+          category: Database["public"]["Enums"]["event_categories"][]
           created_at: string
           created_by: string
           date_end: string
@@ -85,7 +85,7 @@ export interface Database {
           status: Database["public"]["Enums"]["event_status"]
         }
         Insert: {
-          category?: Database["public"]["Enums"]["event_categories"]
+          category?: Database["public"]["Enums"]["event_categories"][]
           created_at?: string
           created_by: string
           date_end?: string
@@ -105,7 +105,7 @@ export interface Database {
           status?: Database["public"]["Enums"]["event_status"]
         }
         Update: {
-          category?: Database["public"]["Enums"]["event_categories"]
+          category?: Database["public"]["Enums"]["event_categories"][]
           created_at?: string
           created_by?: string
           date_end?: string
@@ -245,7 +245,7 @@ export interface Database {
     Views: {
       events_with_host_data: {
         Row: {
-          category: Database["public"]["Enums"]["event_categories"] | null
+          category: Database["public"]["Enums"]["event_categories"][] | null
           created_at: string | null
           created_by: Json | null
           date_end: string | null

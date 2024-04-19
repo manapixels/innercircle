@@ -305,20 +305,20 @@ export const addEvent = async ({
   image_thumbnail_url,
   image_banner_url,
 }: {
-  name: string;
-  description: string;
-  category: string;
-  date_start: string;
-  date_end: string;
-  location_name: string;
-  location_address: string;
-  location_country: string;
-  price: number;
-  price_currency: string;
-  slots: number;
-  created_by: string;
-  image_thumbnail_url: string;
-  image_banner_url: string;
+  name: Event['name'];
+  description: Event['description'];
+  category: Event['category'];
+  date_start: Event['date_start'];
+  date_end: Event['date_end'];
+  location_name: Event['location_name'];
+  location_address: Event['location_address'];
+  location_country: Event['location_country'];
+  price: Event['price'];
+  price_currency: Event['price_currency'];
+  slots: Event['slots'];
+  created_by: Event['created_by'];
+  image_thumbnail_url: Event['image_thumbnail_url'];
+  image_banner_url: Event['image_banner_url'];
 }) => {
   const supabase = createClient();
   try {
@@ -376,20 +376,20 @@ export const updateEvent = async ({
   image_banner_url,
 }: {
   id: string;
-  name?: string;
-  description?: string;
-  category?: string;
-  date_start?: string;
-  date_end?: string;
-  location_name?: string;
-  location_address?: string;
-  location_country?: string;
-  price?: number;
-  price_currency?: string;
-  slots?: number;
-  created_by?: string;
-  image_thumbnail_url?: string;
-  image_banner_url?: string;
+  name?: Event['name'];
+  description?: Event['description'];
+  category?: Event['category'];
+  date_start?: Event['date_start'];
+  date_end?: Event['date_end'];
+  location_name?: Event['location_name'];
+  location_address?: Event['location_address'];
+  location_country?: Event['location_country'];
+  price?: Event['price'];
+  price_currency?: Event['price_currency'];
+  slots?: Event['slots'];
+  created_by?: Event['created_by'];
+  image_thumbnail_url?: Event['image_thumbnail_url'];
+  image_banner_url?: Event['image_banner_url'];
 }) => {
   const supabase = createClient();
   try {

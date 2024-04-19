@@ -65,7 +65,7 @@ create table public.events (
   slug text not null unique,
   name text not null,
   description text,
-  category event_categories not null default 'speed-dating',
+  category event_categories[] not null default array['speed-dating']::event_categories[],
   date_start timestamp with time zone default timezone ('utc'::text, now()) not null,
   date_end timestamp with time zone default timezone ('utc'::text, now()) not null,
   location_name text not null,

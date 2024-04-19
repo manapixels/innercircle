@@ -9,7 +9,7 @@ import {
 } from '@/_lib/_utils/date';
 import { FileUpload } from '@/_components/ui/FileUpload';
 import { useUser } from '@/_contexts/UserContext';
-import { addEvent } from '@/_lib/actions';
+import { Event, addEvent } from '@/_lib/actions';
 import Spinner from '@/_components/ui/Spinner';
 import { slugify } from '@/_lib/_utils/text';
 import { useToast } from '@/_components/ui/use-toast';
@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation';
 
 type Inputs = {
   name: string;
-  category: string;
+  category: string[];
   location_name: string;
   location_address: string;
   location_country: string;
@@ -74,7 +74,7 @@ export default function CreateEventForm() {
   } = useForm<Inputs>({
     defaultValues: {
       name: 'MBTI Speed Dating 5.0',
-      category: 'Speed Dating',
+      category: ['Speed Dating'],
       location_name: 'Burger King HomeTeamNS Khatib',
       location_address:
         '2 Yishun Walk, #01-06/07 HomeTeamNS Khatib, Singapore 767944',
@@ -129,7 +129,7 @@ export default function CreateEventForm() {
       const result = await addEvent({
         name: data.name,
         description: data.description,
-        category: slugify(data.category),
+        category: data.category && data.category.map((category) => slugify(category)) as Event['category'],
         created_by: profile.id,
         date_start: date_start.toISOString(),
         date_end: date_end.toISOString(),
@@ -138,7 +138,7 @@ export default function CreateEventForm() {
         location_country: data.location_country,
         price: data.price,
         slots: data.slots,
-        price_currency: data.price_currency.toLowerCase(),
+        price_currency: data.price_currency.toLowerCase() as Event['price_currency'],
         image_thumbnail_url: data.image_thumbnail_url,
         image_banner_url: data.image_banner_url,
       });
