@@ -79,7 +79,7 @@ export default function EventListItem({
                     className="rounded-full"
                   />
                   <div>
-                    <div className="font-medium text-[1rem]">
+                    <div className="font-medium text-white text-[1rem]">
                       {event?.created_by?.name}
                     </div>
                     <div className="text-xs text-gray-400">Your host</div>
