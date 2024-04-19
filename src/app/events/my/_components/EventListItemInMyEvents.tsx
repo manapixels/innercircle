@@ -4,6 +4,7 @@ import { formatDateRange, hasDatePassed, timeUntil } from '@/_lib/_utils/date';
 import { EventWithSignUps } from '@/_lib/actions';
 import { BUCKET_URL } from '@/_lib/constants';
 import EditEventForm from './EditEventForm';
+import { reverseSlugify } from '@/_lib/_utils/text';
 
 export default function EventListItemInMyEvents({
   event,
@@ -64,15 +65,24 @@ export default function EventListItemInMyEvents({
       </div>
 
       <div className="min-w-0 py-2 flex-grow">
-        <p className="truncate text-lg font-semibold">{event.name}</p>
+        {/* Event name */}
+        <p className="truncate text-lg font-semibold mb-1">{event.name}</p>
+        {/* Tags */}
+        <div className="flex items-center gap-2 mb-2">
+          {event?.category?.map((c) => (
+            <span key={c} className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">{reverseSlugify(c)}</span>
+          ))}
+        </div>
+        {/* Location */}
         {event.location_name && event.location_country ? (
           <a
             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_name)},${encodeURIComponent(event.location_country)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden text-sm text-gray-500 sm:block hover:text-base-600"
+            className="hidden text-sm text-gray-500 sm:block hover:text-base-600 group"
           >
             {event.location_name}, {event.location_country}
+            <svg className="hidden group-hover:inline-block" width="16px" height="16px" viewBox="0 0 24 24" strokeWidth="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#927800"><path d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005" stroke="#927800" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>
           </a>
         ) : (
           <span className="hidden text-sm text-gray-500 sm:block">
