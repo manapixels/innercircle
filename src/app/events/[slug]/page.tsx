@@ -43,7 +43,7 @@ export default async function EventDetailsPage({
               {event?.location_name}, {event?.location_country}
             </span>
           </div>
-          <div className="border border-gray-200 px-5 py-3 rounded-lg flex items-center font-medium text-sm">
+          <div className="border border-gray-200 px-5 py-3 mb-4 rounded-lg flex items-center font-medium text-sm">
             Hosted by{' '}
             {event?.created_by?.avatar_url ? (
               <img

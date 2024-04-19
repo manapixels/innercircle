@@ -322,26 +322,31 @@ export const addEvent = async ({
 }) => {
   const supabase = createClient();
   try {
-    let { data, error } = await supabase.from('events').insert([
-      {
-        name,
-        description,
-        category,
-        date_start,
-        date_end,
-        location_name,
-        location_address,
-        location_country,
-        price,
-        price_currency,
-        slots,
-        created_by,
-        image_thumbnail_url,
-        image_banner_url,
-      },
-    ]);
+    let { data, error } = await supabase
+      .from('events')
+      .insert([
+        {
+          name,
+          description,
+          category,
+          date_start,
+          date_end,
+          location_name,
+          location_address,
+          location_country,
+          price,
+          price_currency,
+          slots,
+          created_by,
+          image_thumbnail_url,
+          image_banner_url,
+        },
+      ])
+      .select();
+
     if (error) throw error;
     return data;
+
   } catch (error) {
     console.log('error', error);
     return error;
@@ -486,6 +491,7 @@ export const uploadFileToBucket = async (
         'File is missing or the provided file is not an instance of File',
       );
     }
+    
     const fileExtension = fileObject.name.split('.').pop();
     // Rename the file to userId.[original file extension]
     const fileName = `${userId}-${Math.random()}.${fileExtension}`;

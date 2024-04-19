@@ -4,8 +4,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 
-import { downloadFileFromBucket, uploadFileToBucket } from '@/_lib/actions';
+import Spinner from '@/_components/ui/Spinner';
+import { uploadFileToBucket } from '@/_lib/actions';
 import { BUCKET_URL } from '@/_lib/constants';
+
 
 
 export function FileUpload({
@@ -41,13 +43,13 @@ export function FileUpload({
 
       // Attempt to upload the file
       const uploadResult = await uploadFileToBucket(userId, bucketId, formData);
+      console.log(uploadResult)
 
       // If successful, update the upload status and set the image URL
       setUploaded(true);
       if (uploadResult?.path) {
         onUploadComplete?.(uploadResult?.path);
-        const data = await downloadFileFromBucket(bucketId, uploadResult.path);
-        if (data?.publicUrl) setUploadedImagePath(data.publicUrl);
+        setUploadedImagePath(uploadResult.path);
       }
     } catch (error) {
       // Handle any errors
@@ -101,6 +103,8 @@ export function FileUpload({
             />
           )}
         </div>
+      ) : (isUploading || imageLoading) ? (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"><Spinner className="w-8 h-8"  /></div>
       ) : (
         <div className="space-y-4">
           <div className="text-center">
