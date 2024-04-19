@@ -102,7 +102,7 @@ export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
                 role="menuitem"
                 tabIndex={-1}
                 id="menu-item-3"
-                onClick={async (e) => {
+                onClick={async () => {
                   await signOut();
                   setUser(undefined);
                   toast({
