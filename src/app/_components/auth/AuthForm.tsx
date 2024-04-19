@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 
 import { Modal } from '@/_components/ui/Modal';
 import Spinner from '@/_components/ui/Spinner';
+import { useToast } from '@/_components/ui/use-toast';
 import { useUser } from '@/_contexts/UserContext';
 import { useAuthModal } from '@/_contexts/AuthContext';
 import { signInWithEmail, signUpNewUser } from '@/_lib/actions';
@@ -25,6 +26,7 @@ export default function AuthForm() {
   const { showModal, setShowModal } = useAuthModal();
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const router = useRouter();
+  const { toast } = useToast();
   const { setUser } = useUser();
 
   const {
@@ -42,6 +44,11 @@ export default function AuthForm() {
       const resp = await signInWithEmail(data.email, data.password);
       if (resp?.user) {
         setUser(resp.user);
+        toast({
+          title: "You're logged in",
+          description: 'Welcome back!',
+          className: 'bg-green-700 text-white border-transparent',
+        });
       }
       router.refresh();
     } else {

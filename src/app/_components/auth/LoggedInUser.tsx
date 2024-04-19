@@ -6,14 +6,18 @@ import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useOnClickOutside } from 'usehooks-ts';
 
+import { useToast } from '@/_components/ui/use-toast';
 import { useUser } from '@/_contexts/UserContext';
 import { ProfileWithRoles, signOut } from '@/_lib/actions';
 import { BUCKET_URL } from '@/_lib/constants';
+import { useRouter } from 'next/navigation';
 
 
 export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
   const [isOpen, setIsOpen] = useState(false);
   const { setUser } = useUser();
+  const { toast } = useToast();
+  const router = useRouter();
 
   const ref = useRef(null);
   useOnClickOutside(ref, () => setIsOpen(false));
@@ -98,9 +102,15 @@ export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
                 role="menuitem"
                 tabIndex={-1}
                 id="menu-item-3"
-                onClick={async () => {
+                onClick={async (e) => {
                   await signOut();
                   setUser(undefined);
+                  toast({
+                    title: 'Successfuly logged out',
+                    description: 'Hope to see you again soon!',
+                    className: 'bg-green-700 text-white border-transparent',
+                  });
+                  router.push('/events');
                 }}
               >
                 <svg
