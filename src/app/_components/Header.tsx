@@ -52,7 +52,7 @@ export default function Header() {
           )}
           {profile?.id ? <LoggedInUser user={profile} /> : <AuthForm />}
         </div>
-        <div className="absolute top-1/2 flex justify-center w-full">
+        <div className="absolute top-1/2 flex justify-center w-full pointer-events-none">
           <div className="w-1/2 flex justify-between">
             <div className="rounded-full w-2 h-2 border border-gray-300 bg-white"></div>
             <div className="rounded-full w-2 h-2 border border-gray-300 bg-white"></div>
