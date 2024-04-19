@@ -320,7 +320,7 @@ export default function EditEventForm({
                   {['speed-dating', 'retreats'].map((category) => (
                     <label
                       key={category}
-                      className={`${field.value.includes(category) ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800 cursor-pointer`}
+                      className={`${field.value.includes(category) ? 'border-gray-900 text-gray-800 shadow-[0_0_0_1px_rgba(0,0,0,1)]' : ''} font-medium text-gray-500 hover:text-gray-800 border border-gray-400 hover:border-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 cursor-pointer`}
                     >
                       <input
                         type="checkbox"
