@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import GooglePlacesAutocomplete from 'react-google-autocomplete';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import {
   getTimeZonesWithOffset,
   getGuessedUserTimeZone,
@@ -12,6 +12,8 @@ import { useUser } from '@/_contexts/UserContext';
 import { addEvent } from '@/_lib/actions';
 import Spinner from '@/_components/ui/Spinner';
 import { slugify } from '@/_lib/_utils/text';
+import { useToast } from '@/_components/ui/use-toast';
+import { useRouter } from 'next/navigation';
 
 type Inputs = {
   name: string;
@@ -34,11 +36,18 @@ type Inputs = {
 
 export default function CreateEventForm() {
   const autocompleteRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(false);
-
+  const { toast } = useToast();
+  const router = useRouter();
   const timeZones = getTimeZonesWithOffset();
   const guessedTimeZone = getGuessedUserTimeZone();
   const { profile } = useUser();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [showErrorSummary, setShowErrorSummary] = useState(false);
+
+  useEffect(() => {
+    router.prefetch('/events/my');
+  }, []);
 
   const handlePlaceSelected = (place) => {
     setValue('location_name', place.name);
@@ -84,8 +93,28 @@ export default function CreateEventForm() {
       slots: 50,
     },
   });
+
+  const onError: SubmitErrorHandler<Inputs> = (_errors) => {
+    if (Object.keys(_errors).length > 0) {
+      setShowErrorSummary(true); // Show the error summary
+
+      const firstErrorField = Object.keys(_errors)[0];
+      const errorElement = document.querySelector(
+        `[name="${firstErrorField}"]`,
+      );
+
+      if (errorElement instanceof HTMLElement) {
+        errorElement.scrollIntoView({ behavior: 'smooth' });
+        errorElement.focus();
+      }
+    }
+  };
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data);
+
+    setShowErrorSummary(false);
+
     // Convert GMT+08:00 to +08:00 format for valid Date parsing
     const timeZoneOffset = data.time_zone.replace('GMT', '');
     const date_start = new Date(
@@ -114,7 +143,14 @@ export default function CreateEventForm() {
         image_banner_url: data.image_banner_url,
       });
       setIsLoading(false);
-      console.log(result);
+      if (result) {
+        console.log(result);
+        router.push('/events/my');
+        toast({
+          description: 'Event created successfully.',
+          className: 'bg-green-700 text-white border-transparent',
+        });
+      }
     }
   };
 
@@ -143,7 +179,7 @@ export default function CreateEventForm() {
   }, [watchEndDate, setValue]);
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+    <form className="space-y-6" onSubmit={handleSubmit(onSubmit, onError)}>
       <div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
         {/* Event thumbnail */}
         <div className="sm:col-span-2">
@@ -534,7 +570,22 @@ export default function CreateEventForm() {
         </div>
       </div>
       <div className="bg-white bg-opacity-75 border-t border-gray-400 fixed bottom-0 left-0 w-full z-20">
-        <div className="max-w-2xl mx-auto py-4 px-4 text-right">
+        <div className="max-w-2xl mx-auto py-4 px-4 flex justify-between items-end">
+          <div>
+            {showErrorSummary && Object.keys(errors).length > 0 && (
+              <div
+                className="p-4 text-sm text-red-700 bg-red-100 rounded-lg"
+                role="alert"
+              >
+                <strong>Please correct the following errors:</strong>
+                <ul>
+                  {Object.keys(errors).map((errorField, index) => (
+                    <li key={index}>{errors[errorField].message}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
           <button
             type="submit"
             className="bg-base-600 text-white px-12 py-3 rounded-full"
