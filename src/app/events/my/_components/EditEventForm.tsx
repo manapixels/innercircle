@@ -146,11 +146,7 @@ export default function EditEventForm({
         id: event.id,
         name: data.name,
         description: data.description,
-        category:
-          data.category &&
-          (data.category.map((category) =>
-            slugify(category),
-          ) as Event['category']),
+        category: data.category as Event['category'],
         created_by: profile?.id,
         date_start: date_start.toISOString(),
         date_end: date_end.toISOString(),
@@ -210,8 +206,6 @@ export default function EditEventForm({
   const watchStartDate = watch('date_start');
   const watchEndDate = watch('date_end');
   const watchCategory = watch('category');
-
-  console.log(watchCategory);
 
   const handleThumbnailUpload = (uploadResult: string) => {
     setValue('image_thumbnail_url', uploadResult, { shouldValidate: true });
@@ -306,7 +300,7 @@ export default function EditEventForm({
           {/* Event category */}
           <div className="sm:col-span-6">
             <label
-              htmlFor="location_country"
+              htmlFor="category"
               className="block text-sm font-medium text-gray-700"
             >
               Category <span className="text-red-500 text-sm">*</span>

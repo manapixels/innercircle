@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import GooglePlacesAutocomplete from 'react-google-autocomplete';
-import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, SubmitErrorHandler, Controller } from 'react-hook-form';
 import {
   getTimeZonesWithOffset,
   getGuessedUserTimeZone,
@@ -69,12 +69,13 @@ export default function CreateEventForm() {
     register,
     handleSubmit,
     setValue,
+    control,
     watch,
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
       name: 'MBTI Speed Dating 5.0',
-      category: ['Speed Dating'],
+      category: ['speed-dating'],
       location_name: 'Burger King HomeTeamNS Khatib',
       location_address:
         '2 Yishun Walk, #01-06/07 HomeTeamNS Khatib, Singapore 767944',
@@ -129,7 +130,7 @@ export default function CreateEventForm() {
       const result = await addEvent({
         name: data.name,
         description: data.description,
-        category: data.category && data.category.map((category) => slugify(category)) as Event['category'],
+        category: data.category as Event['category'],
         created_by: profile.id,
         date_start: date_start.toISOString(),
         date_end: date_end.toISOString(),
@@ -142,7 +143,7 @@ export default function CreateEventForm() {
         image_thumbnail_url: data.image_thumbnail_url,
         image_banner_url: data.image_banner_url,
       });
-      setIsLoading(false);
+      
       if (result) {
         console.log(result);
         router.push('/events/my');
@@ -150,6 +151,7 @@ export default function CreateEventForm() {
           description: 'Event created successfully.',
           className: 'bg-green-700 text-white border-transparent',
         });
+        setIsLoading(false);
       }
     }
   };
@@ -244,31 +246,57 @@ export default function CreateEventForm() {
             <span className="text-red-500 text-sm">{errors.name.message}</span>
           )}
         </div>
+
         {/* Event category */}
         <div className="sm:col-span-6">
-          <label
-            htmlFor="location_country"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Category <span className="text-red-500 text-sm">*</span>
-          </label>
-          <select
-            {...register('category', {
-              required: 'Select category of event.',
-            })}
-            name="category"
-            id="category"
-            defaultValue="Singapore"
-            className={`mt-1 block w-full border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
-          >
-            <option>Speed Dating</option>
-          </select>
-          {errors.category && (
-            <span className="text-red-500 text-sm">
-              {errors.category.message}
-            </span>
-          )}
-        </div>
+            <label
+              htmlFor="category"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Category <span className="text-red-500 text-sm">*</span>
+            </label>
+            <Controller
+              control={control}
+              name="category"
+              rules={{ required: 'Select at least one category.' }}
+              render={({ field }) => (
+                <div className="flex items-center gap-2 mt-1">
+                  {['speed-dating', 'retreats'].map((category) => (
+                    <label
+                      key={category}
+                      className={`${field.value.includes(category) ? 'border-gray-900 text-gray-800 shadow-[0_0_0_1px_rgba(0,0,0,1)]' : ''} font-medium text-gray-500 hover:text-gray-800 border border-gray-400 hover:border-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 cursor-pointer`}
+                    >
+                      <input
+                        type="checkbox"
+                        value={category}
+                        className="sr-only"
+                        checked={field.value.includes(category)}
+                        onChange={() => {
+                          const newValue = field.value.includes(category)
+                            ? field.value.filter((v) => v !== category)
+                            : [...field.value, category];
+                          field.onChange(newValue);
+                        }}
+                      />
+                      {category
+                        .split('-')
+                        .map(
+                          (word) =>
+                            word.charAt(0).toUpperCase() + word.slice(1),
+                        )
+                        .join(' ')}
+                    </label>
+                  ))}
+                </div>
+              )}
+            />
+            {errors.category && (
+              <span className="text-red-500 text-sm">
+                {errors.category.message}
+              </span>
+            )}
+          </div>
+
         {/* Event description */}
         <div className="sm:col-span-6">
           <label
