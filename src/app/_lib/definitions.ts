@@ -9,6 +9,29 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      customers: {
+        Row: {
+          id: string
+          stripe_customer_id: string | null
+        }
+        Insert: {
+          id: string
+          stripe_customer_id?: string | null
+        }
+        Update: {
+          id?: string
+          stripe_customer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customers_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       event_participants: {
         Row: {
           event_id: string
@@ -77,6 +100,7 @@ export interface Database {
           location_address: string
           location_country: string
           location_name: string
+          metadata: Json | null
           name: string
           price: number | null
           price_currency: Database["public"]["Enums"]["currencies"]
@@ -97,6 +121,7 @@ export interface Database {
           location_address: string
           location_country: string
           location_name: string
+          metadata?: Json | null
           name: string
           price?: number | null
           price_currency?: Database["public"]["Enums"]["currencies"]
@@ -117,6 +142,7 @@ export interface Database {
           location_address?: string
           location_country?: string
           location_name?: string
+          metadata?: Json | null
           name?: string
           price?: number | null
           price_currency?: Database["public"]["Enums"]["currencies"]
@@ -148,29 +174,80 @@ export interface Database {
           }
         ]
       }
+      prices: {
+        Row: {
+          active: boolean | null
+          currency: string | null
+          description: string | null
+          event_id: string | null
+          id: string
+          metadata: Json | null
+          unit_amount: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          currency?: string | null
+          description?: string | null
+          event_id?: string | null
+          id: string
+          metadata?: Json | null
+          unit_amount?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          currency?: string | null
+          description?: string | null
+          event_id?: string | null
+          id?: string
+          metadata?: Json | null
+          unit_amount?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prices_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prices_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events_with_host_data"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
+          billing_address: Json | null
           birthmonth: number | null
           birthyear: number | null
           id: string
           name: string
+          payment_method: Json | null
           username: string
         }
         Insert: {
           avatar_url?: string | null
+          billing_address?: Json | null
           birthmonth?: number | null
           birthyear?: number | null
           id: string
           name: string
+          payment_method?: Json | null
           username: string
         }
         Update: {
           avatar_url?: string | null
+          billing_address?: Json | null
           birthmonth?: number | null
           birthyear?: number | null
           id?: string
           name?: string
+          payment_method?: Json | null
           username?: string
         }
         Relationships: [
