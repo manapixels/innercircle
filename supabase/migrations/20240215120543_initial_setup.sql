@@ -105,7 +105,7 @@ create table public.events (
   location_address text not null,
   location_country text not null,
   price integer,
-  price_currency currencies not null default 'sgd',
+  price_currency text check (char_length(price_currency) = 3) not null default 'sgd',
   price_stripe_id text,
   slots integer not null default 0,
   image_thumbnail_url varchar(255),
