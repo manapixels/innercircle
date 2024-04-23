@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { EventWithCreatorInfo, fetchEvent } from '@/_lib/actions';
 import { BUCKET_URL } from '@/_lib/constants';
-import ReservationForm from '../_components/ReservationForm';
+import ReservationForm from './_components/ReservationForm';
 
 export const metadata: Metadata = {
   title: 'innercircle | Event',

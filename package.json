@@ -46,6 +46,7 @@
     "react-focus-lock": "^2.11.1",
     "react-google-autocomplete": "^2.7.3",
     "react-hook-form": "^7.50.1",
+    "stripe": "^15.3.0",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "usehooks-ts": "^3.0.1"

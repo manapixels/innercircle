@@ -442,6 +442,7 @@ select
   e.location_country,
   e.price,
   e.price_currency,
+  e.price_stripe_id,
   e.status,
   e.slots,
   json_build_object(

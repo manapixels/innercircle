@@ -103,7 +103,8 @@ export interface Database {
           metadata: Json | null
           name: string
           price: number | null
-          price_currency: Database["public"]["Enums"]["currencies"]
+          price_currency: string
+          price_stripe_id: string | null
           slots: number
           slug: string
           status: Database["public"]["Enums"]["event_status"]
@@ -124,7 +125,8 @@ export interface Database {
           metadata?: Json | null
           name: string
           price?: number | null
-          price_currency?: Database["public"]["Enums"]["currencies"]
+          price_currency?: string
+          price_stripe_id?: string | null
           slots?: number
           slug: string
           status?: Database["public"]["Enums"]["event_status"]
@@ -145,7 +147,8 @@ export interface Database {
           metadata?: Json | null
           name?: string
           price?: number | null
-          price_currency?: Database["public"]["Enums"]["currencies"]
+          price_currency?: string
+          price_stripe_id?: string | null
           slots?: number
           slug?: string
           status?: Database["public"]["Enums"]["event_status"]
@@ -170,51 +173,6 @@ export interface Database {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles_with_roles"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      prices: {
-        Row: {
-          active: boolean | null
-          currency: string | null
-          description: string | null
-          event_id: string | null
-          id: string
-          metadata: Json | null
-          unit_amount: number | null
-        }
-        Insert: {
-          active?: boolean | null
-          currency?: string | null
-          description?: string | null
-          event_id?: string | null
-          id: string
-          metadata?: Json | null
-          unit_amount?: number | null
-        }
-        Update: {
-          active?: boolean | null
-          currency?: string | null
-          description?: string | null
-          event_id?: string | null
-          id?: string
-          metadata?: Json | null
-          unit_amount?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "prices_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "prices_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events_with_host_data"
             referencedColumns: ["id"]
           }
         ]
@@ -336,7 +294,8 @@ export interface Database {
           location_name: string | null
           name: string | null
           price: number | null
-          price_currency: Database["public"]["Enums"]["currencies"] | null
+          price_currency: string | null
+          price_stripe_id: string | null
           sign_ups: number | null
           slots: number | null
           slug: string | null

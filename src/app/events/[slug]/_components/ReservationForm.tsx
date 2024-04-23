@@ -6,6 +6,10 @@ import pluralize from 'pluralize';
 import { useUser } from '@/_contexts/UserContext';
 import { EventWithCreatorInfo, signUpForEvent } from '@/_lib/actions';
 import { hasDatePassed } from '@/_lib/_utils/date';
+// import { getStripe } from '@/_lib/_utils/stripe/client';
+// import { checkoutWithStripe } from '@/_lib/_utils/stripe/server';
+import { usePathname, useRouter } from 'next/navigation';
+// import { getErrorRedirect } from '@/_lib/_utils/misc';
 
 export default function ReservationForm({
   event,
@@ -15,8 +19,12 @@ export default function ReservationForm({
   const [isGroup, setIsGroup] = useState(false);
   const [guests, setGuests] = useState(1);
   const [isConfirming, setIsConfirming] = useState(false);
+  // const [priceIdLoading, setPriceIdLoading] = useState<string>();
   const [loading, setLoading] = useState(false);
   const { profile } = useUser();
+
+  // const router = useRouter();
+  // const currentPath = usePathname();
 
   const eventOver = hasDatePassed(event?.date_start);
 
@@ -32,13 +40,40 @@ export default function ReservationForm({
 
     setLoading(true);
     const result = await signUpForEvent(event.id, profile.id, guests);
+
+    // const { errorRedirect, sessionId } = await checkoutWithStripe(
+    //   event.price_stripe_id, // price
+    //   guests, // quantity
+    //   currentPath // redirectPath
+    // );
+
+    // if (errorRedirect) {
+    //   setPriceIdLoading(undefined);
+    //   return router.push(errorRedirect);
+    // }
+
+    // if (!sessionId) {
+    //   setPriceIdLoading(undefined);
+    //   return router.push(
+    //     getErrorRedirect(
+    //       currentPath,
+    //       'An unknown error occurred.',
+    //       'Please try again later or contact a system administrator.'
+    //     )
+    //   );
+    // }
+
+    // const stripe = await getStripe();
+    // stripe?.redirectToCheckout({ sessionId });
+
+    // setPriceIdLoading(undefined);
     setLoading(false);
 
-    if (result) {
-      alert('Reservation successful!');
-    } else {
-      alert('Failed to make a reservation. Please try again.');
-    }
+    // if (result) {
+    //   alert('Reservation successful!');
+    // } else {
+    //   alert('Failed to make a reservation. Please try again.');
+
   };
 
   return (
