@@ -106,6 +106,7 @@ create table public.events (
   location_country text not null,
   price integer,
   price_currency currencies not null default 'sgd',
+  price_stripe_id text,
   slots integer not null default 0,
   image_thumbnail_url varchar(255),
   image_banner_url varchar(255),
@@ -123,28 +124,6 @@ create policy "Can update own events." on events for update using (auth.uid () =
 create policy "Can delete own events." on events for delete using (auth.uid () = created_by);
 create policy "Admin can delete any event." on events for delete using (exists (select 1 from public.user_roles where user_id = auth.uid() and role = 'admin'));
 create policy "Hosts & admins can create events." on events for insert with check (exists (select 1 from public.user_roles where user_roles.user_id = auth.uid() and user_roles.role in ('host', 'admin')));
-
-
--- .............
---
--- EVENT PRICES
---
--- .............
-  create table prices (
-  -- Price ID from Stripe, e.g. price_1234.
-  id text primary key,
-  event_id uuid references public.events(id), 
-  active boolean,
-  description text,
-  -- The unit amount as a positive integer in the smallest currency unit (e.g., 100 cents for US$1.00 or 100 for ¥100, a zero-decimal currency).
-  unit_amount bigint,
-  -- Three-letter ISO currency code, in lowercase.
-  currency text check (char_length(currency) = 3),
-  -- Additional information about the price in JSON.
-  metadata jsonb
-);
-alter table prices enable row level security;
-create policy "Allow public read-only access." on prices for select using (true);
 
 
 -- ...................
@@ -513,4 +492,4 @@ from
   ) ep on e.id = ep.event_id;
 
 drop publication if exists supabase_realtime;
-create publication supabase_realtime for table events, prices;
+create publication supabase_realtime for table events;

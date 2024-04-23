@@ -88,6 +88,7 @@ BEGIN
       location_country, 
       name, 
       price, 
+      price_currency,
       status, 
       created_by, 
       slots
@@ -107,6 +108,7 @@ BEGIN
       'Singapore', 
       'Speed Dating Night Debute', 
       48, 
+      'sgd',
       'completed', 
       user_id, 
       46
@@ -125,6 +127,7 @@ BEGIN
       'Singapore', 
       'When the Stars Align', 
       58, 
+      'sgd',
       'completed', 
       user_id, 
       48
@@ -143,6 +146,7 @@ BEGIN
       'Singapore', 
       'It''s a Masquerade!', 
       58, 
+      'sgd',
       'completed', 
       user_id, 
       47
@@ -161,6 +165,7 @@ BEGIN
       'Singapore', 
       'Christmas Singles Night', 
       48, 
+      'sgd',
       'completed', 
       user_id, 
       56
@@ -179,6 +184,7 @@ BEGIN
       'Singapore', 
       'MBTI X Singles Night', 
       58, 
+      'sgd',
       'completed', 
       user_id, 
       62
@@ -197,6 +203,7 @@ BEGIN
       'Singapore', 
       'MBTI X Singles Night', 
       58, 
+      'sgd',
       'completed', 
       user_id, 
       100
@@ -215,6 +222,7 @@ BEGIN
       'Singapore', 
       'MBTI X Singles Night', 
       58, 
+      'sgd',
       'reserving', 
       user_id, 
       100
