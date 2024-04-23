@@ -8,7 +8,7 @@ import { EventWithCreatorInfo, signUpForEvent } from '@/_lib/actions';
 import { hasDatePassed } from '@/_lib/_utils/date';
 // import { getStripe } from '@/_lib/_utils/stripe/client';
 // import { checkoutWithStripe } from '@/_lib/_utils/stripe/server';
-import { usePathname, useRouter } from 'next/navigation';
+// import { usePathname, useRouter } from 'next/navigation';
 // import { getErrorRedirect } from '@/_lib/_utils/misc';
 
 export default function ReservationForm({
@@ -39,7 +39,6 @@ export default function ReservationForm({
     }
 
     setLoading(true);
-    const result = await signUpForEvent(event.id, profile.id, guests);
 
     // const { errorRedirect, sessionId } = await checkoutWithStripe(
     //   event.price_stripe_id, // price
@@ -67,12 +66,15 @@ export default function ReservationForm({
     // stripe?.redirectToCheckout({ sessionId });
 
     // setPriceIdLoading(undefined);
+
+    const result = await signUpForEvent(event.id, profile.id, guests);
     setLoading(false);
 
-    // if (result) {
-    //   alert('Reservation successful!');
-    // } else {
-    //   alert('Failed to make a reservation. Please try again.');
+    if (result) {
+      alert('Reservation successful!');
+    } else {
+      alert('Failed to make a reservation. Please try again.');
+    }
 
   };
 
