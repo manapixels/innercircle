@@ -18,8 +18,6 @@ import {
   getGuessedUserTimeZone,
   getTimeZonesWithOffset,
 } from '@/_lib/_utils/date';
-import { reverseSlugify, slugify } from '@/_lib/_utils/text';
-import { ToggleGroup, ToggleGroupItem } from '@/_components/ui/ToggleGroup';
 
 type Inputs = {
   name: string;
