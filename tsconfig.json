@@ -47,7 +47,7 @@
     "next.config.mjs",
     ".next/types/**/*.ts",
     "./tailwind.config.ts",
-    "supabase/seed-images.js"
+    "supabase/**/*.js"
   ],
   "exclude": [
     "node_modules"
