@@ -203,7 +203,6 @@ export default function EditEventForm({
   // Watch fields
   const watchStartDate = watch('date_start');
   const watchEndDate = watch('date_end');
-  const watchCategory = watch('category');
 
   const handleThumbnailUpload = (uploadResult: string) => {
     setValue('image_thumbnail_url', uploadResult, { shouldValidate: true });
