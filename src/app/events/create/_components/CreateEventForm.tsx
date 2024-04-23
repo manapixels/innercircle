@@ -11,7 +11,6 @@ import { FileUpload } from '@/_components/ui/FileUpload';
 import { useUser } from '@/_contexts/UserContext';
 import { Event, addEvent } from '@/_lib/actions';
 import Spinner from '@/_components/ui/Spinner';
-import { slugify } from '@/_lib/_utils/text';
 import { useToast } from '@/_components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 
