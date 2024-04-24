@@ -2,9 +2,7 @@ import Stripe from 'stripe';
 import { stripe } from '@/_lib/_utils/stripe/config';
 import {
   upsertProductRecord,
-  updatePriceRecord,
   deleteProductRecord,
-  deletePriceRecord
 } from '@/_lib/_utils/supabase/admin';
 
 const relevantEvents = new Set([
@@ -39,13 +37,6 @@ export async function POST(req: Request) {
         case 'product.created':
         case 'product.updated':
           await upsertProductRecord(event.data.object as Stripe.Product);
-          break;
-        case 'price.created':
-        case 'price.updated':
-          await updatePriceRecord(event.data.object as Stripe.Price);
-          break;
-        case 'price.deleted':
-          await deletePriceRecord(event.data.object as Stripe.Price);
           break;
         case 'product.deleted':
           await deleteProductRecord(event.data.object as Stripe.Product);

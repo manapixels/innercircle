@@ -255,28 +255,11 @@ export const fetchEvent = async (slug: string) => {
   const supabase = createClient();
   try {
     let { data } = await supabase
-      .from('events')
-      .select(
-        `
-        id,
-        name,
-        image_thumbnail_url,
-        image_banner_url,
-        created_at,
-        created_by (id, name, avatar_url),
-        description,
-        date_start,
-        date_end,
-        location_name,
-        location_address,
-        location_country,
-        price,
-        price_currency,
-        slug
-      `,
-      )
+      .from('events_with_host_data')
+      .select('*')
       .eq('slug', slug)
       .single();
+
     return data;
   } catch (error) {
     console.log('error', error);

@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { EventWithCreatorInfo, fetchEvent } from '@/_lib/actions';
+import { EventWithSignUps, Profile, fetchEvent } from '@/_lib/actions';
 import { BUCKET_URL } from '@/_lib/constants';
 import ReservationForm from './_components/ReservationForm';
 
@@ -12,7 +12,11 @@ export default async function EventDetailsPage({
 }: {
   params: { slug: string };
 }) {
-  const event = (await fetchEvent(slug as string)) as EventWithCreatorInfo;
+  const event = (await fetchEvent(slug as string)) as EventWithSignUps;
+  const host = event?.created_by as Profile & {
+    events_created?: number;
+    guests_hosted?: number;
+  };
 
   return (
     <div>
@@ -45,10 +49,10 @@ export default async function EventDetailsPage({
           </div>
           <div className="border border-gray-200 px-5 py-3 mb-4 rounded-lg flex items-center font-medium text-sm">
             Hosted by{' '}
-            {event?.created_by?.avatar_url ? (
+            {host?.avatar_url ? (
               <img
                 className="h-10 w-10 rounded-full mx-2"
-                src={`${BUCKET_URL}/avatars/${event.created_by.avatar_url}`}
+                src={`${BUCKET_URL}/avatars/${host?.avatar_url}`}
                 alt=""
               />
             ) : (
@@ -64,7 +68,7 @@ export default async function EventDetailsPage({
                 ></path>
               </svg>
             )}
-            {event?.created_by.name}
+            {host?.name}
           </div>
           <div>{event?.description}</div>
         </div>

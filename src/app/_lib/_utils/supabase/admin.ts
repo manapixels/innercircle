@@ -6,8 +6,8 @@ import Stripe from 'stripe';
 // Note: supabaseAdmin uses the SERVICE_ROLE_KEY which you must only use in a secure server-side context
 // as it has admin privileges and overwrites RLS policies!
 const supabaseAdmin = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-    process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
 const upsertProductRecord = async (product: Stripe.Product) => {
@@ -73,19 +73,10 @@ const deleteProductRecord = async (product: Stripe.Product) => {
     console.log(`Product deleted: ${product.id}`);
 };
 
-const deletePriceRecord = async (price: Stripe.Price) => {
-    const { error: deletionError } = await supabaseAdmin
-        .from('prices')
-        .delete()
-        .eq('id', price.id);
-    if (deletionError) throw new Error(`Price deletion failed: ${deletionError.message}`);
-    console.log(`Price deleted: ${price.id}`);
-};
-
 const upsertCustomerToSupabase = async (uuid: string, customerId: string) => {
     const { error: upsertError } = await supabaseAdmin
-        .from('customers')
-        .upsert([{ id: uuid, stripe_customer_id: customerId }]);
+        .from('profiles')
+        .update({ id: uuid, stripe_customer_id: customerId });
 
     if (upsertError)
         throw new Error(`Supabase customer record creation failed: ${upsertError.message}`);
@@ -111,7 +102,7 @@ const createOrRetrieveCustomer = async ({
     // Check if the customer already exists in Supabase
     const { data: existingSupabaseCustomer, error: queryError } =
         await supabaseAdmin
-            .from('customers')
+            .from('profiles')
             .select('*')
             .eq('id', uuid)
             .maybeSingle();
@@ -144,7 +135,7 @@ const createOrRetrieveCustomer = async ({
         // If Supabase has a record but doesn't match Stripe, update Supabase record
         if (existingSupabaseCustomer.stripe_customer_id !== stripeCustomerId) {
             const { error: updateError } = await supabaseAdmin
-                .from('customers')
+                .from('profiles')
                 .update({ stripe_customer_id: stripeCustomerId })
                 .eq('id', uuid);
 
@@ -202,7 +193,6 @@ export {
     upsertProductRecord,
     updatePriceRecord,
     deleteProductRecord,
-    deletePriceRecord,
     createOrRetrieveCustomer,
     copyBillingDetailsToCustomer
 };

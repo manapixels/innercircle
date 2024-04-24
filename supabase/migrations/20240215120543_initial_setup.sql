@@ -8,6 +8,7 @@ create type public.app_permission as enum('events.create', 'events.delete');
 -- ..........
 create table public.profiles (
   id uuid not null primary key references auth.users (id) on delete cascade,
+  stripe_customer_id text,
   name text not null,
   avatar_url text,
   birthmonth integer,
@@ -25,21 +26,6 @@ alter table public.profiles enable row level security;
 create policy "Can view own user data." on profiles for select using (auth.uid() = id);
 create policy "Can update own user data." on profiles for update using (auth.uid() = id);
 
-
--- ..........
---
--- CUSTOMERS
--- * Note: this is a private table that contains a mapping of user IDs to Stripe customer IDs.
---
--- ..........
-create table customers (
-  -- UUID from auth.users
-  id uuid references auth.users not null primary key,
-  -- The user's customer ID in Stripe. User must not be able to update this.
-  stripe_customer_id text
-);
-alter table customers enable row level security;
--- No policies as this is a private table that the user must not have access to.
 
 -- ............
 --
