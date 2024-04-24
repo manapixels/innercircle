@@ -62,25 +62,31 @@ create foreign table stripe.prices (
     attrs jsonb
 ) server stripe_server options (object 'prices', rowid_column 'id');
 
-create
-or replace function public.create_stripe_product_for_event () returns trigger as $$
+create or replace function public.create_stripe_product_for_event () returns trigger as $$
+declare
+  product_exists boolean;
 begin
-  -- Insert into stripe.products
-  insert into stripe.products (id, name, active)
-  values (
-    new.id::text,
-    new.name, 
-    new.status = 'reserving'
-  );
+  -- Check if the product already exists in Stripe
+  select exists(select 1 from stripe.products where id = new.id::text) into product_exists;
 
-  -- Insert into stripe.prices using the retrieved product ID
-  insert into stripe.prices (product, active, currency, unit_amount)
-  values (
-    new.id::text, 
-    new.status = 'reserving', 
-    new.price_currency, 
-    new.price
-  );
+  if not product_exists then
+    -- Insert into stripe.products
+    insert into stripe.products (id, name, active)
+    values (
+      new.id::text,
+      new.name, 
+      new.status = 'reserving'
+    );
+
+    -- Insert into stripe.prices using the retrieved product ID
+    insert into stripe.prices (product, active, currency, unit_amount)
+    values (
+      new.id::text, 
+      new.status = 'reserving', 
+      new.price_currency, 
+      new.price * 100
+    );
+  end if;
 
   return new;
 end;
@@ -89,3 +95,4 @@ $$ language plpgsql;
 create trigger trigger_create_stripe_product_after_event_creation
 after insert on public.events for each row
 execute function public.create_stripe_product_for_event ();
+
