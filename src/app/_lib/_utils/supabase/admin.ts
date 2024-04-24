@@ -76,7 +76,8 @@ const deleteProductRecord = async (product: Stripe.Product) => {
 const upsertCustomerToSupabase = async (uuid: string, customerId: string) => {
     const { error: upsertError } = await supabaseAdmin
         .from('profiles')
-        .update({ id: uuid, stripe_customer_id: customerId });
+        .update({ stripe_customer_id: customerId })
+        .eq('id', uuid);
 
     if (upsertError)
         throw new Error(`Supabase customer record creation failed: ${upsertError.message}`);
@@ -99,6 +100,7 @@ const createOrRetrieveCustomer = async ({
     email: string;
     uuid: string;
 }) => {
+    
     // Check if the customer already exists in Supabase
     const { data: existingSupabaseCustomer, error: queryError } =
         await supabaseAdmin

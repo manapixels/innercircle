@@ -9,7 +9,7 @@ import { hasDatePassed } from '@/_lib/_utils/date';
 import { getStripe } from '@/_lib/_utils/stripe/client';
 import { checkoutWithStripe } from '@/_lib/_utils/stripe/server';
 import { usePathname, useRouter } from 'next/navigation';
-import { getErrorRedirect } from '@/_lib/_utils/misc';
+import { useToast } from '@/_components/ui/use-toast';
 
 export default function ReservationForm({
   event,
@@ -24,6 +24,7 @@ export default function ReservationForm({
 
   const router = useRouter();
   const currentPath = usePathname();
+  const { toast } = useToast();
 
   const eventOver = hasDatePassed(event?.date_start);
 
@@ -39,37 +40,36 @@ export default function ReservationForm({
 
     setLoading(true);
 
-    const { errorRedirect, sessionId } = await checkoutWithStripe(
+    const { sessionId } = await checkoutWithStripe(
       event.price_stripe_id, // price
       guests, // quantity
       currentPath // redirectPath
     );
 
-    if (errorRedirect) {
-      return router.push(errorRedirect);
-    }
+    if (sessionId) {
 
-    if (!sessionId) {
-      return router.push(
-        getErrorRedirect(
-          currentPath,
-          'An unknown error occurred.',
-          'Please try again later or contact a system administrator.'
-        )
-      );
-    }
+      const stripe = await getStripe();
+      const result = await stripe?.redirectToCheckout({ sessionId });
 
-    const stripe = await getStripe();
-    stripe?.redirectToCheckout({ sessionId });
+      if (result?.error) {
+        toast({
+          title: "Error",
+          description: 'Failed to sign up for the event. Please try again.',
+          className: 'bg-red-700 text-white border-transparent',
+        });
+        console.log(result.error)
+      } else {
+        toast({
+          title: "Successful!",
+          description: 'You have signed up for the event!',
+          className: 'bg-green-700 text-white border-transparent',
+        });
+        router.push('/events/my')
+      }
+    }
 
     // const result = await signUpForEvent(event.id, profile.id, guests);
     setLoading(false);
-
-    // if (result) {
-    //   alert('Reservation successful!');
-    // } else {
-    //   alert('Failed to make a reservation. Please try again.');
-    // }
 
   };
 

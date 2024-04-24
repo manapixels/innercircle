@@ -7,7 +7,6 @@ import { createOrRetrieveCustomer } from '@/_lib/_utils/supabase/admin';
 import { Tables } from '@/_lib/definitions';
 import { getErrorRedirect, getURL } from '@/_lib/_utils/misc';
 
-
 type CheckoutResponse = {
   errorRedirect?: string;
   sessionId?: string;
@@ -52,6 +51,7 @@ export async function checkoutWithStripe(
       customer_update: {
         address: 'auto'
       },
+      mode: 'payment',
       line_items: [
         {
           price: price || undefined,
