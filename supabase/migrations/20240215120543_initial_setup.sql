@@ -369,10 +369,13 @@ select
   p.birthmonth,
   p.birthyear,
   p.username,
-  array_agg(ur.role) as roles
+  array_agg(ur.role) as roles,
+  jsonb_agg(distinct e.id) as signed_up_events
 from
   public.profiles p
   join public.user_roles ur on ur.user_id = p.id
+  left join public.event_participants ep on ep.user_id = p.id
+  left join public.events e on e.id = ep.event_id
 group by
   p.id;
 

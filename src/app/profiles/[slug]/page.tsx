@@ -113,7 +113,7 @@ export default async function ProfilePage({
             <h2>Events hosted</h2>
             {user?.user?.id === profile?.id && (
               <Link
-                href="/events/my"
+                href="/events/manage"
                 className="flex items-center gap-1 text-white bg-base-700 hover:bg-base-600 font-medium text-base rounded-full px-7 py-2.5"
               >
                 Manage my events{' '}

@@ -1,12 +1,36 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDateRange, hasDatePassed, timeUntil } from '@/_lib/_utils/date';
-import { Event } from '@/_lib/actions';
+import { EventWithSignUps } from '@/_lib/actions';
 import { BUCKET_URL } from '@/_lib/constants';
+import EditEventForm from './EditEventForm';
 import { reverseSlugify } from '@/_lib/_utils/text';
 
-export default function EventListItemInMyEvents({ event }: { event: Event }) {
+export default function EventListItemInMyEvents({
+  event,
+  updateEventInList,
+  openModal,
+  closeModal,
+}: {
+  event: EventWithSignUps;
+  updateEventInList: (event: EventWithSignUps) => void;
+  openModal: (content: React.ReactNode) => void;
+  closeModal: () => void;
+}) {
   const eventOver = hasDatePassed(event?.date_start);
+  const ticketsLeft = (event.slots ?? 0) - (event.sign_ups ?? 0);
+  const percentSold = event.slots ? (1 - ticketsLeft / event.slots) * 100 : 0;
+
+  const handleEditClick = () => {
+    const modalContent = (
+      <EditEventForm
+        event={event}
+        onSuccess={updateEventInList}
+        closeModal={closeModal}
+      />
+    );
+    openModal(modalContent);
+  };
 
   return (
     <div className={`relative flex gap-4 p-6 rounded-lg bg-white border`}>
@@ -42,66 +66,60 @@ export default function EventListItemInMyEvents({ event }: { event: Event }) {
 
       <div className="min-w-0 py-2 flex-grow">
         {/* Event name */}
-        <p className="truncate text-lg font-semibold mb-1">{event?.name}</p>
+        <p className="truncate text-lg font-semibold mb-1">{event.name}</p>
         {/* Tags */}
         <div className="flex items-center gap-2 mb-2">
           {event?.category?.map((c) => (
-            <span
-              key={c}
-              className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10"
-            >
-              {reverseSlugify(c)}
-            </span>
+            <span key={c} className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">{reverseSlugify(c)}</span>
           ))}
         </div>
         {/* Location */}
-        {event?.location_name && event?.location_country ? (
+        {event.location_name && event.location_country ? (
           <a
             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_name)},${encodeURIComponent(event.location_country)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="hidden text-sm text-gray-500 sm:block hover:text-base-600 group"
           >
-            {event?.location_name}, {event?.location_country}
-            <svg
-              className="hidden group-hover:inline-block"
-              width="16px"
-              height="16px"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              color="#927800"
-            >
-              <path
-                d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005"
-                stroke="#927800"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-            </svg>
+            {event.location_name}, {event.location_country}
+            <svg className="hidden group-hover:inline-block" width="16px" height="16px" viewBox="0 0 24 24" strokeWidth="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#927800"><path d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005" stroke="#927800" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>
           </a>
         ) : (
           <span className="hidden text-sm text-gray-500 sm:block">
-            {event?.location_name ? `${event?.location_name}, ` : ''}
-            {event?.location_country}
+            {event.location_name ? `${event.location_name}, ` : ''}
+            {event.location_country}
           </span>
         )}
-        {event?.date_start && event?.date_end && (
+        {event.date_start && event.date_end && (
           <p className="hidden text-sm text-gray-500 sm:block">
-            {formatDateRange(event?.date_start, event?.date_end)}
+            {formatDateRange(event.date_start, event.date_end)}
             {!eventOver && (
               <span className="text-gray-400 ml-2">
-                {timeUntil(event?.date_start)} left
+                {timeUntil(event.date_start)} left
               </span>
             )}
           </p>
         )}
+        <div className="my-2">
+          <div className="flex justify-between">
+            <span className="text-sm font-medium text-base-700 dark:text-white">
+              {event?.slots} tickets for sale
+            </span>
+            <span className="text-sm font-medium text-base-700 dark:text-white">
+              {ticketsLeft === 0 ? 'Sold out 🎉' : `${ticketsLeft} left`}
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mb-3">
+            <div
+              className={`${percentSold === 100 ? 'bg-gray-400' : 'bg-base-600'} h-2.5 rounded-full`}
+              style={{ width: `${percentSold}%` }}
+            ></div>
+          </div>
+        </div>
 
         <div className="flex items-center gap-4">
           <Link
-            href={`/events/${event?.slug}`}
+            href={`/events/${event.slug}`}
             className="flex items-center gap-1 bg-gray-100 font-medium rounded-full flex-grow px-7 py-2.5 hover:bg-gray-200"
           >
             View event page{' '}
@@ -126,6 +144,7 @@ export default function EventListItemInMyEvents({ event }: { event: Event }) {
           </Link>
           <button
             type="button"
+            onClick={handleEditClick}
             className={`flex items-center gap-1 text-white focus:ring-4 focus:ring-base-200 font-medium rounded-full text-md px-7 py-2.5 dark:bg-base-600 dark:hover:bg-base-700 focus:outline-none dark:focus:ring-base-800 ${eventOver ? 'bg-gray-300 cursor-not-allowed' : 'bg-black hover:bg-gray-900'}`}
             disabled={eventOver}
           >

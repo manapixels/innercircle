@@ -14,14 +14,16 @@ import { createClient } from '@/_lib/_utils/supabase/client';
 const supabase = createClient();
 const UserContext = createContext<{
   user: User | undefined;
+  isHost: boolean;
   session: Session | null;
   profile: ProfileWithRoles | undefined;
   setUser: (user: User | undefined) => void;
   loading: boolean;
-}>({ user: undefined, session: null, profile: undefined, setUser: () => {}, loading: true });
+}>({ user: undefined, isHost: false, session: null, profile: undefined, setUser: () => {}, loading: true });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>();
+  const [isHost, setIsHost] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<ProfileWithRoles>();
   const [loading, setLoading] = useState(true);
@@ -73,8 +75,16 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (profile?.roles?.includes('host')) {
+      if (isHost === false) setIsHost(true)
+    } else {
+      if (isHost === true) setIsHost(false)
+    }
+  }, [profile])
+
   return (
-    <UserContext.Provider value={{ user, session, profile, setUser, loading }}>
+    <UserContext.Provider value={{ user, isHost, session, profile, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );

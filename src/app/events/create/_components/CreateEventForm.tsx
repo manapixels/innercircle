@@ -45,7 +45,7 @@ export default function CreateEventForm() {
   const [showErrorSummary, setShowErrorSummary] = useState(false);
 
   useEffect(() => {
-    router.prefetch('/events/my');
+    router.prefetch('/events/manage');
   }, []);
 
   const handlePlaceSelected = (place) => {
@@ -145,7 +145,7 @@ export default function CreateEventForm() {
       
       if (result) {
         console.log(result);
-        router.push('/events/my');
+        router.push('/events/manage');
         toast({
           description: 'Event created successfully.',
           className: 'bg-green-700 text-white border-transparent',

@@ -9,29 +9,6 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      customers: {
-        Row: {
-          id: string
-          stripe_customer_id: string | null
-        }
-        Insert: {
-          id: string
-          stripe_customer_id?: string | null
-        }
-        Update: {
-          id?: string
-          stripe_customer_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "customers_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       event_participants: {
         Row: {
           event_id: string
@@ -335,6 +312,7 @@ export interface Database {
           id: string | null
           name: string | null
           roles: Database["public"]["Enums"]["app_role"][] | null
+          signed_up_events: Json | null
           username: string | null
         }
         Relationships: [

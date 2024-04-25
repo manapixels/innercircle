@@ -62,44 +62,44 @@ create foreign table stripe.prices (
     attrs jsonb
 ) server stripe_server options (object 'prices', rowid_column 'id');
 
-create or replace function public.create_stripe_product_for_event () returns trigger as $$
-declare
-  v_price_id text;
-begin
-  -- Insert into stripe.products
-  if not exists (select 1 from stripe.products where id = 'prod_' || new.id) then
-    insert into stripe.products (id, name, active)
-    values (
-      'prod_' || new.id,
-      new.name, 
-      new.status = 'reserving'
-    );
+-- create or replace function public.create_stripe_product_for_event () returns trigger as $$
+-- declare
+--   v_price_id text;
+-- begin
+--   -- Insert into stripe.products
+--   if not exists (select 1 from stripe.products where id = 'prod_' || new.id) then
+--     insert into stripe.products (id, name, active)
+--     values (
+--       'prod_' || new.id,
+--       new.name, 
+--       new.status = 'reserving'
+--     );
 
-    insert into stripe.prices (product, active, currency, unit_amount)
-    values (
-      'prod_' || new.id, 
-      new.status = 'reserving', 
-      new.price_currency, 
-      new.price * 100
-    );
+--     insert into stripe.prices (product, active, currency, unit_amount)
+--     values (
+--       'prod_' || new.id, 
+--       new.status = 'reserving', 
+--       new.price_currency, 
+--       new.price * 100
+--     );
 
-    -- Retrieve the price ID from stripe.prices
-    select id into v_price_id
-    from stripe.prices
-    where product = 'prod_' || new.id
-    order by created desc
-    limit 1;
+--     -- Retrieve the price ID from stripe.prices
+--     select id into v_price_id
+--     from stripe.prices
+--     where product = 'prod_' || new.id
+--     order by created desc
+--     limit 1;
 
-    -- Update public.events with the captured price_stripe_id
-    update public.events
-    set price_stripe_id = v_price_id
-    where id = new.id;
-  end if;
+--     -- Update public.events with the captured price_stripe_id
+--     update public.events
+--     set price_stripe_id = v_price_id
+--     where id = new.id;
+--   end if;
 
-  return new;
-end;
-$$ language plpgsql;
+--   return new;
+-- end;
+-- $$ language plpgsql;
 
-create trigger trigger_create_stripe_product_after_event_creation
-after insert on public.events for each row
-execute function public.create_stripe_product_for_event ();
+-- create trigger trigger_create_stripe_product_after_event_creation
+-- after insert on public.events for each row
+-- execute function public.create_stripe_product_for_event ();
