@@ -4,12 +4,9 @@ import { useEffect, useState } from 'react';
 
 import { Modal } from '@/_components/ui/Modal';
 import { useUser } from '@/_contexts/UserContext';
-import {
-  EventWithSignUps,
-  fetchUserProfileWithHostedEventsWithId,
-} from '@/_lib/actions';
+import { fetchUserProfileWithHostedEventsWithId } from '@/api/profile';
+import { EventWithSignUps } from '@/types/event';
 import EventListItemInMyEvents from './EventListItemInManageEvents';
-
 
 export default function EventListInMyEvents() {
   const { user } = useUser();

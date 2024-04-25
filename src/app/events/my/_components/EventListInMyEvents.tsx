@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useUser } from '@/_contexts/UserContext';
-import { Event, ProfileWithRoles, fetchUserProfile } from '@/_lib/actions';
 import EventListItemInMyEvents from './EventListItemInMyEvents';
+import { ProfileWithRoles } from '@/types/profile';
+import { fetchUserProfile } from '@/api/profile';
+import { Event } from '@/types/event';
 
 export default function EventListInMyEvents() {
   const { user } = useUser();

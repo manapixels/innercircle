@@ -1,11 +1,11 @@
 'use server';
 
 import Stripe from 'stripe';
-import { stripe } from '@/_lib/_utils/stripe/config';
-import { createClient } from '@/_lib/_utils/supabase/server';
-import { createOrRetrieveCustomer } from '@/_lib/_utils/supabase/admin';
-import { Tables } from '@/_lib/definitions';
-import { getErrorRedirect, getURL } from '@/_lib/_utils/misc';
+import { stripe } from './config';
+import { createClient } from '../supabase/server';
+import { createOrRetrieveCustomer } from '../supabase/admin';
+import { Tables } from '@/types/definitions';
+import { getErrorRedirect, getURL } from '../../helpers/misc';
 
 type CheckoutResponse = {
   errorRedirect?: string;

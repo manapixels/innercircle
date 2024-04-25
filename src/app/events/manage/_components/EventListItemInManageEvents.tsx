@@ -1,10 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatDateRange, hasDatePassed, timeUntil } from '@/_lib/_utils/date';
-import { EventWithSignUps } from '@/_lib/actions';
-import { BUCKET_URL } from '@/_lib/constants';
+
+import { BUCKET_URL } from '@/constants';
+import { formatDateRange, hasDatePassed, timeUntil } from '@/helpers/date';
+import { reverseSlugify } from '@/helpers/text';
+import { EventWithSignUps } from '@/types/event';
 import EditEventForm from './EditEventForm';
-import { reverseSlugify } from '@/_lib/_utils/text';
+
 
 export default function EventListItemInMyEvents({
   event,

@@ -1,15 +1,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatDateRange, hasDatePassed, timeUntil } from '@/_lib/_utils/date';
-import { Event } from '@/_lib/actions';
-import { BUCKET_URL } from '@/_lib/constants';
-import { reverseSlugify } from '@/_lib/_utils/text';
+
+import { Event } from '@/types/event';
+import { BUCKET_URL } from '@/constants';
+import { formatDateRange, hasDatePassed, timeUntil } from '@/helpers/date';
+import { reverseSlugify } from '@/helpers/text';
 
 export default function EventListItemInMyEvents({ event }: { event: Event }) {
   const eventOver = hasDatePassed(event?.date_start);
 
   return (
-    <div className={`relative flex gap-4 p-6 rounded-lg bg-white border`}>
+    <div
+      className={`relative flex gap-4 p-6 rounded-lg bg-white border ${eventOver ? 'col-span-1' : 'col-span-2 lg:col-span-4'}`}
+    >
       <div className="absolute top-0 right-0">
         <span
           className={`block   text-sm font-medium px-4 py-1.5 rounded align-top ${eventOver ? 'bg-gray-100 text-gray-400' : 'bg-base-600 text-white'}`}
@@ -102,7 +105,7 @@ export default function EventListItemInMyEvents({ event }: { event: Event }) {
         <div className="flex items-center gap-4">
           <Link
             href={`/events/${event?.slug}`}
-            className="flex items-center gap-1 bg-gray-100 font-medium rounded-full flex-grow px-7 py-2.5 hover:bg-gray-200"
+            className="flex items-center gap-1 text-gray-500 text-sm"
           >
             View event page{' '}
             <svg
@@ -124,31 +127,6 @@ export default function EventListItemInMyEvents({ event }: { event: Event }) {
               ></path>
             </svg>
           </Link>
-          <button
-            type="button"
-            className={`flex items-center gap-1 text-white focus:ring-4 focus:ring-base-200 font-medium rounded-full text-md px-7 py-2.5 dark:bg-base-600 dark:hover:bg-base-700 focus:outline-none dark:focus:ring-base-800 ${eventOver ? 'bg-gray-300 cursor-not-allowed' : 'bg-black hover:bg-gray-900'}`}
-            disabled={eventOver}
-          >
-            Edit{' '}
-            <svg
-              className="inline-block align-middle"
-              width="16px"
-              height="16px"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              color="#FFFFFF"
-            >
-              <path
-                d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5"
-                stroke="#FFFFFF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-            </svg>
-          </button>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { updateEmail } from '@/_lib/actions';
+import { updateEmail } from '@/api/auth';
 import Spinner from '@/_components/ui/Spinner';
 
 interface EmailFormInput {

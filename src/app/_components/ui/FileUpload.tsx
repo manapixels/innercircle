@@ -5,9 +5,8 @@ import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 
 import Spinner from '@/_components/ui/Spinner';
-import { uploadFileToBucket } from '@/_lib/actions';
-import { BUCKET_URL } from '@/_lib/constants';
-
+import { uploadFileToBucket } from '@/api/file';
+import { BUCKET_URL } from '@/constants';
 
 
 export function FileUpload({

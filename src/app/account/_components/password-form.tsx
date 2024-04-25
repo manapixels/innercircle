@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { updatePassword } from '@/_lib/actions';
+import { updatePassword } from '@/api/auth';
 import Spinner from '@/_components/ui/Spinner';
 
 interface PasswordFormInput {

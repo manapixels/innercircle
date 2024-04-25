@@ -34,6 +34,21 @@
       }
     ],
     "paths": {
+      "@/api/*": [
+        "./src/api/*"
+      ],
+      "@/helpers/*": [
+        "./src/helpers/*"
+      ],
+      "@/types/*": [
+        "./src/types/*"
+      ],
+      "@/utils/*": [
+        "./src/utils/*"
+      ],
+      "@/constants": [
+        "./src/constants"
+      ],
       "@/*": [
         "./src/app/*"
       ]

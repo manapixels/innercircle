@@ -13,11 +13,12 @@ import Spinner from '@/_components/ui/Spinner';
 import { FileUpload } from '@/_components/ui/FileUpload';
 import { useToast } from '@/_components/ui/use-toast';
 import { useUser } from '@/_contexts/UserContext';
-import { Event, EventWithSignUps, updateEvent } from '@/_lib/actions';
+import {  updateEvent } from '@/api/event';
+import { Event, EventWithSignUps } from '@/types/event';
 import {
   getGuessedUserTimeZone,
   getTimeZonesWithOffset,
-} from '@/_lib/_utils/date';
+} from '@/helpers/date';
 
 type Inputs = {
   name: string;

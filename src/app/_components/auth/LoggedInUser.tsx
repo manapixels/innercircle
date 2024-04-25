@@ -8,9 +8,11 @@ import { useOnClickOutside } from 'usehooks-ts';
 
 import { useToast } from '@/_components/ui/use-toast';
 import { useUser } from '@/_contexts/UserContext';
-import { ProfileWithRoles, signOut } from '@/_lib/actions';
-import { BUCKET_URL } from '@/_lib/constants';
+import { signOut } from '@/api/auth';
+import { BUCKET_URL } from '@/constants';
 import { useRouter } from 'next/navigation';
+import { ProfileWithRoles } from '@/types/profile';
+
 
 export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
   const [isOpen, setIsOpen] = useState(false);

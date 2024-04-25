@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
-import { EventWithSignUps, Profile, fetchEvent } from '@/_lib/actions';
-import { BUCKET_URL } from '@/_lib/constants';
+import { fetchEvent } from '@/api/event';
+import { BUCKET_URL } from '@/constants';
+import { EventWithSignUps } from '@/types/event';
+import { Profile } from '@/types/profile';
 import ReservationForm from './_components/ReservationForm';
 
 export const metadata: Metadata = {

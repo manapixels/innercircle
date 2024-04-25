@@ -18,7 +18,7 @@
     "supabase:db-seed-stripe": "npx ts-node supabase/seed-stripe.ts",
     "supabase:db-reset-and-seed": "npx supabase db reset && ts-node supabase/seed-images.js",
     "supabase:link": "npx supabase link",
-    "supabase:generate-types": "npx supabase gen types typescript --local --schema public > ./src/app/_lib/definitions.ts",
+    "supabase:generate-types": "npx supabase gen types typescript --local --schema public > ./src/types/definitions.ts",
     "supabase:generate-migration": "npx supabase db diff | npx supabase migration new",
     "supabase:push": "npx supabase push",
     "supabase:pull": "npx supabase pull"

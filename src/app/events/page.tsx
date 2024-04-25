@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
-import { EventWithCreatorInfo, fetchEvents } from '@/_lib/actions';
+import { fetchEvents } from '@/api/event';
 import EventListItem from './_components/EventListItem';
+import { EventWithCreatorInfo } from '@/types/event';
 
 export const metadata: Metadata = {
   title: 'innercircle | All events',

@@ -2,15 +2,12 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import {
-  EventWithSignUps,
-  ProfileWithEventsHosted,
-  fetchUserProfileWithHostedEvents,
-} from '@/_lib/actions';
-import { BUCKET_URL } from '@/_lib/constants';
-import { createClient } from '@/_lib/_utils/supabase/server';
+import { fetchUserProfileWithHostedEvents } from '@/api/profile';
+import { ProfileWithEventsHosted } from '@/types/profile';
+import { EventWithSignUps } from '@/types/event';
+import { BUCKET_URL } from '@/constants';
+import { createClient } from '@/utils/supabase/server';
 import EventListItemInProfile from './_components/EventListItemInProfile';
-
 
 export const metadata: Metadata = {
   title: 'innercircle | Profile',

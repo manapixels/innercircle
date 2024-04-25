@@ -8,8 +8,9 @@ import React, {
   ReactNode,
 } from 'react';
 import { Session, User } from '@supabase/supabase-js';
-import { ProfileWithRoles, fetchUserProfile } from '@/_lib/actions';
-import { createClient } from '@/_lib/_utils/supabase/client';
+import { fetchUserProfile } from '@/api/profile';
+import { ProfileWithRoles } from '@/types/profile';
+import { createClient } from '@/utils/supabase/client';
 
 const supabase = createClient();
 const UserContext = createContext<{

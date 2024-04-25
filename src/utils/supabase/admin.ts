@@ -1,5 +1,5 @@
-import { stripe } from '@/_lib/_utils/stripe/config';
-import { Database } from '@/_lib/definitions';
+import { stripe } from '../stripe/config';
+import { Database } from '@/types/definitions';
 import { createClient } from '@supabase/supabase-js';
 import Stripe from 'stripe';
 

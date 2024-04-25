@@ -9,7 +9,7 @@ import Spinner from '@/_components/ui/Spinner';
 import { useToast } from '@/_components/ui/use-toast';
 import { useUser } from '@/_contexts/UserContext';
 import { useAuthModal } from '@/_contexts/AuthContext';
-import { signInWithEmail, signUpNewUser } from '@/_lib/actions';
+import { signInWithEmail, signUpNewUser } from '@/api/auth';
 
 
 interface AuthFormInput {

@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 import Spinner from '@/_components/ui/Spinner';
-import { Profile, fetchUserProfile, updateUserProfile } from '@/_lib/actions';
-import { calculateAge } from '@/_lib/_utils/date';
+import { fetchUserProfile, updateUserProfile } from '@/api/profile';
+import { calculateAge } from '@/helpers/date';
+import { Profile } from '@/types/profile';
 
 
 interface AuthFormInput {

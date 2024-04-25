@@ -4,10 +4,10 @@ import { useState } from 'react';
 import pluralize from 'pluralize';
 
 import { useUser } from '@/_contexts/UserContext';
-import { EventWithSignUps } from '@/_lib/actions';
-import { hasDatePassed } from '@/_lib/_utils/date';
-import { getStripe } from '@/_lib/_utils/stripe/client';
-import { checkoutWithStripe } from '@/_lib/_utils/stripe/server';
+import { EventWithSignUps } from '@/types/event';
+import { hasDatePassed } from '@/helpers/date';
+import { getStripe } from '@/utils/stripe/client';
+import { checkoutWithStripe } from '../../../../utils/stripe/server';
 import { usePathname, useRouter } from 'next/navigation';
 import { useToast } from '@/_components/ui/use-toast';
 
@@ -30,11 +30,28 @@ export default function ReservationForm({
 
   const handleReservation = async () => {
     if (!profile?.id) {
-      alert('You must be logged in to make a reservation.');
+      toast({
+        title: "Error",
+        description: 'You must be logged in to make a reservation.',
+        className: 'bg-red-700 text-white border-transparent',
+      });
       return;
     }
     if (!event?.id) {
-      alert('Event id is undetected');
+      toast({
+        title: "Error",
+        description: 'This event does not have a price set.',
+        className: 'bg-red-700 text-white border-transparent',
+      });
+      return;
+    }
+
+    if (!event?.price_stripe_id) {
+      toast({
+        title: "Error",
+        description: 'This event does not have a price set.',
+        className: 'bg-red-700 text-white border-transparent',
+      });
       return;
     }
 

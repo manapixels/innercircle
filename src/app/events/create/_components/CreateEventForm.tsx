@@ -6,13 +6,15 @@ import { useForm, SubmitHandler, SubmitErrorHandler, Controller } from 'react-ho
 import {
   getTimeZonesWithOffset,
   getGuessedUserTimeZone,
-} from '@/_lib/_utils/date';
+} from '../../../../helpers/date';
 import { FileUpload } from '@/_components/ui/FileUpload';
 import { useUser } from '@/_contexts/UserContext';
-import { Event, addEvent } from '@/_lib/actions';
+import { addEvent } from '@/api/event';
+import { Event } from '@/types/event';
 import Spinner from '@/_components/ui/Spinner';
 import { useToast } from '@/_components/ui/use-toast';
 import { useRouter } from 'next/navigation';
+
 
 type Inputs = {
   name: string;
