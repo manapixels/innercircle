@@ -12,10 +12,9 @@ import { ProfileWithRoles, signOut } from '@/_lib/actions';
 import { BUCKET_URL } from '@/_lib/constants';
 import { useRouter } from 'next/navigation';
 
-
 export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { setUser } = useUser();
+  const { isHost, setUser } = useUser();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -62,39 +61,149 @@ export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
                 onClick={() => setIsOpen(false)}
               >
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
+                  className="mr-2"
                   width="1.1rem"
                   height="1.1rem"
+                  strokeWidth="1.5"
                   viewBox="0 0 24 24"
-                  className="mr-2"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  color="#000000"
                 >
                   <path
-                    className="fill-gray-700"
-                    d="M12 12q-1.65 0-2.825-1.175T8 8q0-1.65 1.175-2.825T12 4q1.65 0 2.825 1.175T16 8q0 1.65-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13q1.65 0 3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z"
-                  />
+                    d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z"
+                    stroke="#000000"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                  <path
+                    d="M4.271 18.3457C4.271 18.3457 6.50002 15.5 12 15.5C17.5 15.5 19.7291 18.3457 19.7291 18.3457"
+                    stroke="#000000"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                  <path
+                    d="M12 12C13.6569 12 15 10.6569 15 9C15 7.34315 13.6569 6 12 6C10.3431 6 9 7.34315 9 9C9 10.6569 10.3431 12 12 12Z"
+                    stroke="#000000"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
                 </svg>
                 My Account
               </Link>
-              <Link
-                href="/events/my"
-                className="text-gray-700 px-4 py-2 text-sm flex gap-1 hover:bg-gray-50"
-                tabIndex={-1}
-                onClick={() => setIsOpen(false)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1.1rem"
-                  height="1.1rem"
-                  viewBox="0 0 24 24"
-                  className="mr-2"
+              {isHost && (
+                <Link
+                  href="/events/manage"
+                  className="text-gray-700 px-4 py-2 text-sm flex gap-1 hover:bg-gray-50"
+                  tabIndex={-1}
+                  onClick={() => setIsOpen(false)}
                 >
-                  <path
-                    className="fill-gray-700"
-                    d="M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5zM5 8h14V6H5zm0 0V6zm7 6q-.425 0-.712-.288T11 13q0-.425.288-.712T12 12q.425 0 .713.288T13 13q0 .425-.288.713T12 14m-4 0q-.425 0-.712-.288T7 13q0-.425.288-.712T8 12q.425 0 .713.288T9 13q0 .425-.288.713T8 14m8 0q-.425 0-.712-.288T15 13q0-.425.288-.712T16 12q.425 0 .713.288T17 13q0 .425-.288.713T16 14m-4 4q-.425 0-.712-.288T11 17q0-.425.288-.712T12 16q.425 0 .713.288T13 17q0 .425-.288.713T12 18m-4 0q-.425 0-.712-.288T7 17q0-.425.288-.712T8 16q.425 0 .713.288T9 17q0 .425-.288.713T8 18m8 0q-.425 0-.712-.288T15 17q0-.425.288-.712T16 16q.425 0 .713.288T17 17q0 .425-.288.713T16 18"
-                  ></path>
-                </svg>
-                Manage my events
-              </Link>
+                  <svg
+                    className="mr-2"
+                    width="1.1rem"
+                    height="1.1rem"
+                    strokeWidth="1.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    color="#000000"
+                  >
+                    <path
+                      d="M15 4V2M15 4V6M15 4H10.5M3 10V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V10H3Z"
+                      stroke="#000000"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                    <path
+                      d="M3 10V6C3 4.89543 3.89543 4 5 4H7"
+                      stroke="#000000"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                    <path
+                      d="M7 2V6"
+                      stroke="#000000"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                    <path
+                      d="M21 10V6C21 4.89543 20.1046 4 19 4H18.5"
+                      stroke="#000000"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                  </svg>
+                  Manage my events
+                </Link>
+              )}
+              {isHost && (
+                <Link
+                  href="/events/my"
+                  className="text-gray-700 px-4 py-2 text-sm flex gap-1 hover:bg-gray-50"
+                  tabIndex={-1}
+                  onClick={() => setIsOpen(false)}
+                >
+                  <svg
+                    className="mr-2"
+                    width="1.1rem"
+                    height="1.1rem"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    color="#000000"
+                  >
+                    <path
+                      d="M13 21H4C2.89543 21 2 20.1046 2 19V5C2 3.89543 2.89543 3 4 3H20C21.1046 3 22 3.89543 22 5V13"
+                      stroke="#000000"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    ></path>
+                    <path
+                      d="M22 17.2798C22 17.8812 21.7625 18.4588 21.3383 18.8861C20.3619 19.8701 19.415 20.8961 18.4021 21.8443C18.17 22.0585 17.8017 22.0507 17.5795 21.8268L14.6615 18.8861C13.7795 17.9972 13.7795 16.5623 14.6615 15.6734C15.5522 14.7758 17.0032 14.7758 17.8938 15.6734L17.9999 15.7803L18.1059 15.6734C18.533 15.2429 19.1146 15 19.7221 15C20.3297 15 20.9113 15.2428 21.3383 15.6734C21.7625 16.1007 22 16.6784 22 17.2798Z"
+                      stroke="#000000"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                    ></path>
+                    <path
+                      d="M2 7L22 7"
+                      stroke="#000000"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                    <path
+                      d="M5 5.01L5.01 4.99889"
+                      stroke="#000000"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                    <path
+                      d="M8 5.01L8.01 4.99889"
+                      stroke="#000000"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                    <path
+                      d="M11 5.01L11.01 4.99889"
+                      stroke="#000000"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                  </svg>
+                  My Events
+                </Link>
+              )}
               <hr className="my-2" />
               <button
                 type="button"
@@ -114,19 +223,28 @@ export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
                 }}
               >
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
+                  className="mr-2"
                   width="1.1rem"
                   height="1.1rem"
+                  strokeWidth="1.5"
                   viewBox="0 0 24 24"
-                  className="mr-2"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  color="#000000"
                 >
                   <path
-                    className="fill-gray-700"
-                    d="M12 3.25a.75.75 0 0 1 0 1.5a7.25 7.25 0 0 0 0 14.5a.75.75 0 0 1 0 1.5a8.75 8.75 0 1 1 0-17.5"
+                    d="M12 12H19M19 12L16 15M19 12L16 9"
+                    stroke="#000000"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   ></path>
                   <path
-                    className="fill-gray-700"
-                    d="M16.47 9.53a.75.75 0 0 1 1.06-1.06l3 3a.75.75 0 0 1 0 1.06l-3 3a.75.75 0 1 1-1.06-1.06l1.72-1.72H10a.75.75 0 0 1 0-1.5h8.19z"
+                    d="M19 6V5C19 3.89543 18.1046 3 17 3H7C5.89543 3 5 3.89543 5 5V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V18"
+                    stroke="#000000"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   ></path>
                 </svg>
                 Log out
