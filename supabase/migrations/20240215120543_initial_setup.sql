@@ -370,7 +370,7 @@ select
   p.birthyear,
   p.username,
   array_agg(ur.role) as roles,
-  jsonb_agg(distinct e.id) as signed_up_events
+  coalesce(jsonb_agg(distinct e.id) filter (where e.id is not null), '[]'::jsonb) as signed_up_events
 from
   public.profiles p
   join public.user_roles ur on ur.user_id = p.id
