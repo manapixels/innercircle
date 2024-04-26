@@ -435,12 +435,11 @@ select
   p.username,
   array_agg(ur.role) as roles,
   coalesce(
-    jsonb_agg(distinct e.id) filter (
-      where
-        e.id is not null
-    ),
+    jsonb_agg(
+      to_jsonb(e)
+    ) FILTER (WHERE e.id IS NOT NULL),
     '[]'::jsonb
-  ) as signed_up_events
+  ) AS signed_up_events
 from
   public.profiles p
   join public.user_roles ur on ur.user_id = p.id
