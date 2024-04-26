@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 import { Modal } from '@/_components/ui/Modal';
 import Spinner from '@/_components/ui/Spinner';
-import { useToast } from '@/_components/ui/use-toast';
+import { useToast } from '@/_components/ui/Toasts/useToast';
 import { useUser } from '@/_contexts/UserContext';
 import { useAuthModal } from '@/_contexts/AuthContext';
 import { signInWithEmail, signUpNewUser } from '@/api/auth';

@@ -11,7 +11,7 @@ import GooglePlacesAutocomplete from 'react-google-autocomplete';
 
 import Spinner from '@/_components/ui/Spinner';
 import { FileUpload } from '@/_components/ui/FileUpload';
-import { useToast } from '@/_components/ui/use-toast';
+import { useToast } from '@/_components/ui/Toasts/useToast';
 import { useUser } from '@/_contexts/UserContext';
 import {  updateEvent } from '@/api/event';
 import { Event, EventWithSignUps } from '@/types/event';

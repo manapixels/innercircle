@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useOnClickOutside } from 'usehooks-ts';
 
-import { useToast } from '@/_components/ui/use-toast';
+import { useToast } from '@/_components/ui/Toasts/useToast';
 import { useUser } from '@/_contexts/UserContext';
 import { signOut } from '@/api/auth';
 import { BUCKET_URL } from '@/constants';

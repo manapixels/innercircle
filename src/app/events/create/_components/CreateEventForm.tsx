@@ -12,7 +12,7 @@ import { useUser } from '@/_contexts/UserContext';
 import { addEvent } from '@/api/event';
 import { Event } from '@/types/event';
 import Spinner from '@/_components/ui/Spinner';
-import { useToast } from '@/_components/ui/use-toast';
+import { useToast } from '@/_components/ui/Toasts/useToast';
 import { useRouter } from 'next/navigation';
 
 

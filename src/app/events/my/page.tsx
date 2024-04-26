@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'innercircle | My Events',
 };
 
-export default async function MyEventsPage() {
+export default function MyEventsPage() {
   return (
     <ProtectedWrapper>
       <div className="flex w-full flex-col md:col-span-4">

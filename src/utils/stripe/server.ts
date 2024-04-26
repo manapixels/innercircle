@@ -5,10 +5,11 @@ import { stripe } from './config';
 import { createClient } from '../supabase/server';
 import { createOrRetrieveCustomer } from '../supabase/admin';
 import { Tables } from '@/types/definitions';
-import { getErrorRedirect, getURL } from '../../helpers/misc';
+import { getErrorRedirect, getURL } from '@/helpers/misc';
 
 type CheckoutResponse = {
-  errorRedirect?: string;
+  // errorRedirect?: string;
+  errorMessage?: string;
   sessionId?: string;
 };
 
@@ -17,6 +18,7 @@ type Event = Tables<'events'>;
 export async function checkoutWithStripe(
   price: Event['price_stripe_id'],
   quantity: number = 1,
+  // currentPath: string = '/',
   redirectPath: string = '/account'
 ): Promise<CheckoutResponse> {
   try {
@@ -46,7 +48,6 @@ export async function checkoutWithStripe(
 
     let params: Stripe.Checkout.SessionCreateParams = {
       allow_promotion_codes: true,
-      billing_address_collection: 'required',
       customer,
       customer_update: {
         address: 'auto'
@@ -80,20 +81,24 @@ export async function checkoutWithStripe(
   } catch (error) {
     if (error instanceof Error) {
       return {
-        errorRedirect: getErrorRedirect(
-          redirectPath,
-          error.message,
-          'Please try again later or contact a system administrator.'
-        )
+        errorMessage: error.message
       };
+      // return {
+      //   errorRedirect: getErrorRedirect(
+      //     currentPath,
+      //     error.message,
+      //   )
+      // };
     } else {
       return {
-        errorRedirect: getErrorRedirect(
-          redirectPath,
-          'An unknown error occurred.',
-          'Please try again later or contact a system administrator.'
-        )
+        errorMessage: 'An unknown error occurred.'
       };
+      // return {
+      //   errorRedirect: getErrorRedirect(
+      //     currentPath,
+      //     'An unknown error occurred.',
+      //   )
+      // };
     }
   }
 }
@@ -146,14 +151,12 @@ export async function createStripePortal(currentPath: string) {
       console.error(error);
       return getErrorRedirect(
         currentPath,
-        error.message,
-        'Please try again later or contact a system administrator.'
+        error.message
       );
     } else {
       return getErrorRedirect(
         currentPath,
-        'An unknown error occurred.',
-        'Please try again later or contact a system administrator.'
+        'An unknown error occurred.'
       );
     }
   }

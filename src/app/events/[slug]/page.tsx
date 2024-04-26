@@ -29,7 +29,7 @@ export default async function EventDetailsPage({
         }}
       />
 
-      <div className="flex items-center justify-between mt-8">
+      <div className="flex justify-between mt-8">
         <div className="w-1/2">
           <div className="text-3xl font-medium mb-2">{event?.name}</div>
           <div className="flex items-center text-gray-600 mb-4">

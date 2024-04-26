@@ -1,15 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import pluralize from 'pluralize';
 
 import { useUser } from '@/_contexts/UserContext';
-import { EventWithSignUps } from '@/types/event';
 import { hasDatePassed } from '@/helpers/date';
+import { getSuccessRedirect } from '@/helpers/misc';
+import { EventWithSignUps } from '@/types/event';
 import { getStripe } from '@/utils/stripe/client';
-import { checkoutWithStripe } from '../../../../utils/stripe/server';
-import { usePathname, useRouter } from 'next/navigation';
-import { useToast } from '@/_components/ui/use-toast';
+import { checkoutWithStripe } from '@/utils/stripe/server';
+import { useToast } from '@/_components/ui/Toasts/useToast';
 
 export default function ReservationForm({
   event,
@@ -23,71 +24,84 @@ export default function ReservationForm({
   const { profile } = useUser();
 
   const router = useRouter();
-  const currentPath = usePathname();
   const { toast } = useToast();
 
   const eventOver = hasDatePassed(event?.date_start);
 
   const handleReservation = async () => {
-    if (!profile?.id) {
-      toast({
-        title: "Error",
-        description: 'You must be logged in to make a reservation.',
-        className: 'bg-red-700 text-white border-transparent',
-      });
-      return;
-    }
-    if (!event?.id) {
-      toast({
-        title: "Error",
-        description: 'This event does not have a price set.',
-        className: 'bg-red-700 text-white border-transparent',
-      });
-      return;
-    }
-
-    if (!event?.price_stripe_id) {
-      toast({
-        title: "Error",
-        description: 'This event does not have a price set.',
-        className: 'bg-red-700 text-white border-transparent',
-      });
-      return;
-    }
-
-    setLoading(true);
-
-    const { sessionId } = await checkoutWithStripe(
-      event.price_stripe_id, // price
-      guests, // quantity
-      currentPath // redirectPath
-    );
-
-    if (sessionId) {
-
-      const stripe = await getStripe();
-      const result = await stripe?.redirectToCheckout({ sessionId });
-
-      if (result?.error) {
+    try {
+      if (!profile?.id) {
         toast({
-          title: "Error",
-          description: 'Failed to sign up for the event. Please try again.',
+          title: 'Error',
+          description: 'You must be logged in to make a reservation.',
           className: 'bg-red-700 text-white border-transparent',
         });
-        console.log(result.error)
+        return;
+      }
+      if (!event?.id) {
+        toast({
+          title: 'Error',
+          description: 'This event does not have a price set.',
+          className: 'bg-red-700 text-white border-transparent',
+        });
+        return;
+      }
+
+      if (!event?.price_stripe_id) {
+        toast({
+          title: 'Error',
+          description: 'This event does not have a price set.',
+          className: 'bg-red-700 text-white border-transparent',
+        });
+        return;
+      }
+
+      setLoading(true);
+
+      const { errorMessage: errorMessageCheckout, sessionId } = await checkoutWithStripe(
+        event?.price_stripe_id, // price
+        guests, // quantity
+        getSuccessRedirect('/events/my', 'Reservation successful.'),
+      );
+
+      if (errorMessageCheckout) {
+        toast({
+          title: 'Error',
+          description: errorMessageCheckout,
+          className: 'bg-red-700 text-white border-transparent',
+        });
+      }
+
+      if (sessionId) {
+        const stripe = await getStripe();
+        const result = await stripe?.redirectToCheckout({ sessionId });
+
+        if (result?.error) {
+          toast({
+            title: 'Error',
+            description: 'Failed to sign up for the event. Please try again.',
+            className: 'bg-red-700 text-white border-transparent',
+          });
+          console.log(result.error);
+        } else {
+          router.push(
+            '/events/my?success=true&message=Reservation%20successful.',
+          );
+        }
       } else {
         toast({
-          title: "Successful!",
-          description: 'You have signed up for the event!',
-          className: 'bg-green-700 text-white border-transparent',
+          title: 'Error',
+          description: 'Failed to create a Stripe session. Please try again.',
+          className: 'bg-red-700 text-white border-transparent',
         });
-        router.push('/events/my')
       }
+
+      // const result = await signUpForEvent(event.id, profile.id, guests);
+    } catch (error) {
+      console.error('Reservation error:', error);
+    } finally {
+      setLoading(false);
     }
-
-    // const result = await signUpForEvent(event.id, profile.id, guests);
-    setLoading(false);
-
   };
 
   return (
@@ -95,10 +109,12 @@ export default function ReservationForm({
       {isConfirming ? (
         <>
           <div className="text-sm text-gray-500 mb-6 flex items-center gap-2">
-            <button className="flex-shrink-0 bg-white hover:bg-gray-100 inline-flex items-center justify-center border border-gray-400 rounded-md h-8 w-8 focus:ring-gray-100 focus:ring-2 focus:outline-none p-1">
+            <button
+              className="flex-shrink-0 bg-white hover:bg-gray-100 inline-flex items-center justify-center border border-gray-400 rounded-md h-8 w-8 focus:ring-gray-100 focus:ring-2 focus:outline-none p-1"
+              onClick={() => setIsConfirming(false)}
+            >
               <svg
                 className="fill-gray-500"
-                onClick={() => setIsConfirming(false)}
                 xmlns="http://www.w3.org/2000/svg"
                 width="1em"
                 height="1em"
@@ -176,7 +192,7 @@ export default function ReservationForm({
               </h3>
               <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white rounded-lg sm:flex dark:bg-gray-700 dark:text-white">
                 <li
-                  className={`w-full border-2 rounded-md ${isGroup ? 'border-base-600' : 'border-gray-200'} dark:border-gray-600`}
+                  className={`w-full border-2 rounded-md ${!isGroup ? 'border-base-600' : 'border-gray-200'} dark:border-gray-600`}
                 >
                   <div className="flex items-center ps-3">
                     <div
