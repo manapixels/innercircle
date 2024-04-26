@@ -1,9 +1,10 @@
 import Stripe from 'stripe';
-import { stripe } from '../../utils/stripe/config';
+import { stripe } from '@/utils/stripe/config';
 import {
-  upsertProductRecord,
-  deleteProductRecord,
-} from '../../utils/supabase/admin';
+  // upsertProductRecord,
+  // deleteProductRecord,
+  confirmReservation,
+} from '@/utils/supabase/admin';
 
 const relevantEvents = new Set([
   'product.created',
@@ -21,6 +22,7 @@ export async function POST(req: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   let event: Stripe.Event;
 
+  console.log('hihi', sig, webhookSecret)
   try {
     if (!sig || !webhookSecret)
       return new Response('Webhook secret not found.', { status: 400 });
@@ -34,16 +36,20 @@ export async function POST(req: Request) {
   if (relevantEvents.has(event.type)) {
     try {
       switch (event.type) {
-        case 'product.created':
-        case 'product.updated':
-          await upsertProductRecord(event.data.object as Stripe.Product);
-          break;
-        case 'product.deleted':
-          await deleteProductRecord(event.data.object as Stripe.Product);
-          break;
+        // case 'product.created':
+        // case 'product.updated':
+        //   await upsertProductRecord(event.data.object as Stripe.Product);
+        //   break;
+        // case 'product.deleted':
+        //   await deleteProductRecord(event.data.object as Stripe.Product);
+        //   break;
         case 'checkout.session.completed':
           const checkoutSession = event.data.object as Stripe.Checkout.Session;
-          console.log(checkoutSession)
+          if (checkoutSession?.id) {
+            await confirmReservation(checkoutSession?.id);
+          } else {
+            console.log('No stripe session id found in checkout session metadata. Reservation status not updated.');
+          }
           break;
         default:
           throw new Error('Unhandled relevant event!');

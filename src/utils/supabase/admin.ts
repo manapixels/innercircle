@@ -10,26 +10,39 @@ const supabaseAdmin = createClient<Database>(
     process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const upsertProductRecord = async (product: Stripe.Product) => {
+/**
+ * Updates the reservation status in Supabase after payment is confirmed.
+ * @param reservationId - The ID of the reservation to update.
+ */
+const confirmReservation = async (reservationId: string) => {
+    const { data, error } = await supabaseAdmin.rpc('after_payment_confirmed', {
+        p_stripe_session_id: reservationId
+    });
 
-    const { error: upsertError } = await supabaseAdmin
-        .from('events')
-        .upsert({
-            stripe_id: product.id,
-            name: product.name,
-            description: product.description ?? null,
-            image_thumbnail_url: product.images?.[0] ?? null,
-            metadata: product.metadata,
-            created_by: "your_value_here",
-            location_address: "your_value_here",
-            location_country: "your_value_here",
-            location_name: "your_value_here",
-            slug: "your_value_here",
-        });
-    if (upsertError)
-        throw new Error(`Product insert/update failed: ${upsertError.message}`);
-    console.log(`Product inserted/updated: ${product.id}`);
+    if (error) {
+        console.error(`Failed to update reservation status: ${error.message}`);
+        throw new Error(`Failed to update reservation status: ${error.message}`);
+    }
+
+    console.log(`Reservation status updated for reservation ID: ${reservationId}`);
+    return data;
 };
+
+// const upsertProductRecord = async (product: Stripe.Product) => {
+
+//     const { error: upsertError } = await supabaseAdmin
+//         .from('events')
+//         .upsert({
+//             stripe_id: product.id,
+//             name: product.name,
+//             description: product.description ?? null,
+//             image_thumbnail_url: product.images?.[0] ?? null,
+//             metadata: product.metadata,
+//         });
+//     if (upsertError)
+//         throw new Error(`Product insert/update failed: ${upsertError.message}`);
+//     console.log(`Product inserted/updated: ${product.id}`);
+// };
 
 const updatePriceRecord = async (
     price: Stripe.Price,
@@ -192,7 +205,8 @@ const copyBillingDetailsToCustomer = async (
 };
 
 export {
-    upsertProductRecord,
+    confirmReservation,
+    // upsertProductRecord,
     updatePriceRecord,
     deleteProductRecord,
     createOrRetrieveCustomer,

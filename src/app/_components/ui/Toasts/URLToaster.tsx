@@ -1,18 +1,18 @@
 'use client';
 
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useToast } from '@/_components/ui/Toasts/useToast';
 
 const URLToaster: React.FC = () => {
   const { toast } = useToast();
-  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const url = new URL(window.location.href);
 
-    const success = url.searchParams.get('success');
-    const successMessage = url.searchParams.get('success_description');
+    const success = searchParams.get('success');
+    const successMessage = searchParams.get('success_description');
 
     if (success !== null) {
       toast({
@@ -26,8 +26,8 @@ const URLToaster: React.FC = () => {
       url.searchParams.delete('success_description');
     }
 
-    const error = url.searchParams.get('error');
-    const errorMessage = url.searchParams.get('error_description');
+    const error = searchParams.get('error');
+    const errorMessage = searchParams.get('error_description');
 
     if (error !== null) {
       toast({
@@ -43,7 +43,7 @@ const URLToaster: React.FC = () => {
 
     // Ensure the URL is updated without reloading the page
     window.history.replaceState(null, '', url.toString());
-  }, [pathname]);
+  }, [searchParams]);
 
   return null;
 };

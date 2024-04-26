@@ -210,6 +210,7 @@ export const deleteEvent = async (event_id) => {
  */
 export const signUpForEvent = async (
   event_id: string,
+  stripe_session_id: string,
   user_id: string,
   tickets_bought: number,
 ) => {
@@ -217,12 +218,13 @@ export const signUpForEvent = async (
   try {
     const { data, error } = await supabase.rpc('sign_up_for_event', {
       p_event_id: event_id,
+      p_stripe_session_id: stripe_session_id,
       p_user_id: user_id,
       p_tickets_bought: tickets_bought,
     });
 
     if (error) throw error;
-    return data;
+    return data as string;
   } catch (error) {
     console.error('Error signing up for event:', error);
     return null;

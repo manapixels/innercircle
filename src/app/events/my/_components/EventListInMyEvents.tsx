@@ -15,6 +15,8 @@ export default function EventListInMyEvents() {
     const fetchEvents = async () => {
       if (user?.id) {
         const result = (await fetchUserProfile(user.id)) as ProfileWithRoles;
+
+        console.log(result);
         if (result?.signed_up_events) {
           setSignedUpEvents(result.signed_up_events as Event[]);
         }

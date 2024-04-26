@@ -11,6 +11,7 @@ import { EventWithSignUps } from '@/types/event';
 import { getStripe } from '@/utils/stripe/client';
 import { checkoutWithStripe } from '@/utils/stripe/server';
 import { useToast } from '@/_components/ui/Toasts/useToast';
+import { signUpForEvent } from '@/api/event';
 
 export default function ReservationForm({
   event,
@@ -58,6 +59,7 @@ export default function ReservationForm({
 
       setLoading(true);
 
+      // Create a checkout request from Stripe
       const { errorMessage: errorMessageCheckout, sessionId } = await checkoutWithStripe(
         event?.price_stripe_id, // price
         guests, // quantity
@@ -73,6 +75,11 @@ export default function ReservationForm({
       }
 
       if (sessionId) {
+
+        // Signs user up for event but set has_paid to false
+        await signUpForEvent(event.id, sessionId, profile.id, guests);
+
+        // Redirects user to Stripe checkout
         const stripe = await getStripe();
         const result = await stripe?.redirectToCheckout({ sessionId });
 
@@ -96,7 +103,6 @@ export default function ReservationForm({
         });
       }
 
-      // const result = await signUpForEvent(event.id, profile.id, guests);
     } catch (error) {
       console.error('Reservation error:', error);
     } finally {
