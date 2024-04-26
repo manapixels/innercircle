@@ -1,4 +1,5 @@
 create type public.app_role as enum('admin', 'host', 'participant');
+
 create type public.app_permission as enum('events.create', 'events.delete');
 
 -- ..........
@@ -17,15 +18,24 @@ create table public.profiles (
   billing_address jsonb,
   payment_method jsonb
 );
+
 -- Comments
 comment on table public.profiles is 'Profile data for each user.';
+
 comment on column public.profiles.id is 'References the internal Supabase Auth user.';
+
 comment on column public.profiles.username is 'Unique slug based on username.';
+
 -- RLS
 alter table public.profiles enable row level security;
-create policy "Can view own user data." on profiles for select using (auth.uid() = id);
-create policy "Can update own user data." on profiles for update using (auth.uid() = id);
 
+create policy "Can view own user data." on profiles for
+select
+  using (auth.uid () = id);
+
+create policy "Can update own user data." on profiles
+for update
+  using (auth.uid () = id);
 
 -- ............
 --
@@ -38,12 +48,16 @@ create table public.user_roles (
   role app_role not null,
   unique (user_id, role)
 );
+
 -- Comments
 comment on table public.user_roles is 'Application roles for each user.';
+
 -- RLS
 alter table public.user_roles enable row level security;
-create policy "Users can view their own roles." on user_roles for select using (auth.uid () = user_id);
 
+create policy "Users can view their own roles." on user_roles for
+select
+  using (auth.uid () = user_id);
 
 -- ..................
 --
@@ -56,11 +70,12 @@ create table public.role_permissions (
   permission app_permission not null,
   unique (role, permission)
 );
+
 -- Comments
 comment on table public.role_permissions is 'Application permissions for each role.';
+
 -- RLS
 alter table public.role_permissions enable row level security;
-
 
 -- .........
 --
@@ -75,8 +90,11 @@ create type public.event_status as enum(
   'cancelled',
   'completed'
 );
+
 create type public.event_categories as enum('speed-dating', 'retreats');
+
 create type public.currencies as enum('sgd');
+
 -- Table
 create table public.events (
   id uuid not null default gen_random_uuid () primary key,
@@ -101,33 +119,78 @@ create table public.events (
   -- Additional information about the event in JSON.
   metadata jsonb
 );
+
 -- Comments
 comment on table public.events is 'Details for each event.';
+
 -- RLS
 alter table events enable row level security;
-create policy "Viewable by everyone." on events for select using (true);
-create policy "Can update own events." on events for update using (auth.uid () = created_by);
+
+create policy "Viewable by everyone." on events for
+select
+  using (true);
+
+create policy "Can update own events." on events
+for update
+  using (auth.uid () = created_by);
+
 create policy "Can delete own events." on events for delete using (auth.uid () = created_by);
-create policy "Admin can delete any event." on events for delete using (exists (select 1 from public.user_roles where user_id = auth.uid() and role = 'admin'));
-create policy "Hosts & admins can create events." on events for insert with check (exists (select 1 from public.user_roles where user_roles.user_id = auth.uid() and user_roles.role in ('host', 'admin')));
 
+create policy "Admin can delete any event." on events for delete using (
+  exists (
+    select
+      1
+    from
+      public.user_roles
+    where
+      user_id = auth.uid ()
+      and role = 'admin'
+  )
+);
+
+create policy "Hosts & admins can create events." on events for insert
+with
+  check (
+    exists (
+      select
+        1
+      from
+        public.user_roles
+      where
+        user_roles.user_id = auth.uid ()
+        and user_roles.role in ('host', 'admin')
+    )
+  );
 
 -- ...................
 --
--- EVENT PARTICIPANTS
+-- EVENT RESERVATIONS
 --
 -- ...................
-create table public.event_participants (
+create table public.event_reservations (
+  id uuid not null default gen_random_uuid () primary key,
+  stripe_session_id text,
   event_id uuid not null references public.events (id) on delete cascade,
   user_id uuid not null references public.profiles (id) on delete cascade,
   tickets_bought integer not null default 0,
-  primary key (event_id, user_id)
+  reservation_status text not null default 'pending',
+  payment_status text not null default 'unpaid',
+  reservation_expires_at timestamp with time zone default (now() + interval '10 minutes')
 );
+
 -- Comments
-comment on table public.event_participants is 'List of user IDs participating in an event.';
+comment on table public.event_reservations is 'Reservations for an event';
+
+comment on column public.event_reservations.reservation_status is 'Status of the reservation (pending, confirmed, cancelled)';
+
+comment on column public.event_reservations.payment_status is 'Status of the payment (unpaid, paid, refunded)';
+
+comment on column public.event_reservations.reservation_expires_at is 'Timestamp when the reservation expires if not paid';
+
 -- RLS
-alter table event_participants enable row level security;
-create policy "Event creators and admins can view and edit" on event_participants for all using (
+alter table event_reservations enable row level security;
+
+create policy "Event creators and admins can view and edit" on event_reservations for all using (
   exists (
     select
       1
@@ -135,14 +198,15 @@ create policy "Event creators and admins can view and edit" on event_participant
       public.events e
       join public.user_roles ur on ur.user_id = auth.uid ()
     where
-      e.id = event_participants.event_id
+      e.id = event_reservations.event_id
       and (
         e.created_by = auth.uid ()
         or ur.role = 'admin'
       )
   )
 );
-create policy "Users can add their own sign-up records" on event_participants for insert
+
+create policy "Users can add their own sign-up records" on event_reservations for insert
 with
   check (
     exists (
@@ -151,7 +215,7 @@ with
       from
         public.events
       where
-        events.id = event_participants.event_id
+        events.id = event_reservations.event_id
     )
   );
 
@@ -166,9 +230,18 @@ values
   ('avatars', 'avatars', true),
   ('event_thumbnails', 'event_thumbnails', true),
   ('event_banners', 'event_banners', true);
-create policy "Public read access for avatars, event thumbnails, and event banners" on storage.objects for select using (bucket_id in ('avatars', 'event_thumbnails', 'event_banners'));
-create policy "Public insert access for avatars, event thumbnails, and event banners" on storage.objects for
-insert with check (bucket_id in ('avatars', 'event_thumbnails', 'event_banners'));
+
+create policy "Public read access for avatars, event thumbnails, and event banners" on storage.objects for
+select
+  using (
+    bucket_id in ('avatars', 'event_thumbnails', 'event_banners')
+  );
+
+create policy "Public insert access for avatars, event thumbnails, and event banners" on storage.objects for insert
+with
+  check (
+    bucket_id in ('avatars', 'event_thumbnails', 'event_banners')
+  );
 
 -- ...........
 --
@@ -280,57 +353,49 @@ begin
 end;
 $$ language plpgsql;
 
--- Function to handle user sign-up for an event
+-- Function to handle user sign-up for an event, only creating a reservation record
 create
 or replace function public.sign_up_for_event (
   p_event_id uuid,
+  p_stripe_session_id text,
   p_user_id uuid,
   p_tickets_bought integer
 ) returns void as $$
 declare
-    v_event_exists int;
     v_event_slots int;
-    v_already_signed_up int;
+    v_tickets_bought int;
     v_total_tickets_bought int;
 begin
-    -- Check if the event exists and retrieve the number of slots
-    select count(*), slots into v_event_exists, v_event_slots
+    -- Retrieve the total slots and currently occupied slots for the event
+    select slots, coalesce(sum(tickets_bought), 0) into v_event_slots, v_total_tickets_bought
     from public.events
-    where id = p_event_id
-    group by slots;
-
-    if v_event_exists = 0 then
-        raise exception 'Event does not exist.';
-    end if;
-
-    -- Calculate the total tickets bought for the event
-    select coalesce(sum(tickets_bought), 0) into v_total_tickets_bought
-    from public.event_participants
-    where event_id = p_event_id;
+    join public.event_reservations on public.events.id = public.event_reservations.event_id
+    where public.events.id = p_event_id
+    group by public.events.slots;
 
     -- Check if adding the new tickets exceeds the event's slots
-    if v_total_tickets_bought + p_tickets_bought > v_event_slots then
+    if v_total_tickets_bought + v_tickets_bought > v_event_slots then
         raise exception 'This event is fully signed up.';
     end if;
 
-    -- Check if the user has already signed up for the event
-    select count(*) into v_already_signed_up
-    from public.event_participants
-    where event_id = p_event_id and user_id = p_user_id;
-
-    if v_already_signed_up > 0 then
-        -- Update the number of tickets bought if the user has already signed up
-        update public.event_participants
-        set tickets_bought = tickets_bought + p_tickets_bought
-        where event_id = p_event_id and user_id = p_user_id;
-    else
-        -- Insert a new record into event_participants
-        insert into public.event_participants (event_id, user_id, tickets_bought)
-        values (p_event_id, p_user_id, p_tickets_bought);
-    end if;
+      -- Insert a new record and return the id
+      insert into public.event_reservations (event_id, stripe_session_id, user_id, tickets_bought, reservation_status, payment_status)
+      values (p_event_id, p_stripe_session_id, p_user_id, p_tickets_bought, 'pending', 'unpaid');
 end;
 $$ language plpgsql;
 
+-- Function to update statuses after payment is confirmed
+create
+or replace function public.after_payment_confirmed (p_stripe_session_id text) returns void as $$
+begin
+    update public.event_reservations
+    set 
+      reservation_status = 'confirmed',
+      payment_status = 'paid'
+    where stripe_session_id = p_stripe_session_id;
+
+end;
+$$ language plpgsql;
 
 -- ...........
 --
@@ -354,7 +419,6 @@ or
 update of name on public.events for each row
 execute function public.set_event_slug ();
 
-
 -- ...........
 --
 -- VIEWS
@@ -370,11 +434,17 @@ select
   p.birthyear,
   p.username,
   array_agg(ur.role) as roles,
-  coalesce(jsonb_agg(distinct e.id) filter (where e.id is not null), '[]'::jsonb) as signed_up_events
+  coalesce(
+    jsonb_agg(distinct e.id) filter (
+      where
+        e.id is not null
+    ),
+    '[]'::jsonb
+  ) as signed_up_events
 from
   public.profiles p
   join public.user_roles ur on ur.user_id = p.id
-  left join public.event_participants ep on ep.user_id = p.id
+  left join public.event_reservations ep on ep.user_id = p.id
   left join public.events e on e.id = ep.event_id
 group by
   p.id;
@@ -395,7 +465,7 @@ select
           select
             count(*)
           from
-            public.event_participants ep2
+            public.event_reservations ep2
           where
             ep2.event_id = e.id
         )::integer
@@ -409,7 +479,7 @@ from
   public.profiles p
   left join public.events e on p.id = e.created_by
   left join public.user_roles r on p.id = r.user_id
-  left join public.event_participants ep on e.id = ep.event_id
+  left join public.event_reservations ep on e.id = ep.event_id
 group by
   p.id;
 
@@ -467,7 +537,7 @@ from
       sum(ep.tickets_bought) as guests_hosted
     from
       public.events e
-      join public.event_participants ep on e.id = ep.event_id
+      join public.event_reservations ep on e.id = ep.event_id
     group by
       e.created_by
   ) gh on gh.created_by = p.id
@@ -476,10 +546,11 @@ from
       event_id,
       sum(tickets_bought) as sign_ups
     from
-      public.event_participants
+      public.event_reservations
     group by
       event_id
   ) ep on e.id = ep.event_id;
 
 drop publication if exists supabase_realtime;
+
 create publication supabase_realtime for table events;

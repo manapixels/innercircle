@@ -9,53 +9,68 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      event_participants: {
+      event_reservations: {
         Row: {
           event_id: string
+          id: string
+          payment_status: string
+          reservation_expires_at: string | null
+          reservation_status: string
+          stripe_session_id: string | null
           tickets_bought: number
           user_id: string
         }
         Insert: {
           event_id: string
+          id?: string
+          payment_status?: string
+          reservation_expires_at?: string | null
+          reservation_status?: string
+          stripe_session_id?: string | null
           tickets_bought?: number
           user_id: string
         }
         Update: {
           event_id?: string
+          id?: string
+          payment_status?: string
+          reservation_expires_at?: string | null
+          reservation_status?: string
+          stripe_session_id?: string | null
           tickets_bought?: number
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "event_participants_event_id_fkey"
+            foreignKeyName: "event_reservations_event_id_fkey"
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "event_participants_event_id_fkey"
+            foreignKeyName: "event_reservations_event_id_fkey"
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events_with_host_data"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "event_participants_user_id_fkey"
+            foreignKeyName: "event_reservations_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "event_participants_user_id_fkey"
+            foreignKeyName: "event_reservations_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles_with_hosted_events"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "event_participants_user_id_fkey"
+            foreignKeyName: "event_reservations_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles_with_roles"
@@ -327,6 +342,12 @@ export interface Database {
       }
     }
     Functions: {
+      after_payment_confirmed: {
+        Args: {
+          p_stripe_session_id: string
+        }
+        Returns: undefined
+      }
       authorize: {
         Args: {
           requested_permission: Database["public"]["Enums"]["app_permission"]
@@ -337,6 +358,7 @@ export interface Database {
       sign_up_for_event: {
         Args: {
           p_event_id: string
+          p_stripe_session_id: string
           p_user_id: string
           p_tickets_bought: number
         }

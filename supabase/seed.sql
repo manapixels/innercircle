@@ -232,6 +232,7 @@ END $$;
 DO $$
 DECLARE
   event_record RECORD;
+  reservation_id uuid;
   user_ids uuid[];
   shirley_id uuid;
   event_counter integer := 0;
@@ -256,7 +257,8 @@ BEGIN
       -- Loop through the user IDs and sign up each user for the current event
       FOR i IN 1..array_length(user_ids, 1) LOOP
         BEGIN
-          PERFORM public.sign_up_for_event(event_record.id, user_ids[i], 1); -- Assuming each user buys 1 ticket
+          PERFORM public.sign_up_for_event(event_record.id, 'dummy_' || event_record.id, user_ids[i], 1); -- Assuming each user buys 1 ticket
+          PERFORM public.after_payment_confirmed('dummy_' || event_record.id);
         EXCEPTION WHEN OTHERS THEN
           RAISE LOG 'Error signing up user % for event %: %', user_ids[i], event_record.id, SQLERRM;
         END;
@@ -273,7 +275,8 @@ BEGIN
         
         -- If random_decision is 1, then sign up the user for the event
         IF random_decision = 1 THEN
-          PERFORM public.sign_up_for_event(event_record.id, user_ids[i], 1); -- Assuming each user buys 1 ticket
+          PERFORM public.sign_up_for_event(event_record.id, 'dummy_' || event_record.id, user_ids[i], 1); -- Assuming each user buys 1 ticket
+          PERFORM public.after_payment_confirmed('dummy_' || event_record.id);
         END IF;
       END LOOP;
     END IF;
