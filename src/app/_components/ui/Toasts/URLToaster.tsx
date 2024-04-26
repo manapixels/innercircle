@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useToast } from '@/_components/ui/Toasts/useToast';
 
@@ -48,4 +48,12 @@ const URLToaster: React.FC = () => {
   return null;
 };
 
-export default URLToaster;
+const URLToasterWithSuspense = () => {
+  return (
+    <Suspense>
+      <URLToaster />
+    </Suspense>
+  );
+};
+
+export default URLToasterWithSuspense;

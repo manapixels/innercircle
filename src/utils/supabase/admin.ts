@@ -23,8 +23,6 @@ const confirmReservation = async (reservationId: string) => {
         console.error(`Failed to update reservation status: ${error.message}`);
         throw new Error(`Failed to update reservation status: ${error.message}`);
     }
-
-    console.log(`Reservation status updated for reservation ID: ${reservationId}`);
     return data;
 };
 
