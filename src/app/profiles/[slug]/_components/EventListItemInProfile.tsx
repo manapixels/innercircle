@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { BUCKET_URL } from '@/constants';
-import { formatDateRange, hasDatePassed } from '@/helpers/date';
+import { formatDateRange, hasDatePassed, timeBeforeEvent } from '@/helpers/date';
 import { EventWithSignUps } from '@/types/event';
 
 
@@ -43,7 +43,7 @@ export default function EventListItemInProfile({
         {!hasDatePassed(event.date_end) && (
           <div className="absolute top-3 right-3">
             <span className="bg-base-600 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-              Upcoming
+              In {timeBeforeEvent(event?.date_start)}
             </span>
           </div>
         )}

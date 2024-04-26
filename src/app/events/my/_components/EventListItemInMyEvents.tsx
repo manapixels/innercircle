@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { Event } from '@/types/event';
 import { BUCKET_URL } from '@/constants';
-import { formatDateRange, hasDatePassed, timeUntil } from '@/helpers/date';
+import { formatDateRange, hasDatePassed, timeBeforeEvent, timeUntil } from '@/helpers/date';
 import { reverseSlugify } from '@/helpers/text';
 
 export default function EventListItemInMyEvents({ event }: { event: Event }) {
@@ -17,7 +17,7 @@ export default function EventListItemInMyEvents({ event }: { event: Event }) {
         <span
           className={`block   text-sm font-medium px-4 py-1.5 rounded align-top ${eventOver ? 'bg-gray-100 text-gray-400' : 'bg-base-600 text-white'}`}
         >
-          {eventOver ? 'Ended' : 'Upcoming'}
+          {eventOver ? 'Ended' : `In ${timeBeforeEvent(event?.date_start)}`}
         </span>
       </div>
 

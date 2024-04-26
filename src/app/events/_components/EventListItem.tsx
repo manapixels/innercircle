@@ -6,7 +6,7 @@ import Tippy from '@tippyjs/react';
 
 import { EventWithCreatorInfo } from '@/types/event';
 import { BUCKET_URL } from '@/constants';
-import { formatDateRange, hasDatePassed } from '@/helpers/date';
+import { formatDateRange, hasDatePassed, timeBeforeEvent } from '@/helpers/date';
 
 
 export default function EventListItem({
@@ -46,7 +46,7 @@ export default function EventListItem({
         {!hasDatePassed(event.date_end) && (
           <div className="absolute top-3 right-3">
             <span className="bg-base-600 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-              Upcoming
+              In {timeBeforeEvent(event?.date_start)}
             </span>
           </div>
         )}

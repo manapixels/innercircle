@@ -94,3 +94,30 @@ export function timeUntil(inputDate: string | Date): string {
     return `${Math.ceil(differenceInDays)} days`; // More than 24 hours
 }
 
+export function timeBeforeEvent(inputDate: string | Date | null): string | null {
+    if (!inputDate) {
+        return null;
+    }
+
+    const currentDate = new Date();
+    const eventDate = typeof inputDate === 'string' ? new Date(inputDate) : inputDate;
+
+    if (eventDate < currentDate) {
+        return null; // Event date has passed
+    }
+
+    const differenceInMilliseconds = eventDate.getTime() - currentDate.getTime();
+    const differenceInDays = differenceInMilliseconds / (1000 * 3600 * 24);
+
+    if (differenceInDays < 1) {
+        return `${Math.ceil(differenceInMilliseconds / (1000 * 3600))} hours`;
+    } else if (differenceInDays < 7) {
+        return `${Math.ceil(differenceInDays)} days`;
+    } else if (differenceInDays < 30) {
+        return `${Math.ceil(differenceInDays / 7)} weeks`;
+    } else if (differenceInDays < 365) {
+        return `${Math.ceil(differenceInDays / 30)} months`;
+    } else {
+        return `${Math.ceil(differenceInDays / 365)} years`;
+    }
+}
