@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import { fetchUserProfileWithEvents } from '@/api/profile';
 import { ProfileWithEvents } from '@/types/profile';
-import { EventWithSignUps } from '@/types/event';
+import { Event } from '@/types/event';
 import { BUCKET_URL } from '@/constants';
 import { createClient } from '@/utils/supabase/server';
 import EventListItemInProfile from './_components/EventListItemInProfile';
@@ -24,7 +24,8 @@ export default async function ProfilePage({
     username: params.slug,
   })) as ProfileWithEvents;
 
-  const hostedEvents = profile?.events_hosted as EventWithSignUps[];
+  const hostedEvents = profile?.events_hosted as Event[];
+  const joinedEvents = profile?.events_joined as Event[];
   let gridCols = 0,
     isHost = false,
     isParticipant = false;
@@ -137,9 +138,36 @@ export default async function ProfilePage({
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {hostedEvents?.map((event, i) => (
-              <EventListItemInProfile event={event} key={event.id || i} />
-            ))}
+            {hostedEvents?.length > 0 ? (
+              hostedEvents.map((event, i) => (
+                <EventListItemInProfile event={event} key={event.id || i} />
+              ))
+            ) : (
+              <div className="col-span-2 md:col-span-3 lg:col-span-4 text-center text-gray-500">
+                No events hosted yet.
+              </div>
+            )}
+          </div>
+        </>
+      )}
+      {isParticipant && (
+        <>
+          <div
+            className={`font-bold text-xl mb-4 flex justify-between items-center`}
+          >
+            <h2>Events participated</h2>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {joinedEvents?.length > 0 ? (
+              joinedEvents.map((event, i) => (
+                <EventListItemInProfile event={event} key={event.id || i} />
+              ))
+            ) : (
+              <div className="col-span-2 md:col-span-3 lg:col-span-4 text-center text-gray-500">
+                No events joined yet.
+              </div>
+            )}
           </div>
         </>
       )}

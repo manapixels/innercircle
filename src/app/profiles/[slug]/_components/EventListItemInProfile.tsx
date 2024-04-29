@@ -5,13 +5,13 @@ import Link from 'next/link';
 
 import { BUCKET_URL } from '@/constants';
 import { formatDateRange, hasDatePassed, timeBeforeEvent } from '@/helpers/date';
-import { EventWithSignUps } from '@/types/event';
+import { Event } from '@/types/event';
 
 
 export default function EventListItemInProfile({
   event,
 }: {
-  event: EventWithSignUps;
+  event: Event;
 }) {
 
   return (

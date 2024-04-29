@@ -66,7 +66,7 @@ export interface Database {
             foreignKeyName: "event_reservations_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "profiles_with_events_hosted"
+            referencedRelation: "profiles_with_events"
             referencedColumns: ["id"]
           },
           {
@@ -157,7 +157,7 @@ export interface Database {
             foreignKeyName: "events_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
-            referencedRelation: "profiles_with_events_hosted"
+            referencedRelation: "profiles_with_events"
             referencedColumns: ["id"]
           },
           {
@@ -259,7 +259,7 @@ export interface Database {
             foreignKeyName: "user_roles_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "profiles_with_events_hosted"
+            referencedRelation: "profiles_with_events"
             referencedColumns: ["id"]
           },
           {
@@ -298,7 +298,7 @@ export interface Database {
         }
         Relationships: []
       }
-      profiles_with_events_hosted: {
+      profiles_with_events: {
         Row: {
           avatar_url: string | null
           events_hosted: Json | null

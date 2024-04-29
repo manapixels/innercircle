@@ -467,8 +467,8 @@ from
 group by
   p.id;
 
--- Create a view of profiles with their hosted events, roles, total guests hosted, sign-ups for each event, and events they have signed up for.
-create or replace view profiles_with_events_hosted as
+-- Create a view of profiles with events hosted or signed up for
+create or replace view profiles_with_events as
 select
   p.id,
   p.username,
@@ -476,7 +476,7 @@ select
   p.avatar_url,
   coalesce(
     jsonb_agg(
-      distinct jsonb_set(
+      jsonb_set(
         to_jsonb(e),
         '{sign_ups}',
         to_jsonb(
@@ -489,7 +489,7 @@ select
               ep2.event_id = e.id
           )::integer
         )
-      )
+      ) ORDER BY e.date_start DESC
     ) FILTER (
       WHERE
         e.id IS NOT NULL
@@ -497,15 +497,26 @@ select
     '[]'::jsonb
   ) as events_hosted,
   coalesce(
-    jsonb_agg(distinct to_jsonb(e2)) FILTER (
+    jsonb_agg(
+      to_jsonb(e2) ORDER BY e2.date_start DESC
+    ) FILTER (
       WHERE
         e2.id IS NOT NULL
     ),
     '[]'::jsonb
   ) as events_joined,
   array_agg(distinct r.role) as user_roles,
-  count(distinct ep.event_id) as events_joined_count,
-  coalesce(sum(ep.tickets_bought), 0) as guests_hosted
+  count(ep.event_id) as events_joined_count,
+  (
+    select
+      sum(er.tickets_bought)
+    from
+      public.event_reservations er
+    join
+      public.events ev on er.event_id = ev.id
+    where
+      ev.created_by = p.id
+  ) as guests_hosted
 from
   public.profiles p
   left join public.events e on p.id = e.created_by

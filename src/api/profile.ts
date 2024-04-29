@@ -33,7 +33,7 @@ export const fetchUserProfileWithEvents = async ({username, userId}: {username?:
   const supabase = createClient();
   try {
     let query = supabase
-      .from('profiles_with_events_hosted')
+      .from('profiles_with_events')
       .select('*');
 
     if (username) {
@@ -46,46 +46,9 @@ export const fetchUserProfileWithEvents = async ({username, userId}: {username?:
 
     const { data, error } = await query.single();
 
-    console.log('lalala', data)
+    console.log(data, 'lala')
 
     if (error) throw new Error('Error fetching profile with hosted events');
-
-    if (data && data.events_hosted) {
-      data.events_hosted.sort(
-        (a, b) =>
-          new Date(b.date_start).getTime() - new Date(a.date_start).getTime(),
-      );
-    }
-
-    return data;
-  } catch (error) {
-    console.error('error', error);
-    return null; // Or handle the error as needed
-  }
-};
-
-/**
- * Fetches a profile with hosted events by user ID.
- * @param {string} id - The ID of the user.
- * @returns The profile data with hosted events or null if an error occurs.
- */
-export const fetchUserProfileWithEventsWithId = async (id: string) => {
-  const supabase = createClient();
-  try {
-    const { data, error } = await supabase
-      .from('profiles_with_events_hosted')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (error) throw new Error('Error fetching profile with hosted events');
-
-    if (data && data.events_hosted) {
-      data.events_hosted.sort(
-        (a, b) =>
-          new Date(b.date_start).getTime() - new Date(a.date_start).getTime(),
-      );
-    }
 
     return data;
   } catch (error) {
