@@ -7,7 +7,6 @@ import {
   formatDateRange,
   hasDatePassed,
   timeBeforeEvent,
-  timeUntil,
 } from '@/helpers/date';
 import { reverseSlugify } from '@/helpers/text';
 

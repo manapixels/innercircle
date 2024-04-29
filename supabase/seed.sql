@@ -247,41 +247,21 @@ BEGIN
     -- Increment event counter
     event_counter := event_counter + 1;
 
-    -- For the first 6 events, sign up users equal to the number of slots
-    IF event_counter <= 6 THEN
-      -- Fetch user IDs from the auth.users table, limited by the number of slots for the event
-      SELECT array_agg(id) INTO user_ids FROM auth.users WHERE id <> shirley_id LIMIT event_record.slots;
+    -- Fetch user IDs from the auth.users table, limited by the number of slots for the event
+    SELECT array_agg(id) INTO user_ids FROM profiles WHERE id <> shirley_id LIMIT event_record.slots;
 
-      RAISE LOG 'Blah %: %', event_record.slots, array_length(user_ids, 1);
-
-      -- Loop through the user IDs and sign up each user for the current event
-      FOR i IN 1..array_length(user_ids, 1) LOOP
-        BEGIN
-          PERFORM public.sign_up_for_event(event_record.id, 'dummy_' || event_record.id, user_ids[i], 1); -- Assuming each user buys 1 ticket
-          PERFORM public.after_payment_confirmed('dummy_' || event_record.id);
-        EXCEPTION WHEN OTHERS THEN
-          RAISE LOG 'Error signing up user % for event %: %', user_ids[i], event_record.id, SQLERRM;
-        END;
-      END LOOP;
-    ELSE
-      -- For events after the first 6, retain the original random decision logic
-      -- Fetch user IDs from the auth.users table, limited by the number of slots for the event
-      SELECT array_agg(id) INTO user_ids FROM auth.users WHERE id <> shirley_id LIMIT event_record.slots;
-
-      -- Loop through the user IDs and randomly decide whether to sign up each user for the current event
-      FOR i IN 1..array_length(user_ids, 1) LOOP
-        -- Generate a random number (0 or 1)
-        random_decision := floor(random() * 2)::int;
-        
-        -- If random_decision is 1, then sign up the user for the event
-        IF random_decision = 1 THEN
-          PERFORM public.sign_up_for_event(event_record.id, 'dummy_' || event_record.id, user_ids[i], 1); -- Assuming each user buys 1 ticket
-          PERFORM public.after_payment_confirmed('dummy_' || event_record.id);
-        END IF;
-      END LOOP;
-    END IF;
+    -- Loop through the user IDs and sign up each user for the current event
+    FOR i IN 1..event_record.slots LOOP
+      BEGIN
+        PERFORM public.sign_up_for_event(event_record.id, 'dummy_' || event_record.id, user_ids[i], 1); -- 1 tix / user
+        PERFORM public.after_payment_confirmed('dummy_' || event_record.id);
+      EXCEPTION WHEN OTHERS THEN
+        RAISE LOG 'Error signing up user % for event %: %', user_ids[i], event_record.id, SQLERRM;
+      END;
+    END LOOP;
   END LOOP;
 END $$;
 
 -- Commit the transaction
 COMMIT;
+

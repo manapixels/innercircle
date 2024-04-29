@@ -4,24 +4,26 @@ import { useEffect, useState } from 'react';
 
 import { Modal } from '@/_components/ui/Modal';
 import { useUser } from '@/_contexts/UserContext';
-import { fetchUserProfileWithHostedEventsWithId } from '@/api/profile';
-import { EventWithSignUps } from '@/types/event';
-import EventListItemInMyEvents from './EventListItemInManageEvents';
+import { fetchHostedEvents } from '@/api/event';
+import { EventWithParticipants } from '@/types/event';
+import EventListItemInManageEvents from './EventListItemInManageEvents';
 import { hasDatePassed } from '@/helpers/date';
 
 export default function EventListInMyEvents() {
   const { user } = useUser();
-  const [pastEvents, setPastEvents] = useState<EventWithSignUps[]>([]);
-  const [futureEvents, setFutureEvents] = useState<EventWithSignUps[]>([]);
+  const [pastEvents, setPastEvents] = useState<EventWithParticipants[]>([]);
+  const [futureEvents, setFutureEvents] = useState<EventWithParticipants[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
       if (user?.id) {
-        const result = await fetchUserProfileWithHostedEventsWithId(user.id);
-        if (result?.hosted_events) {
-          const events = result.hosted_events as EventWithSignUps[];
+        const result = await fetchHostedEvents(user.id);
+        if (result) {
+          const events = result as EventWithParticipants[];
+
+          console.log(events)
 
           setPastEvents(
             events.filter(
@@ -39,8 +41,8 @@ export default function EventListInMyEvents() {
     fetchEvents();
   }, [user]);
 
-  const updateEventInList = (updatedEvent: EventWithSignUps) => {
-    const updateList = (events: EventWithSignUps[]) =>
+  const updateEventInList = (updatedEvent: EventWithParticipants) => {
+    const updateList = (events: EventWithParticipants[]) =>
       events.map((event) =>
         event.id === updatedEvent.id ? updatedEvent : event,
       );
@@ -63,7 +65,7 @@ export default function EventListInMyEvents() {
       <div>
         <h2 className="font-medium text-xl mb-4">Upcoming Events</h2>
         {futureEvents.map((event, i) => (
-          <EventListItemInMyEvents
+          <EventListItemInManageEvents
             event={event}
             key={i}
             updateEventInList={updateEventInList}
@@ -75,7 +77,7 @@ export default function EventListInMyEvents() {
       <div>
         <h2 className="font-medium text-xl mb-4">Past Events</h2>
         {pastEvents.map((event, i) => (
-          <EventListItemInMyEvents
+          <EventListItemInManageEvents
             event={event}
             key={i}
             updateEventInList={updateEventInList}

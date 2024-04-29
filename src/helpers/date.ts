@@ -1,15 +1,14 @@
 import moment from 'moment-timezone';
 
-export function formatDateRange(start_date: string | Date, end_date: string | Date): string {
+export function formatDateRange(start_date: string | Date, end_date: string | Date, withYear: boolean = false): string {
     // Convert string inputs to Date objects if necessary
     const startDate = typeof start_date === 'string' ? new Date(start_date) : start_date;
     const endDate = typeof end_date === 'string' ? new Date(end_date) : end_date;
-    const currentYear = new Date().getFullYear();
 
-    // Function to format date based on whether it's the current year or not
+    // Function to format date based on the withYear flag
     const formatDate = (date: Date) => {
-        const isCurrentYear = date.getFullYear() === currentYear;
-        return `${date.getDate()} ${date.toLocaleString('en-US', { month: 'short' })}${isCurrentYear ? '' : ' ' + date.getFullYear()}`;
+        const year = date.getFullYear();
+        return `${date.getDate()} ${date.toLocaleString('en-US', { month: 'short' })}${withYear ? ' ' + year : ''}`;
     };
 
     // Check if both dates are the same day

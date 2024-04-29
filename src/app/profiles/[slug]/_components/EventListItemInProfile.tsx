@@ -61,7 +61,7 @@ export default function EventListItemInProfile({
         </p>
         {event.date_start && event.date_end && (
           <p className="hidden text-sm text-gray-500 sm:block">
-            {formatDateRange(event.date_start, event.date_end)}
+            {formatDateRange(event.date_start, event.date_end, true)}
           </p>
         )}
       </div>

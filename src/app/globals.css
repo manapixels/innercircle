@@ -82,4 +82,7 @@
   a {
     @apply text-black hover:text-base-600;
   }
+  button {
+    @apply text-black hover:text-base-600;
+  }
 }

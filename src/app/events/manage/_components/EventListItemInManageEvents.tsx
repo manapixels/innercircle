@@ -6,11 +6,11 @@ import {
   formatDateRange,
   hasDatePassed,
   timeBeforeEvent,
-  timeUntil,
 } from '@/helpers/date';
 import { reverseSlugify } from '@/helpers/text';
-import { EventWithSignUps } from '@/types/event';
+import { EventWithParticipants } from '@/types/event';
 import EditEventForm from './EditEventForm';
+import ListOfParticipants from './ListOfParticipants';
 
 export default function EventListItemInMyEvents({
   event,
@@ -18,8 +18,8 @@ export default function EventListItemInMyEvents({
   openModal,
   closeModal,
 }: {
-  event: EventWithSignUps;
-  updateEventInList: (event: EventWithSignUps) => void;
+  event: EventWithParticipants;
+  updateEventInList: (event: EventWithParticipants) => void;
   openModal: (content: React.ReactNode) => void;
   closeModal: () => void;
 }) {
@@ -34,6 +34,13 @@ export default function EventListItemInMyEvents({
         onSuccess={updateEventInList}
         closeModal={closeModal}
       />
+    );
+    openModal(modalContent);
+  };
+
+  const handleViewParticipantsClick = () => {
+    const modalContent = (
+      <ListOfParticipants participants={event.participants} />
     );
     openModal(modalContent);
   };
@@ -140,11 +147,36 @@ export default function EventListItemInMyEvents({
               )}
             </div>
             <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={handleViewParticipantsClick}
+                className={`inline-flex items-center gap-1 text-gray-500 text-sm`}
+              >
+                Participants{' '}
+                <svg
+                  className="inline-block align-middle"
+                  width="16px"
+                  height="16px"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  color="#000000"
+                >
+                  <path
+                    d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5"
+                    stroke="#000000"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                </svg>
+              </button>
               <Link
                 href={`/events/${event?.slug}`}
                 className="inline-flex items-center gap-1 text-gray-500 text-sm"
               >
-                View event page{' '}
+                Event page{' '}
                 <svg
                   className="inline-block"
                   width="16px"
@@ -200,7 +232,7 @@ export default function EventListItemInMyEvents({
               >
                 {ticketsLeft === 0
                   ? `Sold out ${event.sign_ups} tix 🎉`
-                  : `${percentSold}% sold / ${ticketsLeft} left`}
+                  : `${event?.sign_ups} sold / ${ticketsLeft} left`}
               </div>
             </div>
           </div>

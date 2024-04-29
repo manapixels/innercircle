@@ -14,7 +14,7 @@ import { FileUpload } from '@/_components/ui/FileUpload';
 import { useToast } from '@/_components/ui/Toasts/useToast';
 import { useUser } from '@/_contexts/UserContext';
 import {  updateEvent } from '@/api/event';
-import { Event, EventWithSignUps } from '@/types/event';
+import { Event, EventWithParticipants } from '@/types/event';
 import {
   getGuessedUserTimeZone,
   getTimeZonesWithOffset,
@@ -63,8 +63,8 @@ export default function EditEventForm({
   onSuccess,
   closeModal,
 }: {
-  event: EventWithSignUps;
-  onSuccess: (event: EventWithSignUps) => void;
+  event: EventWithParticipants;
+  onSuccess: (event: EventWithParticipants) => void;
   closeModal: () => void;
 }) {
   const { toast } = useToast();
@@ -168,7 +168,7 @@ export default function EditEventForm({
         onSuccess({
           ...result,
           sign_ups: event?.sign_ups,
-        } as EventWithSignUps);
+        } as EventWithParticipants);
         setTimeout(() => {
           setIsLoading(false);
           closeModal();

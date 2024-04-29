@@ -44,6 +44,44 @@ export const fetchEvent = async (slug: string) => {
 };
 
 /**
+ * Fetches all events hosted by a profile.
+ * @param {string} profile_id - The ID of the profile.
+ * @returns The events data or error.
+ */
+export const fetchHostedEvents = async (profile_id: string) => {
+  const supabase = createClient();
+  try {
+    const { data } = await supabase
+      .from('events')
+      .select(`
+        *,
+        participants:event_reservations(
+          user:profiles!user_id(id, username, name),
+          tickets_bought
+        ),
+        sign_ups:event_reservations(count)
+      `)
+      .eq('created_by', profile_id);
+
+    const flattened = data?.map(event => ({
+      ...event,
+      participants: event.participants.map(participant => ({
+        id: participant.user.id,
+        name: participant.user.name,
+        username: participant.user.username,
+        tickets_bought: participant.tickets_bought
+      })),
+      sign_ups: event.sign_ups?.[0].count
+    }));
+
+    return flattened;
+  } catch (error) {
+    console.log('error', error);
+    return error;
+  }
+};
+
+/**
  * Inserts a new event into the database.
  * @param {Object} eventDetails - The details of the event to add.
  * @returns The inserted event data or error.
