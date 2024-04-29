@@ -498,7 +498,20 @@ select
   ) as events_hosted,
   coalesce(
     jsonb_agg(
-      to_jsonb(e2) ORDER BY e2.date_start DESC
+      jsonb_set(
+        to_jsonb(e2),
+        '{created_by}',
+        to_jsonb(
+          (
+            select
+              p2.name
+            from
+              public.profiles p2
+            where
+              p2.id = e2.created_by
+          )
+        )
+      ) ORDER BY e2.date_start DESC
     ) FILTER (
       WHERE
         e2.id IS NOT NULL

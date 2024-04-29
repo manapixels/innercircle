@@ -33,7 +33,7 @@ export default function EventListInMyEvents() {
       <div>
         <h2 className="font-medium text-xl mb-4">Upcoming events</h2>
         <div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-6 bg-gray-50 rounded-2xl p-8"
+          className="flex flex-col gap-4 bg-gray-50 rounded-2xl p-8"
         >
           {futureEvents.length > 0 ? (
             futureEvents.map((event, i) => (
@@ -49,7 +49,7 @@ export default function EventListInMyEvents() {
       <div>
         <h2 className="font-medium text-xl mb-4">Past events</h2>
         <div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-6 bg-gray-50 rounded-2xl p-8"
+          className="flex flex-col gap-4 bg-gray-50 rounded-2xl p-8"
         >
           {pastEvents.length > 0 ? (
             pastEvents.map((event, i) => (

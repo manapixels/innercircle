@@ -247,6 +247,10 @@ BEGIN
     -- Increment event counter
     event_counter := event_counter + 1;
 
+    IF event_counter = 7 THEN
+      EXIT;
+    END IF;
+
     -- Fetch user IDs from the auth.users table, limited by the number of slots for the event
     SELECT array_agg(id) INTO user_ids FROM profiles WHERE id <> shirley_id LIMIT event_record.slots;
 
