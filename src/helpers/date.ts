@@ -110,14 +110,14 @@ export function timeBeforeEvent(inputDate: string | Date | null): string | null 
     const differenceInDays = differenceInMilliseconds / (1000 * 3600 * 24);
 
     if (differenceInDays < 1) {
-        return `${Math.ceil(differenceInMilliseconds / (1000 * 3600))} hours`;
+        return `${Math.floor(differenceInMilliseconds / (1000 * 3600))} hours`;
     } else if (differenceInDays < 7) {
-        return `${Math.ceil(differenceInDays)} days`;
+        return `${Math.floor(differenceInDays)} days`;
     } else if (differenceInDays < 30) {
-        return `${Math.ceil(differenceInDays / 7)} weeks`;
+        return `${Math.floor(differenceInDays / 7)} weeks`;
     } else if (differenceInDays < 365) {
-        return `${Math.ceil(differenceInDays / 30)} months`;
+        return `${Math.floor(differenceInDays / 30)} months`;
     } else {
-        return `${Math.ceil(differenceInDays / 365)} years`;
+        return `${Math.floor(differenceInDays / 365)} years`;
     }
 }
