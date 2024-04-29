@@ -6,6 +6,7 @@ import Spinner from '@/_components/ui/Spinner';
 import { fetchUserProfile, updateUserProfile } from '@/api/profile';
 import { calculateAge } from '@/helpers/date';
 import { Profile } from '@/types/profile';
+import { useToast } from '@/_components/ui/Toasts/useToast';
 
 
 interface AuthFormInput {
@@ -22,12 +23,14 @@ export default function ProfileForm({
 }) {
   const [loading, setLoading] = useState(true);
   const [currProfile, setCurrProfile] = useState<Profile | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
       try {
         const profile = await fetchUserProfile(userId);
+        console.log(profile)
         setCurrProfile(profile as Profile);
         reset(profile as AuthFormInput);
       } catch (error) {
@@ -45,7 +48,12 @@ export default function ProfileForm({
   async function updateProfile(user: Profile) {
     try {
       setLoading(true);
-      updateUserProfile(user);
+      await updateUserProfile(user);
+      toast({
+        title: 'Success!',
+        description: 'Your profile has been updated',
+        className: 'bg-green-700 text-white border-transparent',
+      });
     } catch (error) {
       alert('Error updating the data!');
     } finally {
@@ -60,6 +68,7 @@ export default function ProfileForm({
     formState: { errors, isSubmitting },
   } = useForm<AuthFormInput>();
   const onSubmit: SubmitHandler<AuthFormInput> = async (data: AuthFormInput) => {
+    console.log(data)
     await updateProfile({ ...currProfile, ...data } as Profile);
   };
 
@@ -137,18 +146,18 @@ export default function ProfileForm({
             className={`text-gray-900 text-sm p-1 rounded-md border border-gray-300 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
             required
           >
-            <option value="Jan">Jan</option>
-            <option value="Feb">Feb</option>
-            <option value="Mar">Mar</option>
-            <option value="Apr">Apr</option>
-            <option value="May">May</option>
-            <option value="Jun">Jun</option>
-            <option value="Jul">Jul</option>
-            <option value="Aug">Aug</option>
-            <option value="Sep">Sep</option>
-            <option value="Oct">Oct</option>
-            <option value="Nov">Nov</option>
-            <option value="Dec">Dec</option>
+            <option value="1">Jan</option>
+            <option value="2">Feb</option>
+            <option value="3">Mar</option>
+            <option value="4">Apr</option>
+            <option value="5">May</option>
+            <option value="6">Jun</option>
+            <option value="7">Jul</option>
+            <option value="8">Aug</option>
+            <option value="9">Sep</option>
+            <option value="10">Oct</option>
+            <option value="11">Nov</option>
+            <option value="12">Dec</option>
           </select>
           {errors.birthmonth?.type === 'required' && (
             <p role="alert">Please enter your birthmonth</p>
