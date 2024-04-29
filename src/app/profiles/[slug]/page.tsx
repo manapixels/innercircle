@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { fetchUserProfileWithHostedEvents } from '@/api/profile';
-import { ProfileWithEventsHosted } from '@/types/profile';
+import { fetchUserProfileWithEvents } from '@/api/profile';
+import { ProfileWithEvents } from '@/types/profile';
 import { EventWithSignUps } from '@/types/event';
 import { BUCKET_URL } from '@/constants';
 import { createClient } from '@/utils/supabase/server';
@@ -20,11 +20,11 @@ export default async function ProfilePage({
 }) {
   const supabase = createClient();
   const { data: user } = await supabase.auth.getUser();
-  const profile = (await fetchUserProfileWithHostedEvents(
-    params.slug,
-  )) as ProfileWithEventsHosted;
+  const profile = (await fetchUserProfileWithEvents({
+    username: params.slug,
+  })) as ProfileWithEvents;
 
-  const hostedEvents = profile?.hosted_events as EventWithSignUps[];
+  const hostedEvents = profile?.events_hosted as EventWithSignUps[];
   let gridCols = 0,
     isHost = false,
     isParticipant = false;
@@ -36,8 +36,6 @@ export default async function ProfilePage({
     gridCols += 1;
     isParticipant = true;
   }
-
-  console.log(profile)
 
   return (
     <div className="flex w-full flex-col md:col-span-4">
@@ -95,7 +93,7 @@ export default async function ProfilePage({
         {isParticipant && (
           <div className="flex flex-col items-center justify-center">
             <dt className="mb-2 text-xl font-extrabold">
-              {profile?.joined_events_count}
+              {profile?.events_joined_count}
             </dt>
             <dd className="text-gray-500 dark:text-gray-400 text-sm">
               Events participated

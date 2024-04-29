@@ -29,19 +29,29 @@ export const fetchUserProfile = async (userId) => {
  * @param {string} username - The username of the profile.
  * @returns The profile data with hosted events or null if an error occurs.
  */
-export const fetchUserProfileWithHostedEvents = async (username: string) => {
+export const fetchUserProfileWithEvents = async ({username, userId}: {username?: string, userId?: string}) => {
   const supabase = createClient();
   try {
-    const { data, error } = await supabase
-      .from('profiles_with_hosted_events')
-      .select('*')
-      .eq('username', username)
-      .single();
+    let query = supabase
+      .from('profiles_with_events_hosted')
+      .select('*');
+
+    if (username) {
+      query = query.eq('username', username);
+    } else if (userId) {
+      query = query.eq('id', userId);
+    } else {
+      throw new Error('Both username and userId are undefined');
+    }
+
+    const { data, error } = await query.single();
+
+    console.log('lalala', data)
 
     if (error) throw new Error('Error fetching profile with hosted events');
 
-    if (data && data.hosted_events) {
-      data.hosted_events.sort(
+    if (data && data.events_hosted) {
+      data.events_hosted.sort(
         (a, b) =>
           new Date(b.date_start).getTime() - new Date(a.date_start).getTime(),
       );
@@ -59,19 +69,19 @@ export const fetchUserProfileWithHostedEvents = async (username: string) => {
  * @param {string} id - The ID of the user.
  * @returns The profile data with hosted events or null if an error occurs.
  */
-export const fetchUserProfileWithHostedEventsWithId = async (id: string) => {
+export const fetchUserProfileWithEventsWithId = async (id: string) => {
   const supabase = createClient();
   try {
     const { data, error } = await supabase
-      .from('profiles_with_hosted_events')
+      .from('profiles_with_events_hosted')
       .select('*')
       .eq('id', id)
       .single();
 
     if (error) throw new Error('Error fetching profile with hosted events');
 
-    if (data && data.hosted_events) {
-      data.hosted_events.sort(
+    if (data && data.events_hosted) {
+      data.events_hosted.sort(
         (a, b) =>
           new Date(b.date_start).getTime() - new Date(a.date_start).getTime(),
       );

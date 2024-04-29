@@ -66,7 +66,7 @@ export interface Database {
             foreignKeyName: "event_reservations_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "profiles_with_hosted_events"
+            referencedRelation: "profiles_with_events_hosted"
             referencedColumns: ["id"]
           },
           {
@@ -157,7 +157,7 @@ export interface Database {
             foreignKeyName: "events_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
-            referencedRelation: "profiles_with_hosted_events"
+            referencedRelation: "profiles_with_events_hosted"
             referencedColumns: ["id"]
           },
           {
@@ -259,7 +259,7 @@ export interface Database {
             foreignKeyName: "user_roles_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "profiles_with_hosted_events"
+            referencedRelation: "profiles_with_events_hosted"
             referencedColumns: ["id"]
           },
           {
@@ -298,13 +298,14 @@ export interface Database {
         }
         Relationships: []
       }
-      profiles_with_hosted_events: {
+      profiles_with_events_hosted: {
         Row: {
           avatar_url: string | null
+          events_hosted: Json | null
+          events_joined: Json | null
+          events_joined_count: number | null
           guests_hosted: number | null
-          hosted_events: Json | null
           id: string | null
-          joined_events_count: number | null
           name: string | null
           user_roles: Database["public"]["Enums"]["app_role"][] | null
           username: string | null
@@ -327,7 +328,6 @@ export interface Database {
           id: string | null
           name: string | null
           roles: Database["public"]["Enums"]["app_role"][] | null
-          signed_up_events: Json | null
           username: string | null
         }
         Relationships: [

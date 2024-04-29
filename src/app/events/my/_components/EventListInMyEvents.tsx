@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useUser } from '@/_contexts/UserContext';
 import EventListItemInMyEvents from './EventListItemInMyEvents';
-import { ProfileWithRoles } from '@/types/profile';
-import { fetchUserProfile } from '@/api/profile';
+import { ProfileWithEvents } from '@/types/profile';
+import { fetchUserProfileWithEvents } from '@/api/profile';
 import { hasDatePassed } from '@/helpers/date';
 import { Event } from '@/types/event';
 
@@ -16,11 +16,10 @@ export default function EventListInMyEvents() {
   useEffect(() => {
     const fetchEvents = async () => {
       if (user?.id) {
-        const result = (await fetchUserProfile(user.id)) as ProfileWithRoles;
+        const result = (await fetchUserProfileWithEvents({ userId: user.id })) as ProfileWithEvents;
 
-        console.log(result);
-        if (result?.signed_up_events) {
-          const events = result.signed_up_events as Event[];
+        if (result?.events_joined) {
+          const events = result.events_joined as Event[];
           setPastEvents(events.filter(event => hasDatePassed(event.date_end)));
           setFutureEvents(events.filter(event => !hasDatePassed(event.date_end)));
         }

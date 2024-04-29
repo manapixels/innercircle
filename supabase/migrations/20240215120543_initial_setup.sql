@@ -21,7 +21,9 @@ create table public.profiles (
 
 -- Comments
 comment on table public.profiles is 'Profile data for each user.';
+
 comment on column public.profiles.id is 'References the internal Supabase Auth user.';
+
 comment on column public.profiles.username is 'Unique slug based on username.';
 
 -- ............
@@ -52,20 +54,30 @@ alter table public.profiles enable row level security;
 create policy "Admins, hosts and users can view user profile." on profiles for
 select
   using (
-    auth.uid() = id OR
-    exists (
-      select 1 from public.user_roles
-      where user_id = auth.uid() and role in ('host', 'admin')
+    auth.uid () = id
+    OR exists (
+      select
+        1
+      from
+        public.user_roles
+      where
+        user_id = auth.uid ()
+        and role in ('host', 'admin')
     )
   );
 
 create policy "Can update own user data." on profiles
 for update
   using (
-    auth.uid() = id OR
-    exists (
-      select 1 from public.user_roles
-      where user_id = auth.uid() and role = 'admin'
+    auth.uid () = id
+    OR exists (
+      select
+        1
+      from
+        public.user_roles
+      where
+        user_id = auth.uid ()
+        and role = 'admin'
     )
   );
 
@@ -200,22 +212,24 @@ comment on column public.event_reservations.reservation_expires_at is 'Timestamp
 -- RLS
 alter table event_reservations enable row level security;
 
-create policy "Event creators, admins, and users can view their reservations" on event_reservations for select using (
-  exists (
-    select
-      1
-    from
-      public.events e
-      join public.user_roles ur on ur.user_id = auth.uid ()
-    where
-      e.id = event_reservations.event_id
-      and (
-        e.created_by = auth.uid ()
-        or ur.role = 'admin'
-        or event_reservations.user_id = auth.uid ()
-      )
-  )
-);
+create policy "Event creators, admins, and users can view their reservations" on event_reservations for
+select
+  using (
+    exists (
+      select
+        1
+      from
+        public.events e
+        join public.user_roles ur on ur.user_id = auth.uid ()
+      where
+        e.id = event_reservations.event_id
+        and (
+          e.created_by = auth.uid ()
+          or ur.role = 'admin'
+          or event_reservations.user_id = auth.uid ()
+        )
+    )
+  );
 
 create policy "Users can add their own sign-up records" on event_reservations for insert
 with
@@ -444,17 +458,7 @@ select
   p.birthmonth,
   p.birthyear,
   p.username,
-  array_agg(ur.role) as roles,
-  coalesce(
-    jsonb_agg(
-      jsonb_set(
-        to_jsonb(e),
-        '{created_by}',
-        to_jsonb((select pr.name from public.profiles pr where pr.id = e.created_by)::text)
-      )
-    ) FILTER (WHERE e.id IS NOT NULL),
-    '[]'::jsonb
-  ) AS signed_up_events
+  array_agg(ur.role) as roles
 from
   public.profiles p
   join public.user_roles ur on ur.user_id = p.id
@@ -463,37 +467,51 @@ from
 group by
   p.id;
 
--- Create a view of profiles with their hosted events, roles, total guests hosted, and sign-ups for each event.
-create or replace view profiles_with_hosted_events as
+-- Create a view of profiles with their hosted events, roles, total guests hosted, sign-ups for each event, and events they have signed up for.
+create or replace view profiles_with_events_hosted as
 select
   p.id,
   p.username,
   p.name,
   p.avatar_url,
-  jsonb_agg(
-    distinct jsonb_set(
-      to_jsonb(e),
-      '{sign_ups}',
-      to_jsonb(
-        (
-          select
-            count(*)
-          from
-            public.event_reservations ep2
-          where
-            ep2.event_id = e.id
-        )::integer
+  coalesce(
+    jsonb_agg(
+      distinct jsonb_set(
+        to_jsonb(e),
+        '{sign_ups}',
+        to_jsonb(
+          (
+            select
+              count(*)
+            from
+              public.event_reservations ep2
+            where
+              ep2.event_id = e.id
+          )::integer
+        )
       )
-    )
-  ) as hosted_events,
+    ) FILTER (
+      WHERE
+        e.id IS NOT NULL
+    ),
+    '[]'::jsonb
+  ) as events_hosted,
+  coalesce(
+    jsonb_agg(distinct to_jsonb(e2)) FILTER (
+      WHERE
+        e2.id IS NOT NULL
+    ),
+    '[]'::jsonb
+  ) as events_joined,
   array_agg(distinct r.role) as user_roles,
-  count(distinct ep.event_id) as joined_events_count,
-  sum(ep.tickets_bought) as guests_hosted
+  count(distinct ep.event_id) as events_joined_count,
+  coalesce(sum(ep.tickets_bought), 0) as guests_hosted
 from
   public.profiles p
   left join public.events e on p.id = e.created_by
   left join public.user_roles r on p.id = r.user_id
-  left join public.event_reservations ep on e.id = ep.event_id
+  left join public.event_reservations ep on p.id = ep.user_id
+  left join public.events e2 on e2.id = ep.event_id
 group by
   p.id;
 
