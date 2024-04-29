@@ -56,7 +56,7 @@ export const fetchHostedEvents = async (profile_id: string) => {
       .select(`
         *,
         participants:event_reservations(
-          user:profiles!user_id(id, username, name),
+          user:profiles!user_id(id, username, avatar_url, name),
           tickets_bought
         ),
         sign_ups:event_reservations(count)
@@ -69,6 +69,7 @@ export const fetchHostedEvents = async (profile_id: string) => {
         id: participant.user.id,
         name: participant.user.name,
         username: participant.user.username,
+        avatar_url: participant.user.avatar_url,
         tickets_bought: participant.tickets_bought
       })),
       sign_ups: event.sign_ups?.[0].count
