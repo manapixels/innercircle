@@ -7,12 +7,12 @@ import { useUser } from '@/_contexts/UserContext';
 import { fetchUserProfileWithHostedEventsWithId } from '@/api/profile';
 import { EventWithSignUps } from '@/types/event';
 import EventListItemInMyEvents from './EventListItemInManageEvents';
+import { hasDatePassed } from '@/helpers/date';
 
 export default function EventListInMyEvents() {
   const { user } = useUser();
-  const [hostedEvents, setHostedEvents] = useState<
-    EventWithSignUps[] | undefined
-  >();
+  const [pastEvents, setPastEvents] = useState<EventWithSignUps[]>([]);
+  const [futureEvents, setFutureEvents] = useState<EventWithSignUps[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
 
@@ -21,7 +21,18 @@ export default function EventListInMyEvents() {
       if (user?.id) {
         const result = await fetchUserProfileWithHostedEventsWithId(user.id);
         if (result?.hosted_events) {
-          setHostedEvents(result.hosted_events as EventWithSignUps[]);
+          const events = result.hosted_events as EventWithSignUps[];
+
+          setPastEvents(
+            events.filter(
+              (event) => event.date_end && hasDatePassed(event.date_end),
+            ),
+          );
+          setFutureEvents(
+            events.filter(
+              (event) => event.date_end && !hasDatePassed(event.date_end),
+            ),
+          );
         }
       }
     };
@@ -29,11 +40,12 @@ export default function EventListInMyEvents() {
   }, [user]);
 
   const updateEventInList = (updatedEvent: EventWithSignUps) => {
-    setHostedEvents((currentEvents) => {
-      return currentEvents?.map((event) =>
+    const updateList = (events: EventWithSignUps[]) =>
+      events.map((event) =>
         event.id === updatedEvent.id ? updatedEvent : event,
       );
-    });
+    setPastEvents((currentEvents) => updateList(currentEvents));
+    setFutureEvents((currentEvents) => updateList(currentEvents));
   };
 
   const openModal = (content: React.ReactNode) => {
@@ -48,8 +60,9 @@ export default function EventListInMyEvents() {
 
   return (
     <div className={`grid grid-cols-1 gap-6 bg-gray-50 rounded-2xl p-8`}>
-      {hostedEvents?.map((event, i) => {
-        return (
+      <div>
+        <h2 className="font-medium text-xl mb-4">Upcoming Events</h2>
+        {futureEvents.map((event, i) => (
           <EventListItemInMyEvents
             event={event}
             key={i}
@@ -57,8 +70,21 @@ export default function EventListInMyEvents() {
             openModal={openModal}
             closeModal={closeModal}
           />
-        );
-      })}
+        ))}
+      </div>
+      <div>
+        <h2 className="font-medium text-xl mb-4">Past Events</h2>
+        {pastEvents.map((event, i) => (
+          <EventListItemInMyEvents
+            event={event}
+            key={i}
+            updateEventInList={updateEventInList}
+            openModal={openModal}
+            closeModal={closeModal}
+          />
+        ))}
+      </div>
+
       <Modal isOpen={isModalOpen} handleClose={closeModal}>
         {modalContent}
       </Modal>

@@ -2,11 +2,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { BUCKET_URL } from '@/constants';
-import { formatDateRange, hasDatePassed, timeBeforeEvent, timeUntil } from '@/helpers/date';
+import {
+  formatDateRange,
+  hasDatePassed,
+  timeBeforeEvent,
+  timeUntil,
+} from '@/helpers/date';
 import { reverseSlugify } from '@/helpers/text';
 import { EventWithSignUps } from '@/types/event';
 import EditEventForm from './EditEventForm';
-
 
 export default function EventListItemInMyEvents({
   event,
@@ -66,110 +70,140 @@ export default function EventListItemInMyEvents({
         )}
       </div>
 
-      <div className="min-w-0 py-2 flex-grow">
-        {/* Event name */}
-        <p className="truncate text-lg font-semibold mb-1">{event.name}</p>
-        {/* Tags */}
-        <div className="flex items-center gap-2 mb-2">
-          {event?.category?.map((c) => (
-            <span key={c} className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">{reverseSlugify(c)}</span>
-          ))}
-        </div>
-        {/* Location */}
-        {event.location_name && event.location_country ? (
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_name)},${encodeURIComponent(event.location_country)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden text-sm text-gray-500 sm:block hover:text-base-600 group"
-          >
-            {event.location_name}, {event.location_country}
-            <svg className="hidden group-hover:inline-block" width="16px" height="16px" viewBox="0 0 24 24" strokeWidth="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#927800"><path d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005" stroke="#927800" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-          </a>
-        ) : (
-          <span className="hidden text-sm text-gray-500 sm:block">
-            {event.location_name ? `${event.location_name}, ` : ''}
-            {event.location_country}
-          </span>
-        )}
-        {event.date_start && event.date_end && (
-          <p className="hidden text-sm text-gray-500 sm:block">
-            {formatDateRange(event.date_start, event.date_end)}
-            {!eventOver && (
-              <span className="text-gray-400 ml-2">
-                {timeUntil(event.date_start)} left
-              </span>
-            )}
-          </p>
-        )}
-        <div className="my-2">
-          <div className="flex justify-between">
-            <span className="text-sm font-medium text-base-700 dark:text-white">
-              {event?.slots} tickets for sale
-            </span>
-            <span className="text-sm font-medium text-base-700 dark:text-white">
-              {ticketsLeft === 0 ? 'Sold out 🎉' : `${ticketsLeft} left`}
-            </span>
+      <div className="min-w-0 py-2 flex-grow flex flex-col gap-4 justify-between">
+        <div>
+          {/* Event name & tags */}
+          <div className="flex gap-4">
+            <p className="truncate text-lg font-semibold mb-1">{event?.name}</p>
+            <div className="items-center gap-2 mb-2">
+              {event?.category?.map((c) => (
+                <span
+                  key={c}
+                  className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10"
+                >
+                  {reverseSlugify(c)}
+                </span>
+              ))}
+            </div>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mb-3">
-            <div
-              className={`${percentSold === 100 ? 'bg-gray-400' : 'bg-base-600'} h-2.5 rounded-full`}
-              style={{ width: `${percentSold}%` }}
-            ></div>
-          </div>
+          {/* Location */}
+          {event?.location_name && event?.location_country ? (
+            <div className="flex gap-1 items-center mb-3">
+              <span>at</span>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_name)},${encodeURIComponent(event.location_country)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden text-sm text-gray-500 sm:block hover:text-base-600 group"
+              >
+                {event?.location_name}, {event?.location_country}
+                <svg
+                  className="hidden group-hover:inline-block"
+                  width="16px"
+                  height="16px"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  color="#927800"
+                >
+                  <path
+                    d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005"
+                    stroke="#927800"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                </svg>
+              </a>
+            </div>
+          ) : (
+            <span className="hidden text-sm text-gray-500 sm:block mb-3">
+              {event?.location_name ? `${event?.location_name}, ` : ''}
+              {event?.location_country}
+            </span>
+          )}
         </div>
 
-        <div className="flex items-center gap-4">
-          <Link
-            href={`/events/${event.slug}`}
-            className="flex items-center gap-1 bg-gray-100 font-medium rounded-full flex-grow px-7 py-2.5 hover:bg-gray-200"
-          >
-            View event page{' '}
-            <svg
-              className="inline-block"
-              width="16px"
-              height="16px"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              color="#000000"
-            >
-              <path
-                d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005"
-                stroke="#000000"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-            </svg>
-          </Link>
-          <button
-            type="button"
-            onClick={handleEditClick}
-            className={`flex items-center gap-1 text-white focus:ring-4 focus:ring-base-200 font-medium rounded-full text-md px-7 py-2.5 dark:bg-base-600 dark:hover:bg-base-700 focus:outline-none dark:focus:ring-base-800 ${eventOver ? 'bg-gray-300 cursor-not-allowed' : 'bg-black hover:bg-gray-900'}`}
-            disabled={eventOver}
-          >
-            Edit{' '}
-            <svg
-              className="inline-block align-middle"
-              width="16px"
-              height="16px"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              color="#FFFFFF"
-            >
-              <path
-                d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5"
-                stroke="#FFFFFF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-            </svg>
-          </button>
+        <div className="flex-grow">
+          <div className="flex gap-4 justify-between mb-3">
+            <div className="flex gap-1 items-center">
+              {event?.date_start && event?.date_end && (
+                <>
+                  <div className="hidden text-lg text-gray-800 sm:block">
+                    {formatDateRange(event?.date_start, event?.date_end)}
+                  </div>
+                  <div className="text-lg text-gray-600">
+                    {new Date(event?.date_start).getFullYear()}
+                  </div>
+                </>
+              )}
+            </div>
+            <div className="flex items-center gap-4">
+              <Link
+                href={`/events/${event?.slug}`}
+                className="inline-flex items-center gap-1 text-gray-500 text-sm"
+              >
+                View event page{' '}
+                <svg
+                  className="inline-block"
+                  width="16px"
+                  height="16px"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  color="#000000"
+                >
+                  <path
+                    d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005"
+                    stroke="#000000"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                </svg>
+              </Link>
+              <button
+                type="button"
+                onClick={handleEditClick}
+                className={`inline-flex items-center gap-1 text-gray-500 text-sm ${eventOver ? 'text-gray-300 cursor-not-allowed' : ''}`}
+                disabled={eventOver}
+              >
+                Edit{' '}
+                <svg
+                  className="inline-block align-middle"
+                  width="16px"
+                  height="16px"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  color="#000000"
+                >
+                  <path
+                    d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5"
+                    stroke="#000000"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div className="w-full bg-gray-200 rounded-full  dark:bg-gray-700 mb-3">
+              <div
+                className={`${percentSold === 100 ? 'bg-gray-400' : 'bg-base-600'}  text-xs font-medium text-white text-center p-0.5 leading-none rounded-full`}
+                style={{ width: `${percentSold}%` }}
+              >
+                {ticketsLeft === 0
+                  ? `Sold out ${event.sign_ups} tix 🎉`
+                  : `${percentSold}% sold / ${ticketsLeft} left`}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

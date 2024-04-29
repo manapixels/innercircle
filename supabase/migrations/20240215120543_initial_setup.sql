@@ -436,7 +436,11 @@ select
   array_agg(ur.role) as roles,
   coalesce(
     jsonb_agg(
-      to_jsonb(e)
+      jsonb_set(
+        to_jsonb(e),
+        '{created_by}',
+        to_jsonb((select pr.name from public.profiles pr where pr.id = e.created_by)::text)
+      )
     ) FILTER (WHERE e.id IS NOT NULL),
     '[]'::jsonb
   ) AS signed_up_events

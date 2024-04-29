@@ -3,7 +3,12 @@ import Link from 'next/link';
 
 import { Event } from '@/types/event';
 import { BUCKET_URL } from '@/constants';
-import { formatDateRange, hasDatePassed, timeBeforeEvent, timeUntil } from '@/helpers/date';
+import {
+  formatDateRange,
+  hasDatePassed,
+  timeBeforeEvent,
+  timeUntil,
+} from '@/helpers/date';
 import { reverseSlugify } from '@/helpers/text';
 
 export default function EventListItemInMyEvents({ event }: { event: Event }) {
@@ -43,69 +48,84 @@ export default function EventListItemInMyEvents({ event }: { event: Event }) {
         )}
       </div>
 
-      <div className="min-w-0 py-2 flex-grow">
-        {/* Event name */}
-        <p className="truncate text-lg font-semibold mb-1">{event?.name}</p>
-        {/* Tags */}
-        <div className="flex items-center gap-2 mb-2">
-          {event?.category?.map((c) => (
-            <span
-              key={c}
-              className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10"
-            >
-              {reverseSlugify(c)}
-            </span>
-          ))}
-        </div>
-        {/* Location */}
-        {event?.location_name && event?.location_country ? (
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_name)},${encodeURIComponent(event.location_country)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden text-sm text-gray-500 sm:block hover:text-base-600 group"
-          >
-            {event?.location_name}, {event?.location_country}
-            <svg
-              className="hidden group-hover:inline-block"
-              width="16px"
-              height="16px"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              color="#927800"
-            >
-              <path
-                d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005"
-                stroke="#927800"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-            </svg>
-          </a>
-        ) : (
-          <span className="hidden text-sm text-gray-500 sm:block">
-            {event?.location_name ? `${event?.location_name}, ` : ''}
-            {event?.location_country}
-          </span>
-        )}
-        {event?.date_start && event?.date_end && (
-          <p className="hidden text-sm text-gray-500 sm:block">
-            {formatDateRange(event?.date_start, event?.date_end)}
-            {!eventOver && (
-              <span className="text-gray-400 ml-2">
-                {timeUntil(event?.date_start)} left
-              </span>
-            )}
-          </p>
-        )}
+      <div className="min-w-0 py-2 flex-grow flex flex-col justify-between">
+        <div>
+          {/* Event name & tags */}
+          <div className="flex gap-4">
+            <p className="truncate text-lg font-semibold mb-1">{event?.name}</p>
+            <div className="items-center gap-2 mb-2">
+              {event?.category?.map((c) => (
+                <span
+                  key={c}
+                  className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10"
+                >
+                  {reverseSlugify(c)}
+                </span>
+              ))}
+            </div>
+          </div>
+          {/* Hosted by */}
+          {event?.created_by && (
+            <div>
+              <p>Hosted by {event?.created_by}</p>
+            </div>
+          )}
 
-        <div className="flex items-center gap-4">
+          {/* Location */}
+          {event?.location_name && event?.location_country ? (
+            <div className="flex gap-1 items-center mb-3">
+              <span>at</span>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_name)},${encodeURIComponent(event.location_country)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden text-sm text-gray-500 sm:block hover:text-base-600 group"
+              >
+                {event?.location_name}, {event?.location_country}
+                <svg
+                  className="hidden group-hover:inline-block"
+                  width="16px"
+                  height="16px"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  color="#927800"
+                >
+                  <path
+                    d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005"
+                    stroke="#927800"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                </svg>
+              </a>
+            </div>
+          ) : (
+            <span className="hidden text-sm text-gray-500 sm:block mb-3">
+              {event?.location_name ? `${event?.location_name}, ` : ''}
+              {event?.location_country}
+            </span>
+          )}
+        </div>
+        <div className="flex justify-between items-center">
+          {/* Date */}
+          <div className="flex gap-1 items-center">
+            {event?.date_start && event?.date_end && (
+              <>
+                <div className="hidden text-lg text-gray-800 sm:block">
+                  {formatDateRange(event?.date_start, event?.date_end)}
+                </div>
+                <div className="text-lg text-gray-600">
+                  {new Date(event?.date_start).getFullYear()}
+                </div>
+              </>
+            )}
+          </div>
           <Link
             href={`/events/${event?.slug}`}
-            className="flex items-center gap-1 text-gray-500 text-sm"
+            className="inline-flex items-center gap-1 text-gray-500 text-sm"
           >
             View event page{' '}
             <svg
