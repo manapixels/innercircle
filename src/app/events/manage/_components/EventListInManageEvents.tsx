@@ -8,8 +8,6 @@ import { fetchHostedEvents } from '@/api/event';
 import { EventWithParticipants } from '@/types/event';
 import EventListItemInManageEvents from './EventListItemInManageEvents';
 import { hasDatePassed } from '@/helpers/date';
-import Spinner from '@/_components/ui/Spinner';
-import Image from 'next/image';
 import EventListItemSkeleton from '@/_components/ui/Skeletons/EventListItemSkeleton';
 
 export default function EventListInMyEvents() {
