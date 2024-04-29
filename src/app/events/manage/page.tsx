@@ -3,7 +3,7 @@ import ProtectedWrapper from '@/_components/auth/ProtectedWrapper';
 import EventListInMyEvents from './_components/EventListInManageEvents';
 
 export const metadata: Metadata = {
-  title: 'innercircle | Profile',
+  title: 'innercircle | Manage Events',
 };
 
 export default async function ManageEventsPage() {

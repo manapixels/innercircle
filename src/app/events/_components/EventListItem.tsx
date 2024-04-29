@@ -69,7 +69,7 @@ export default function EventListItem({
                 <div className="flex flex-row gap-3 items-center mb-5">
                   <Image
                     src={
-                      event?.created_by?.avatar_url
+                      event?.created_by?.avatar_url !== ''
                         ? `${BUCKET_URL}/avatars/${event.created_by.avatar_url}`
                         : '/users/placeholder-avatar.svg'
                     }

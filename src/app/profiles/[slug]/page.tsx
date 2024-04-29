@@ -37,11 +37,13 @@ export default async function ProfilePage({
     isParticipant = true;
   }
 
+  console.log(profile)
+
   return (
     <div className="flex w-full flex-col md:col-span-4">
       <Image
         src={
-          profile?.avatar_url
+          profile.avatar_url !== ''
             ? `${BUCKET_URL}/avatars/${profile?.avatar_url}`
             : '/users/placeholder-avatar.svg'
         }

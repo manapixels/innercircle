@@ -13,7 +13,6 @@ import { BUCKET_URL } from '@/constants';
 import { useRouter } from 'next/navigation';
 import { ProfileWithRoles } from '@/types/profile';
 
-
 export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
   const [isOpen, setIsOpen] = useState(false);
   const { isHost, setUser } = useUser();
@@ -36,8 +35,9 @@ export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
             <Image
               className="h-full w-full rounded-full"
               src={
-                `${BUCKET_URL}/avatars/${user?.avatar_url}` ||
-                '/users/placeholder-avatar.svg'
+                user?.avatar_url !== ''
+                  ? `${BUCKET_URL}/avatars/${user?.avatar_url}`
+                  : '/users/placeholder-avatar.svg'
               }
               alt=""
               width={34}

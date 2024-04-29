@@ -51,7 +51,7 @@ export default async function EventDetailsPage({
           </div>
           <div className="border border-gray-200 px-5 py-3 mb-4 rounded-lg flex items-center font-medium text-sm">
             Hosted by{' '}
-            {host?.avatar_url ? (
+            {host?.avatar_url !== '' ? (
               <img
                 className="h-10 w-10 rounded-full mx-2"
                 src={`${BUCKET_URL}/avatars/${host?.avatar_url}`}
