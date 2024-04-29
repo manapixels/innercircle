@@ -8,6 +8,9 @@ import { fetchHostedEvents } from '@/api/event';
 import { EventWithParticipants } from '@/types/event';
 import EventListItemInManageEvents from './EventListItemInManageEvents';
 import { hasDatePassed } from '@/helpers/date';
+import Spinner from '@/_components/ui/Spinner';
+import Image from 'next/image';
+import EventListItemSkeleton from '@/_components/ui/Skeletons/EventListItemSkeleton';
 
 export default function EventListInMyEvents() {
   const { user } = useUser();
@@ -15,15 +18,17 @@ export default function EventListInMyEvents() {
   const [futureEvents, setFutureEvents] = useState<EventWithParticipants[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchEvents = async () => {
+      setIsLoading(true);
       if (user?.id) {
         const result = await fetchHostedEvents(user.id);
         if (result) {
           const events = result as EventWithParticipants[];
 
-          console.log(events)
+          console.log(events);
 
           setPastEvents(
             events.filter(
@@ -37,6 +42,7 @@ export default function EventListInMyEvents() {
           );
         }
       }
+      setIsLoading(false);
     };
     fetchEvents();
   }, [user]);
@@ -64,6 +70,7 @@ export default function EventListInMyEvents() {
     <div className={`grid grid-cols-1 gap-6 bg-gray-50 rounded-2xl p-8`}>
       <div>
         <h2 className="font-medium text-xl mb-4">Upcoming Events</h2>
+        {isLoading && futureEvents.length === 0 && <EventListItemSkeleton />}
         {futureEvents.map((event, i) => (
           <EventListItemInManageEvents
             event={event}
@@ -76,6 +83,7 @@ export default function EventListInMyEvents() {
       </div>
       <div>
         <h2 className="font-medium text-xl mb-4">Past Events</h2>
+        {isLoading && pastEvents.length === 0 && <EventListItemSkeleton />}
         {pastEvents.map((event, i) => (
           <EventListItemInManageEvents
             event={event}
