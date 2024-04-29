@@ -21,21 +21,8 @@ create table public.profiles (
 
 -- Comments
 comment on table public.profiles is 'Profile data for each user.';
-
 comment on column public.profiles.id is 'References the internal Supabase Auth user.';
-
 comment on column public.profiles.username is 'Unique slug based on username.';
-
--- RLS
-alter table public.profiles enable row level security;
-
-create policy "Can view own user data." on profiles for
-select
-  using (auth.uid () = id);
-
-create policy "Can update own user data." on profiles
-for update
-  using (auth.uid () = id);
 
 -- ............
 --
@@ -52,12 +39,35 @@ create table public.user_roles (
 -- Comments
 comment on table public.user_roles is 'Application roles for each user.';
 
--- RLS
+-- User roles RLS
 alter table public.user_roles enable row level security;
 
 create policy "Users can view their own roles." on user_roles for
 select
   using (auth.uid () = user_id);
+
+-- Profile RLS
+alter table public.profiles enable row level security;
+
+create policy "Admins, hosts and users can view user profile." on profiles for
+select
+  using (
+    auth.uid() = id OR
+    exists (
+      select 1 from public.user_roles
+      where user_id = auth.uid() and role in ('host', 'admin')
+    )
+  );
+
+create policy "Can update own user data." on profiles
+for update
+  using (
+    auth.uid() = id OR
+    exists (
+      select 1 from public.user_roles
+      where user_id = auth.uid() and role = 'admin'
+    )
+  );
 
 -- ..................
 --
@@ -190,7 +200,7 @@ comment on column public.event_reservations.reservation_expires_at is 'Timestamp
 -- RLS
 alter table event_reservations enable row level security;
 
-create policy "Event creators and admins can view and edit" on event_reservations for all using (
+create policy "Event creators, admins, and users can view their reservations" on event_reservations for select using (
   exists (
     select
       1
@@ -202,6 +212,7 @@ create policy "Event creators and admins can view and edit" on event_reservation
       and (
         e.created_by = auth.uid ()
         or ur.role = 'admin'
+        or event_reservations.user_id = auth.uid ()
       )
   )
 );
