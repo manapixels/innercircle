@@ -6,12 +6,12 @@ import EventListItemInMyEvents from './EventListItemInMyEvents';
 import { ProfileWithEvents } from '@/types/profile';
 import { fetchUserProfileWithEvents } from '@/api/profile';
 import { hasDatePassed } from '@/helpers/date';
-import { Event } from '@/types/event';
+import { EventWithReservations } from '@/types/event';
 
 export default function EventListInMyEvents() {
   const { user } = useUser();
-  const [pastEvents, setPastEvents] = useState<Event[]>([]);
-  const [futureEvents, setFutureEvents] = useState<Event[]>([]);
+  const [pastEvents, setPastEvents] = useState<EventWithReservations[]>([]);
+  const [futureEvents, setFutureEvents] = useState<EventWithReservations[]>([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -19,7 +19,7 @@ export default function EventListInMyEvents() {
         const result = (await fetchUserProfileWithEvents({ userId: user.id })) as ProfileWithEvents;
 
         if (result?.events_joined) {
-          const events = result.events_joined as Event[];
+          const events = result.events_joined as EventWithReservations[];
           setPastEvents(events.filter(event => hasDatePassed(event.date_end)));
           setFutureEvents(events.filter(event => !hasDatePassed(event.date_end)));
         }

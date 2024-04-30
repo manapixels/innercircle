@@ -47,13 +47,16 @@ export async function checkoutWithStripe(
     }
 
     let params: Stripe.Checkout.SessionCreateParams = {
+      mode: 'payment',
+      invoice_creation: {
+        enabled: true,
+      },
       allow_promotion_codes: true,
       customer,
       customer_email: user.email,
       customer_update: {
         address: 'auto'
       },
-      mode: 'payment',
       line_items: [
         {
           price: price || undefined,

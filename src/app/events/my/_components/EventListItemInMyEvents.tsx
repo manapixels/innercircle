@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Event } from '@/types/event';
+import { EventWithReservations } from '@/types/event';
 import { BUCKET_URL } from '@/constants';
 import {
   formatDateRange,
@@ -10,8 +10,10 @@ import {
 } from '@/helpers/date';
 import { reverseSlugify } from '@/helpers/text';
 
-export default function EventListItemInMyEvents({ event }: { event: Event }) {
+export default function EventListItemInMyEvents({ event }: { event: EventWithReservations }) {
   const eventOver = hasDatePassed(event?.date_start);
+
+  console.log()
 
   return (
     <div

@@ -13,9 +13,12 @@ export interface Database {
         Row: {
           event_id: string
           id: string
+          payment_amount: number | null
+          payment_currency: string | null
           payment_status: string
           reservation_expires_at: string | null
           reservation_status: string
+          stripe_payment_id: string | null
           stripe_session_id: string | null
           tickets_bought: number
           user_id: string
@@ -23,9 +26,12 @@ export interface Database {
         Insert: {
           event_id: string
           id?: string
+          payment_amount?: number | null
+          payment_currency?: string | null
           payment_status?: string
           reservation_expires_at?: string | null
           reservation_status?: string
+          stripe_payment_id?: string | null
           stripe_session_id?: string | null
           tickets_bought?: number
           user_id: string
@@ -33,9 +39,12 @@ export interface Database {
         Update: {
           event_id?: string
           id?: string
+          payment_amount?: number | null
+          payment_currency?: string | null
           payment_status?: string
           reservation_expires_at?: string | null
           reservation_status?: string
+          stripe_payment_id?: string | null
           stripe_session_id?: string | null
           tickets_bought?: number
           user_id?: string
@@ -345,6 +354,9 @@ export interface Database {
       after_payment_confirmed: {
         Args: {
           p_stripe_session_id: string
+          p_stripe_payment_id: string
+          p_payment_amount: number
+          p_payment_currency: string
         }
         Returns: undefined
       }

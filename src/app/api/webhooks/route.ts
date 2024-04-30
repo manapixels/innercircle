@@ -45,8 +45,14 @@ export async function POST(req: Request) {
         //   break;
         case 'checkout.session.completed':
           const checkoutSession = event.data.object as Stripe.Checkout.Session;
-          if (checkoutSession?.id) {
-            await confirmReservation(checkoutSession?.id);
+          const paymentIntent = checkoutSession.payment_intent as Stripe.PaymentIntent;
+          if (checkoutSession?.id && paymentIntent) {
+            await confirmReservation(
+              checkoutSession?.id, 
+              paymentIntent.id, 
+              paymentIntent.amount, 
+              paymentIntent.currency
+            );
           } else {
             console.log('No stripe session id found in checkout session metadata. Reservation status not updated.');
           }

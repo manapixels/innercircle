@@ -14,3 +14,8 @@ export type EventWithCreatorInfo = EventWithSignUps & {
         guests_hosted?: number;
     };
 };
+export type EventReservation = Tables<'event_reservations'>;
+export type EventWithReservations = Event & {
+    reservations: EventReservation[];
+};
+

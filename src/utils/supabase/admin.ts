@@ -14,9 +14,12 @@ const supabaseAdmin = createClient<Database>(
  * Updates the reservation status in Supabase after payment is confirmed.
  * @param reservationId - The ID of the reservation to update.
  */
-const confirmReservation = async (reservationId: string) => {
+const confirmReservation = async (reservationId: string, paymentIntentId: string, amount: number, currency: string) => {
     const { data, error } = await supabaseAdmin.rpc('after_payment_confirmed', {
-        p_stripe_session_id: reservationId
+        p_stripe_session_id: reservationId,
+        p_stripe_payment_id: paymentIntentId,
+        p_payment_amount: amount,
+        p_payment_currency: currency
     });
 
     if (error) {
@@ -111,7 +114,7 @@ const createOrRetrieveCustomer = async ({
     email: string;
     uuid: string;
 }) => {
-    
+
     // Check if the customer already exists in Supabase
     const { data: existingSupabaseCustomer, error: queryError } =
         await supabaseAdmin

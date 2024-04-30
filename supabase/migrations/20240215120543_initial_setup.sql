@@ -192,6 +192,9 @@ with
 create table public.event_reservations (
   id uuid not null default gen_random_uuid () primary key,
   stripe_session_id text,
+  stripe_payment_id text,
+  payment_amount integer,
+  payment_currency text,
   event_id uuid not null references public.events (id) on delete cascade,
   user_id uuid not null references public.profiles (id) on delete cascade,
   tickets_bought integer not null default 0,
@@ -231,16 +234,22 @@ select
     )
   );
 
-create policy "Users can add their own sign-up records" on event_reservations for insert
+create policy "Users, Admins, and Hosts can add their own sign-up records" on event_reservations for insert
 with
   check (
     exists (
       select
         1
       from
-        public.events
+        public.events e
+        join public.user_roles ur on ur.user_id = auth.uid()
       where
-        events.id = event_reservations.event_id
+        e.id = event_reservations.event_id
+        and (
+          ur.role = 'admin'
+          or ur.role = 'host'
+          or event_reservations.user_id = auth.uid()
+        )
     )
   );
 
@@ -411,12 +420,20 @@ $$ language plpgsql;
 
 -- Function to update statuses after payment is confirmed
 create
-or replace function public.after_payment_confirmed (p_stripe_session_id text) returns void as $$
+or replace function public.after_payment_confirmed (
+  p_stripe_session_id text,
+  p_stripe_payment_id text,
+  p_payment_amount integer,
+  p_payment_currency text
+) returns void as $$
 begin
     update public.event_reservations
     set 
       reservation_status = 'confirmed',
-      payment_status = 'paid'
+      payment_status = 'paid',
+      stripe_payment_id = p_stripe_payment_id,
+      payment_amount = p_payment_amount,
+      payment_currency = p_payment_currency
     where stripe_session_id = p_stripe_session_id;
 
 end;
@@ -467,7 +484,7 @@ from
 group by
   p.id;
 
--- Create a view of profiles with events hosted or signed up for
+-- Create or replace view of profiles with events hosted or signed up for, including reservations
 create or replace view profiles_with_events as
 select
   p.id,
@@ -489,7 +506,9 @@ select
               ep2.event_id = e.id
           )::integer
         )
-      ) ORDER BY e.date_start DESC
+      )
+      ORDER BY
+        e.date_start DESC
     ) FILTER (
       WHERE
         e.id IS NOT NULL
@@ -525,8 +544,7 @@ select
       sum(er.tickets_bought)
     from
       public.event_reservations er
-    join
-      public.events ev on er.event_id = ev.id
+      join public.events ev on er.event_id = ev.id
     where
       ev.created_by = p.id
   ) as guests_hosted
