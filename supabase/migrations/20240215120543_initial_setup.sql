@@ -422,18 +422,14 @@ $$ language plpgsql;
 create
 or replace function public.after_payment_confirmed (
   p_stripe_session_id text,
-  p_stripe_payment_id text,
-  p_payment_amount integer,
-  p_payment_currency text
+  p_stripe_payment_id text
 ) returns void as $$
 begin
     update public.event_reservations
     set 
       reservation_status = 'confirmed',
       payment_status = 'paid',
-      stripe_payment_id = p_stripe_payment_id,
-      payment_amount = p_payment_amount,
-      payment_currency = p_payment_currency
+      stripe_payment_id = p_stripe_payment_id
     where stripe_session_id = p_stripe_session_id;
 
 end;
@@ -506,9 +502,7 @@ select
               ep2.event_id = e.id
           )::integer
         )
-      )
-      ORDER BY
-        e.date_start DESC
+      ) ORDER BY e.date_start DESC
     ) FILTER (
       WHERE
         e.id IS NOT NULL
@@ -518,16 +512,31 @@ select
   coalesce(
     jsonb_agg(
       jsonb_set(
-        to_jsonb(e2),
-        '{created_by}',
+        jsonb_set(
+          to_jsonb(e2),
+          '{created_by}',
+          to_jsonb(
+            (
+              select
+                p2.name
+              from
+                public.profiles p2
+              where
+                p2.id = e2.created_by
+            )
+          )
+        ),
+        '{reservations}',
         to_jsonb(
           (
             select
-              p2.name
+              array_agg(
+                to_jsonb(er.*)
+              )
             from
-              public.profiles p2
+              public.event_reservations er
             where
-              p2.id = e2.created_by
+              er.user_id = p.id and er.event_id = e2.id
           )
         )
       ) ORDER BY e2.date_start DESC
@@ -544,7 +553,8 @@ select
       sum(er.tickets_bought)
     from
       public.event_reservations er
-      join public.events ev on er.event_id = ev.id
+    join
+      public.events ev on er.event_id = ev.id
     where
       ev.created_by = p.id
   ) as guests_hosted
