@@ -355,8 +355,8 @@ export interface Database {
         Args: {
           p_stripe_session_id: string
           p_stripe_payment_id: string
-          p_payment_amount: number
-          p_payment_currency: string
+          p_price: number
+          p_currency: string
         }
         Returns: undefined
       }

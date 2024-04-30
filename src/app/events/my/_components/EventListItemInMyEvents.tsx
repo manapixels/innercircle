@@ -12,8 +12,10 @@ import { reverseSlugify } from '@/helpers/text';
 
 export default function EventListItemInMyEvents({ event }: { event: EventWithReservations }) {
   const eventOver = hasDatePassed(event?.date_start);
+  const ticketsBought = event?.reservations.reduce((acc, curr) => acc + curr.tickets_bought, 0);
+  const isStripePayment = event?.reservations.some((r) => r.stripe_payment_id !== null);
 
-  console.log()
+  const ticketIcon = <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
 
   return (
     <div
@@ -129,30 +131,40 @@ export default function EventListItemInMyEvents({ event }: { event: EventWithRes
               </>
             )}
           </div>
-          <Link
-            href={`/events/${event?.slug}`}
-            className="inline-flex items-center gap-1 text-gray-500 text-sm"
-          >
-            View event page{' '}
-            <svg
-              className="inline-block"
-              width="16px"
-              height="16px"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              color="#000000"
-            >
-              <path
-                d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005"
-                stroke="#000000"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-            </svg>
-          </Link>
+          {ticketsBought > 0 && (
+            isStripePayment ? (
+              <Link
+                href={`https://dashboard.stripe.com/payments/${event?.reservations[0]?.stripe_payment_id}`}
+                className="inline-flex items-center gap-1 text-gray-800 text-sm"
+              >
+                {ticketsBought}x{' '}
+                {ticketIcon}{' '}
+                <svg
+                  className="inline-block"
+                  width="16px"
+                  height="16px"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  color="#000000"
+                >
+                  <path
+                    d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005"
+                    stroke="#000000"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                </svg>
+              </Link>
+            ) : (
+              <div className="inline-flex items-center gap-1 text-gray-800 text-sm">
+                {ticketsBought}x{' '}
+                {ticketIcon}
+              </div>
+            )
+          )}
         </div>
       </div>
     </div>
