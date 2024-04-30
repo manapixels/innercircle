@@ -419,21 +419,24 @@ end;
 $$ language plpgsql;
 
 -- Function to update statuses after payment is confirmed
-create
-or replace function public.after_payment_confirmed (
+create or replace function public.after_payment_confirmed (
   p_stripe_session_id text,
-  p_stripe_payment_id text
+  p_stripe_payment_id text,
+  p_price integer,
+  p_currency text
 ) returns void as $$
 begin
     update public.event_reservations
     set 
       reservation_status = 'confirmed',
       payment_status = 'paid',
-      stripe_payment_id = p_stripe_payment_id
+      stripe_payment_id = p_stripe_payment_id,
+      payment_amount = p_price,
+      payment_currency = p_currency
     where stripe_session_id = p_stripe_session_id;
-
 end;
 $$ language plpgsql;
+
 
 -- ...........
 --
