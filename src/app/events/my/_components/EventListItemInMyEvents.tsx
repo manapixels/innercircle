@@ -51,7 +51,12 @@ export default function EventListItemInMyEvents({ event }: { event: Event }) {
         <div>
           {/* Event name & tags */}
           <div className="flex gap-4">
-            <p className="truncate text-lg font-semibold mb-1">{event?.name}</p>
+            <Link
+              href={`/events/${event?.slug}`}
+              className="truncate text-lg font-semibold mb-1"
+            >
+              {event?.name}
+            </Link>
             <div className="items-center gap-2 mb-2">
               {event?.category?.map((c) => (
                 <span

@@ -45,7 +45,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Supabase auth event', event, session);
+        // console.log('Supabase auth event', event, session);
         setSession(session);
         setUser(session?.user);
         if (session?.user) await callAndSetProfile(session?.user?.id);

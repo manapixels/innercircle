@@ -46,8 +46,6 @@ export const fetchUserProfileWithEvents = async ({username, userId}: {username?:
 
     const { data, error } = await query.single();
 
-    console.log(data, 'lala')
-
     if (error) throw new Error('Error fetching profile with hosted events');
 
     return data;

@@ -49,6 +49,7 @@ export async function checkoutWithStripe(
     let params: Stripe.Checkout.SessionCreateParams = {
       allow_promotion_codes: true,
       customer,
+      customer_email: user.email,
       customer_update: {
         address: 'auto'
       },
@@ -59,6 +60,9 @@ export async function checkoutWithStripe(
           quantity
         }
       ],
+      payment_intent_data: {
+        receipt_email: user.email
+      },
       cancel_url: getURL(),
       success_url: getURL(redirectPath)
     };
