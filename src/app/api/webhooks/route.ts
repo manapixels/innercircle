@@ -22,7 +22,6 @@ export async function POST(req: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   let event: Stripe.Event;
 
-  console.log('hihi', sig, webhookSecret)
   try {
     if (!sig || !webhookSecret)
       return new Response('Webhook secret not found.', { status: 400 });
@@ -45,13 +44,15 @@ export async function POST(req: Request) {
         //   break;
         case 'checkout.session.completed':
           const checkoutSession = event.data.object as Stripe.Checkout.Session;
-          const paymentIntent = checkoutSession.payment_intent as Stripe.PaymentIntent;
-          if (checkoutSession?.id && paymentIntent) {
+          if (checkoutSession?.id && checkoutSession?.invoice) {
+            const invoiceId = typeof checkoutSession.invoice === 'string'
+              ? checkoutSession.invoice
+              : checkoutSession.invoice.id;
             await confirmReservation(
-              checkoutSession?.id, 
-              paymentIntent.id, 
-              paymentIntent.amount, 
-              paymentIntent.currency
+              checkoutSession.id,
+              invoiceId,
+              checkoutSession.amount_total || 0,
+              checkoutSession.currency || 'sgd'
             );
           } else {
             console.log('No stripe session id found in checkout session metadata. Reservation status not updated.');

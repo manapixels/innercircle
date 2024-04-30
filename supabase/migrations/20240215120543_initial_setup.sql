@@ -192,7 +192,7 @@ with
 create table public.event_reservations (
   id uuid not null default gen_random_uuid () primary key,
   stripe_session_id text,
-  stripe_payment_id text,
+  stripe_invoice_id text,
   payment_amount integer,
   payment_currency text,
   event_id uuid not null references public.events (id) on delete cascade,
@@ -392,6 +392,7 @@ create
 or replace function public.sign_up_for_event (
   p_event_id uuid,
   p_stripe_session_id text,
+  p_stripe_payment_id text,
   p_user_id uuid,
   p_tickets_bought integer
 ) returns void as $$
@@ -413,15 +414,15 @@ begin
     end if;
 
       -- Insert a new record and return the id
-      insert into public.event_reservations (event_id, stripe_session_id, user_id, tickets_bought, reservation_status, payment_status)
-      values (p_event_id, p_stripe_session_id, p_user_id, p_tickets_bought, 'pending', 'unpaid');
+      insert into public.event_reservations (event_id, stripe_session_id, stripe_payment_id, user_id, tickets_bought, reservation_status, payment_status)
+      values (p_event_id, p_stripe_session_id, p_stripe_payment_id, p_user_id, p_tickets_bought, 'pending', 'unpaid');
 end;
 $$ language plpgsql;
 
 -- Function to update statuses after payment is confirmed
 create or replace function public.after_payment_confirmed (
   p_stripe_session_id text,
-  p_stripe_payment_id text,
+  p_stripe_invoice_id text,
   p_price integer,
   p_currency text
 ) returns void as $$
@@ -430,7 +431,7 @@ begin
     set 
       reservation_status = 'confirmed',
       payment_status = 'paid',
-      stripe_payment_id = p_stripe_payment_id,
+      stripe_invoice_id = p_stripe_invoice_id,
       payment_amount = p_price,
       payment_currency = p_currency
     where stripe_session_id = p_stripe_session_id;

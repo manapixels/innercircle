@@ -11,6 +11,7 @@ type CheckoutResponse = {
   // errorRedirect?: string;
   errorMessage?: string;
   sessionId?: string;
+  paymentIntentId?: string;
 };
 
 type Event = Tables<'events'>;
@@ -53,7 +54,6 @@ export async function checkoutWithStripe(
       },
       allow_promotion_codes: true,
       customer,
-      customer_email: user.email,
       customer_update: {
         address: 'auto'
       },
@@ -81,7 +81,7 @@ export async function checkoutWithStripe(
 
     // Instead of returning a Response, just return the data or error.
     if (session) {
-      return { sessionId: session.id };
+      return { sessionId: session.id, paymentIntentId: session.payment_intent };
     } else {
       throw new Error('Unable to create checkout session.');
     }

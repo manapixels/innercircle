@@ -14,12 +14,12 @@ const supabaseAdmin = createClient<Database>(
  * Updates the reservation status in Supabase after payment is confirmed.
  * @param reservationId - The ID of the reservation to update.
  */
-const confirmReservation = async (reservationId: string, paymentIntentId: string, amount: number, currency: string) => {
+const confirmReservation = async (reservationId: string, invoiceId: string, amount: number, currency: string) => {
     const { data, error } = await supabaseAdmin.rpc('after_payment_confirmed', {
         p_stripe_session_id: reservationId,
-        p_stripe_payment_id: paymentIntentId,
-        p_payment_amount: amount,
-        p_payment_currency: currency
+        p_stripe_invoice_id: invoiceId,
+        p_price: amount,
+        p_currency: currency
     });
 
     if (error) {

@@ -13,7 +13,9 @@ import { reverseSlugify } from '@/helpers/text';
 export default function EventListItemInMyEvents({ event }: { event: EventWithReservations }) {
   const eventOver = hasDatePassed(event?.date_start);
   const ticketsBought = event?.reservations.reduce((acc, curr) => acc + curr.tickets_bought, 0);
-  const isStripePayment = event?.reservations.some((r) => r.stripe_payment_id !== null);
+  const isStripePayment = event?.reservations.some((r) => r.stripe_invoice_id !== null);
+
+  console.log(event?.reservations)
 
   const ticketIcon = <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
 
@@ -134,7 +136,7 @@ export default function EventListItemInMyEvents({ event }: { event: EventWithRes
           {ticketsBought > 0 && (
             isStripePayment ? (
               <Link
-                href={`https://dashboard.stripe.com/payments/${event?.reservations[0]?.stripe_payment_id}`}
+                href={`https://dashboard.stripe.com/payments/${event?.reservations[0]?.stripe_invoice_id}`}
                 className="inline-flex items-center gap-1 text-gray-800 text-sm"
               >
                 {ticketsBought}x{' '}

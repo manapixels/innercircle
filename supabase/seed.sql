@@ -258,7 +258,7 @@ BEGIN
     -- Loop through the user IDs and sign up each user for the current event
     FOR i IN 1..event_record.slots LOOP
       BEGIN
-        PERFORM public.sign_up_for_event(event_record.id, 'dummy_' || event_record.id, user_ids[i], 1); -- 1 tix / user
+        PERFORM public.sign_up_for_event(event_record.id, 'dummy_' || event_record.id, 'dummy_' || event_record.id, user_ids[i], 1); -- 1 tix / user
         PERFORM public.after_payment_confirmed('dummy_' || event_record.id, null, event_record.price, event_record.price_currency);
       EXCEPTION WHEN OTHERS THEN
         RAISE LOG 'Error signing up user % for event %: %', user_ids[i], event_record.id, SQLERRM;
