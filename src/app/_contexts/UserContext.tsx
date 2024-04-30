@@ -20,7 +20,14 @@ const UserContext = createContext<{
   profile: ProfileWithRoles | undefined;
   setUser: (user: User | undefined) => void;
   loading: boolean;
-}>({ user: undefined, isHost: false, session: null, profile: undefined, setUser: () => {}, loading: true });
+}>({
+  user: undefined,
+  isHost: false,
+  session: null,
+  profile: undefined,
+  setUser: () => {},
+  loading: true,
+});
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>();
@@ -45,7 +52,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        // console.log('Supabase auth event', event, session);
+        console.log('Supabase auth event', event, session);
         setSession(session);
         setUser(session?.user);
         if (session?.user) await callAndSetProfile(session?.user?.id);
@@ -78,14 +85,16 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (profile?.roles?.includes('host')) {
-      if (isHost === false) setIsHost(true)
+      if (isHost === false) setIsHost(true);
     } else {
-      if (isHost === true) setIsHost(false)
+      if (isHost === true) setIsHost(false);
     }
-  }, [profile])
+  }, [profile]);
 
   return (
-    <UserContext.Provider value={{ user, isHost, session, profile, setUser, loading }}>
+    <UserContext.Provider
+      value={{ user, isHost, session, profile, setUser, loading }}
+    >
       {children}
     </UserContext.Provider>
   );

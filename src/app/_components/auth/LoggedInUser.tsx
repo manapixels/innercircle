@@ -12,8 +12,15 @@ import { signOut } from '@/api/auth';
 import { BUCKET_URL } from '@/constants';
 import { useRouter } from 'next/navigation';
 import { ProfileWithRoles } from '@/types/profile';
+import { User } from '@supabase/supabase-js';
 
-export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
+export default function LoggedInUser({
+  profile,
+  user,
+}: {
+  profile: ProfileWithRoles;
+  user: User | undefined;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const { isHost, setUser } = useUser();
   const { toast } = useToast();
@@ -35,8 +42,8 @@ export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
             <Image
               className="h-full w-full rounded-full"
               src={
-                user?.avatar_url !== ''
-                  ? `${BUCKET_URL}/avatars/${user?.avatar_url}`
+                profile?.avatar_url !== ''
+                  ? `${BUCKET_URL}/avatars/${profile?.avatar_url}`
                   : '/users/placeholder-avatar.svg'
               }
               alt=""
@@ -55,6 +62,17 @@ export default function LoggedInUser({ user }: { user: ProfileWithRoles }) {
             }}
             tabIndex={-1}
           >
+            {(profile?.name || user?.email) && (
+              <>
+              <div className="px-4 pt-3 pb-2 text-sm text-gray-900 dark:text-white">
+                <div>{profile.name}</div>
+                {user?.email && (
+                  <div className="font-medium truncate">{user.email}</div>
+                )}
+              </div>
+              <hr className="my-1" />
+              </>
+            )}
             <div className="py-1" role="none">
               <Link
                 href="/account"

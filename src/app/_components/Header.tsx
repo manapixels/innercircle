@@ -11,7 +11,7 @@ import { useUser } from '@/_contexts/UserContext';
 
 export default function Header() {
   const pathname = usePathname();
-  const { profile } = useUser();
+  const { profile, user } = useUser();
 
   return (
     <header className="max-w-6xl w-full mx-auto bg-opacity-50 bg-white">
@@ -50,7 +50,7 @@ export default function Header() {
               + Create event
             </Link>
           )}
-          {profile?.id ? <LoggedInUser user={profile} /> : <AuthForm />}
+          {profile?.id ? <LoggedInUser profile={profile} user={user} /> : <AuthForm />}
         </div>
         <div className="absolute top-1/2 flex justify-center w-full pointer-events-none">
           <div className="w-1/2 flex justify-between">
