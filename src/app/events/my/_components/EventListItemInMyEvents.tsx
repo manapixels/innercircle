@@ -28,8 +28,8 @@ export default function EventListItemInMyEvents({
       strokeWidth="2"
       viewBox="0 0 24 24"
       aria-hidden="true"
-      height="20px"
-      width="20px"
+      height="24px"
+      width="24px"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
@@ -157,7 +157,7 @@ export default function EventListItemInMyEvents({
 
           <div className="inline-flex items-center gap-1">
             {ticketsBought > 0 && (
-              <div className="inline-flex items-center gap-1 text-gray-800 text-sm">
+              <div className="inline-flex items-center gap-1 text-gray-800 text-lg">
                 {ticketsBought}x {ticketIcon}
               </div>
             )}
@@ -169,12 +169,12 @@ export default function EventListItemInMyEvents({
                     href={r.stripe_receipt_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-gray-800 text-sm"
+                    className="inline-flex items-center gap-1 text-gray-800 text-lg"
                   >
                     <svg
                       className="inline-block"
-                      width="16px"
-                      height="16px"
+                      width="20px"
+                      height="20px"
                       viewBox="0 0 24 24"
                       strokeWidth="1.5"
                       fill="none"
