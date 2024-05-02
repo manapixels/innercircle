@@ -43,7 +43,7 @@ export default function EventListItemInProfile({
         {!hasDatePassed(event.date_end) && (
           <div className="absolute top-3 right-3">
             <span className="bg-base-600 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-              In {timeBeforeEvent(event?.date_start)}
+              {timeBeforeEvent(event?.date_start, event?.date_end)}
             </span>
           </div>
         )}

@@ -51,7 +51,7 @@ export default function EventListItemInMyEvents({
         <span
           className={`block   text-sm font-medium px-4 py-1.5 rounded align-top ${eventOver ? 'bg-gray-100 text-gray-400' : 'bg-base-600 text-white'}`}
         >
-          {eventOver ? 'Ended' : `In ${timeBeforeEvent(event?.date_start)}`}
+          {eventOver ? 'Ended' : `${timeBeforeEvent(event?.date_start, event?.date_end)}`}
         </span>
       </div>
 

@@ -93,30 +93,40 @@ export function timeUntil(inputDate: string | Date): string {
     return `${Math.ceil(differenceInDays)} days`; // More than 24 hours
 }
 
-export function timeBeforeEvent(inputDate: string | Date | null): string | null {
-    if (!inputDate) {
+export function timeBeforeEvent(startDate: string | Date | null, endDate: string | Date | null): string | null {
+    if (!startDate || !endDate) {
         return null;
     }
 
     const currentDate = new Date();
-    const eventDate = typeof inputDate === 'string' ? new Date(inputDate) : inputDate;
+    const eventStartDate = typeof startDate === 'string' ? new Date(startDate) : startDate;
+    const eventEndDate = typeof endDate === 'string' ? new Date(endDate) : endDate;
 
-    if (eventDate < currentDate) {
+    if (eventStartDate < currentDate && currentDate < eventEndDate) {
+        return "Started";
+    }
+
+    if (eventStartDate < currentDate) {
         return null; // Event date has passed
     }
 
-    const differenceInMilliseconds = eventDate.getTime() - currentDate.getTime();
+    const differenceInMilliseconds = eventStartDate.getTime() - currentDate.getTime();
+    const differenceInMinutes = (differenceInMilliseconds % (1000 * 3600)) / (1000 * 60);
     const differenceInDays = differenceInMilliseconds / (1000 * 3600 * 24);
+    const differenceInHours = (differenceInMilliseconds % (1000 * 3600 * 24)) / (1000 * 3600);
 
     if (differenceInDays < 1) {
-        return `${Math.floor(differenceInMilliseconds / (1000 * 3600))} hours`;
+        if (differenceInHours < 1) {
+            return `In ${Math.floor(differenceInMinutes)} minutes`;
+        }
+        return `In ${Math.floor(differenceInHours)} hours`;
     } else if (differenceInDays < 7) {
-        return `${Math.floor(differenceInDays)} days`;
+        return `In ${Math.floor(differenceInDays)} days`;
     } else if (differenceInDays < 30) {
-        return `${Math.floor(differenceInDays / 7)} weeks`;
+        return `In ${Math.floor(differenceInDays / 7)} weeks`;
     } else if (differenceInDays < 365) {
-        return `${Math.floor(differenceInDays / 30)} months`;
+        return `In ${Math.floor(differenceInDays / 30)} months`;
     } else {
-        return `${Math.floor(differenceInDays / 365)} years`;
+        return `In ${Math.floor(differenceInDays / 365)} years`;
     }
 }
