@@ -58,11 +58,15 @@ export default function ReservationForm({
 
       setLoading(true);
 
+      // Signs user up for event but set has_paid to false
+      const reservationId = await signUpForEvent(event.id, profile.id, guests);
+
       // Create a checkout request from Stripe
       const { errorMessage: errorMessageCheckout, sessionId } =
         await checkoutWithStripe(
           event?.price_stripe_id, // price
           guests, // quantity
+          reservationId,
           getSuccessRedirect('/events/my', 'Reservation successful.'),
         );
 
@@ -75,8 +79,7 @@ export default function ReservationForm({
       }
 
       if (sessionId) {
-        // Signs user up for event but set has_paid to false
-        await signUpForEvent(event.id, sessionId, profile.id, guests);
+        
 
         // Redirects user to Stripe checkout
         const stripe = await getStripe();

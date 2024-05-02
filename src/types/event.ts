@@ -16,6 +16,7 @@ export type EventWithCreatorInfo = EventWithSignUps & {
 };
 export type EventReservation = Tables<'event_reservations'>;
 export type EventWithReservations = Event & {
+    created_by: Tables<'profiles'>;
     reservations: EventReservation[];
 };
 

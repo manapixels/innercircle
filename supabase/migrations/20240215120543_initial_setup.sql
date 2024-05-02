@@ -191,8 +191,7 @@ with
 -- ...................
 create table public.event_reservations (
   id uuid not null default gen_random_uuid () primary key,
-  stripe_session_id text,
-  stripe_invoice_id text,
+  stripe_receipt_url text,
   payment_amount integer,
   payment_currency text,
   event_id uuid not null references public.events (id) on delete cascade,
@@ -200,7 +199,7 @@ create table public.event_reservations (
   tickets_bought integer not null default 0,
   reservation_status text not null default 'pending',
   payment_status text not null default 'unpaid',
-  reservation_expires_at timestamp with time zone default (now() + interval '10 minutes')
+  reservation_expires_at timestamp with time zone default (now() + interval '30 minutes')
 );
 
 -- Comments
@@ -391,15 +390,14 @@ $$ language plpgsql;
 create
 or replace function public.sign_up_for_event (
   p_event_id uuid,
-  p_stripe_session_id text,
-  p_stripe_payment_id text,
   p_user_id uuid,
   p_tickets_bought integer
-) returns void as $$
+) returns uuid as $$
 declare
     v_event_slots int;
     v_tickets_bought int;
     v_total_tickets_bought int;
+    v_reservation_id uuid;
 begin
     -- Retrieve the total slots and currently occupied slots for the event
     select slots, coalesce(sum(tickets_bought), 0) into v_event_slots, v_total_tickets_bought
@@ -409,35 +407,18 @@ begin
     group by public.events.slots;
 
     -- Check if adding the new tickets exceeds the event's slots
-    if v_total_tickets_bought + v_tickets_bought > v_event_slots then
+    if v_total_tickets_bought + p_tickets_bought > v_event_slots then
         raise exception 'This event is fully signed up.';
     end if;
 
-      -- Insert a new record and return the id
-      insert into public.event_reservations (event_id, stripe_session_id, stripe_payment_id, user_id, tickets_bought, reservation_status, payment_status)
-      values (p_event_id, p_stripe_session_id, p_stripe_payment_id, p_user_id, p_tickets_bought, 'pending', 'unpaid');
+    -- Insert a new record and return the id
+    insert into public.event_reservations (event_id, user_id, tickets_bought, reservation_status, payment_status)
+    values (p_event_id, p_user_id, p_tickets_bought, 'pending', 'unpaid')
+    returning id into v_reservation_id;
+
+    return v_reservation_id;
 end;
 $$ language plpgsql;
-
--- Function to update statuses after payment is confirmed
-create or replace function public.after_payment_confirmed (
-  p_stripe_session_id text,
-  p_stripe_invoice_id text,
-  p_price integer,
-  p_currency text
-) returns void as $$
-begin
-    update public.event_reservations
-    set 
-      reservation_status = 'confirmed',
-      payment_status = 'paid',
-      stripe_invoice_id = p_stripe_invoice_id,
-      payment_amount = p_price,
-      payment_currency = p_currency
-    where stripe_session_id = p_stripe_session_id;
-end;
-$$ language plpgsql;
-
 
 -- ...........
 --
@@ -493,74 +474,45 @@ select
   p.avatar_url,
   coalesce(
     jsonb_agg(
-      jsonb_set(
-        to_jsonb(e),
-        '{sign_ups}',
-        to_jsonb(
-          (
-            select
-              count(*)
-            from
-              public.event_reservations ep2
-            where
-              ep2.event_id = e.id
-          )::integer
+      to_jsonb(e.*) || jsonb_build_object(
+        'sign_ups', (
+          select count(*)
+          from public.event_reservations er
+          where er.event_id = e.id
         )
       ) ORDER BY e.date_start DESC
-    ) FILTER (
-      WHERE
-        e.id IS NOT NULL
-    ),
+    ) FILTER (WHERE e.id IS NOT NULL),
     '[]'::jsonb
   ) as events_hosted,
   coalesce(
     jsonb_agg(
-      jsonb_set(
-        jsonb_set(
-          to_jsonb(e2),
-          '{created_by}',
-          to_jsonb(
-            (
-              select
-                p2.name
-              from
-                public.profiles p2
-              where
-                p2.id = e2.created_by
-            )
+      to_jsonb(e2.*) || jsonb_build_object(
+        'created_by', (
+          select jsonb_build_object(
+            'id', p2.id,
+            'name', p2.name,
+            'username', p2.username,
+            'avatar_url', p2.avatar_url
           )
+          from public.profiles p2
+          where p2.id = e2.created_by
         ),
-        '{reservations}',
-        to_jsonb(
-          (
-            select
-              array_agg(
-                to_jsonb(er.*)
-              )
-            from
-              public.event_reservations er
-            where
-              er.user_id = p.id and er.event_id = e2.id
-          )
+        'reservations', (
+          select jsonb_agg(to_jsonb(er.*))
+          from public.event_reservations er
+          where er.user_id = p.id and er.event_id = e2.id
         )
       ) ORDER BY e2.date_start DESC
-    ) FILTER (
-      WHERE
-        e2.id IS NOT NULL
-    ),
+    ) FILTER (WHERE e2.id IS NOT NULL),
     '[]'::jsonb
   ) as events_joined,
   array_agg(distinct r.role) as user_roles,
-  count(ep.event_id) as events_joined_count,
+  count(distinct ep.event_id) as events_joined_count,
   (
-    select
-      sum(er.tickets_bought)
-    from
-      public.event_reservations er
-    join
-      public.events ev on er.event_id = ev.id
-    where
-      ev.created_by = p.id
+    select sum(er.tickets_bought)
+    from public.event_reservations er
+    join public.events ev on er.event_id = ev.id
+    where ev.created_by = p.id
   ) as guests_hosted
 from
   public.profiles p

@@ -18,9 +18,7 @@ export interface Database {
           payment_status: string
           reservation_expires_at: string | null
           reservation_status: string
-          stripe_invoice_id: string | null
-          stripe_invoice_url: string | null
-          stripe_session_id: string | null
+          stripe_receipt_url: string | null
           tickets_bought: number
           user_id: string
         }
@@ -32,9 +30,7 @@ export interface Database {
           payment_status?: string
           reservation_expires_at?: string | null
           reservation_status?: string
-          stripe_invoice_id?: string | null
-          stripe_invoice_url?: string | null
-          stripe_session_id?: string | null
+          stripe_receipt_url?: string | null
           tickets_bought?: number
           user_id: string
         }
@@ -46,9 +42,7 @@ export interface Database {
           payment_status?: string
           reservation_expires_at?: string | null
           reservation_status?: string
-          stripe_invoice_id?: string | null
-          stripe_invoice_url?: string | null
-          stripe_session_id?: string | null
+          stripe_receipt_url?: string | null
           tickets_bought?: number
           user_id?: string
         }
@@ -354,15 +348,6 @@ export interface Database {
       }
     }
     Functions: {
-      after_payment_confirmed: {
-        Args: {
-          p_stripe_session_id: string
-          p_stripe_invoice_id: string
-          p_price: number
-          p_currency: string
-        }
-        Returns: undefined
-      }
       authorize: {
         Args: {
           requested_permission: Database["public"]["Enums"]["app_permission"]
@@ -373,12 +358,10 @@ export interface Database {
       sign_up_for_event: {
         Args: {
           p_event_id: string
-          p_stripe_session_id: string
-          p_stripe_payment_id: string
           p_user_id: string
           p_tickets_bought: number
         }
-        Returns: undefined
+        Returns: string
       }
       slugify: {
         Args: {

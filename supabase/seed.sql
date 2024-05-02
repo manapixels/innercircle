@@ -258,8 +258,17 @@ BEGIN
     -- Loop through the user IDs and sign up each user for the current event
     FOR i IN 1..event_record.slots LOOP
       BEGIN
-        PERFORM public.sign_up_for_event(event_record.id, 'dummy_' || event_record.id, 'dummy_' || event_record.id, user_ids[i], 1); -- 1 tix / user
-        PERFORM public.after_payment_confirmed('dummy_' || event_record.id, null, event_record.price, event_record.price_currency);
+        -- Save the reservation ID from the sign-up function
+        reservation_id := public.sign_up_for_event(event_record.id, user_ids[i], 1); -- 1 tix / user
+
+      -- Update the event reservation with payment and confirmation details
+      UPDATE public.event_reservations
+      SET payment_status = 'paid',
+          reservation_status = 'confirmed',
+          payment_amount = event_record.price,
+          payment_currency = event_record.price_currency
+      WHERE id = reservation_id;
+      
       EXCEPTION WHEN OTHERS THEN
         RAISE LOG 'Error signing up user % for event %: %', user_ids[i], event_record.id, SQLERRM;
       END;

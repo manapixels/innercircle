@@ -1,19 +1,14 @@
 import Stripe from 'stripe';
 import { stripe } from '@/utils/stripe/config';
 import {
-  // upsertProductRecord,
-  // deleteProductRecord,
-  confirmReservation,
+  cancelReservation
 } from '@/utils/supabase/admin';
+import { fulfillOrder } from '@/utils/stripe/server';
 
 const relevantEvents = new Set([
-  'product.created',
-  'product.updated',
-  'product.deleted',
-  'price.created',
-  'price.updated',
-  'price.deleted',
   'checkout.session.completed',
+  'checkout.session.async_payment_succeeded',
+  'charge.refunded'
 ]);
 
 export async function POST(req: Request) {
@@ -34,30 +29,40 @@ export async function POST(req: Request) {
 
   if (relevantEvents.has(event.type)) {
     try {
+      let charge: Stripe.Charge;
       switch (event.type) {
-        // case 'product.created':
-        // case 'product.updated':
-        //   await upsertProductRecord(event.data.object as Stripe.Product);
-        //   break;
-        // case 'product.deleted':
-        //   await deleteProductRecord(event.data.object as Stripe.Product);
-        //   break;
-        case 'checkout.session.completed':
-          const checkoutSession = event.data.object as Stripe.Checkout.Session;
-          if (checkoutSession?.id && checkoutSession?.invoice) {
-            const invoiceId = typeof checkoutSession.invoice === 'string'
-              ? checkoutSession.invoice
-              : checkoutSession.invoice.id;
-            await confirmReservation(
-              checkoutSession.id,
-              invoiceId,
-              checkoutSession.amount_total || 0,
-              checkoutSession.currency || 'sgd'
-            );
-          } else {
-            console.log('No stripe session id found in checkout session metadata. Reservation status not updated.');
+        case 'checkout.session.completed': {
+          const session = event.data.object as Stripe.Checkout.Session;
+          // Save an order in database, marked as 'awaiting payment'
+
+          // Check if the order is paid (for example, from a card payment)
+          //
+          // A delayed notification payment will have an `unpaid` status, as
+          // you're still waiting for funds to be transferred from the customer's
+          // account.
+          if (session.payment_status === 'paid') {
+            fulfillOrder(session);
           }
+
           break;
+        }
+
+        case 'checkout.session.async_payment_succeeded': {
+          const session = event.data.object;
+          // Fulfill the order
+          fulfillOrder(session);
+
+          break;
+        }
+
+        case 'charge.refunded': {
+          charge = event.data.object as Stripe.Charge;
+          // Update reservation status
+          cancelReservation(charge.metadata.reservation_id);
+
+          break;
+        }
+
         default:
           throw new Error('Unhandled relevant event!');
       }

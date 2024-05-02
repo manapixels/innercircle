@@ -13,14 +13,21 @@ const supabaseAdmin = createClient<Database>(
 /**
  * Updates the reservation status in Supabase after payment is confirmed.
  * @param reservationId - The ID of the reservation to update.
+ * @param paymentIntentId - The ID of the Stripe payment intent.
+ * @param amount - The amount of the reservation.
+ * @param currency - The currency of the reservation.
  */
-const confirmReservation = async (reservationId: string, invoiceId: string, amount: number, currency: string) => {
-    const { data, error } = await supabaseAdmin.rpc('after_payment_confirmed', {
-        p_stripe_session_id: reservationId,
-        p_stripe_invoice_id: invoiceId,
-        p_price: amount,
-        p_currency: currency
-    });
+const confirmReservation = async (reservationId: string, receiptUrl: string | null, amount: number, currency: string) => {
+
+    const { data, error } = await supabaseAdmin.from('event_reservations')
+        .update({
+            payment_status: 'paid',
+            reservation_status: 'confirmed',
+            payment_amount: amount,
+            payment_currency: currency,
+            stripe_receipt_url: receiptUrl
+        })
+        .eq('id', reservationId);
 
     if (error) {
         console.error(`Failed to update reservation status: ${error.message}`);
@@ -29,21 +36,61 @@ const confirmReservation = async (reservationId: string, invoiceId: string, amou
     return data;
 };
 
-// const upsertProductRecord = async (product: Stripe.Product) => {
+/**
+ * Cancels a reservation.
+ * @param reservationId - The ID of the reservation in the event_reservations table.
+ * @param status - The status of the reservation.
+ */
+export const cancelReservation = async (reservationId: string) => {
+    try {
 
-//     const { error: upsertError } = await supabaseAdmin
-//         .from('events')
-//         .upsert({
-//             stripe_id: product.id,
-//             name: product.name,
-//             description: product.description ?? null,
-//             image_thumbnail_url: product.images?.[0] ?? null,
-//             metadata: product.metadata,
-//         });
-//     if (upsertError)
-//         throw new Error(`Product insert/update failed: ${upsertError.message}`);
-//     console.log(`Product inserted/updated: ${product.id}`);
-// };
+        // Update the reservation record in Supabase
+        const { data, error } = await supabaseAdmin
+            .from('event_reservations')
+            .update({
+                payment_status: 'refunded',
+                reservation_status: 'cancelled'
+            })
+            .eq('id', reservationId);
+
+        if (error) {
+            throw new Error(`Failed to update reservation status: ${error.message}`);
+        }
+
+        return data;
+    } catch (error: any) {
+        console.error(error);
+        throw new Error(`Error processing updating reservation: ${error.message}`);
+    }
+};
+
+
+/**
+ * Updates the event_reservations record in Supabase with the receipt URL after a payment is completed.
+ * @param paymentIntentId - The ID of the Stripe payment intent.
+ * @param receiptUrl - The URL of the payment receipt.
+ */
+export const addReceiptUrl = async (reservationId: string, receiptUrl: string) => {
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('event_reservations')
+            .update({
+                stripe_receipt_url: receiptUrl
+            })
+            .eq('id', reservationId);
+
+        if (error) {
+            throw new Error(`Failed to update reservation with receipt URL: ${error.message}`);
+        }
+
+        return data;
+    } catch (error: any) {
+        console.error(`Error updating reservation with receipt URL: ${error.message}`);
+        throw new Error(`Error updating reservation with receipt URL: ${error.message}`);
+    }
+};
+
+
 
 const updatePriceRecord = async (
     price: Stripe.Price,
@@ -207,7 +254,6 @@ const copyBillingDetailsToCustomer = async (
 
 export {
     confirmReservation,
-    // upsertProductRecord,
     updatePriceRecord,
     deleteProductRecord,
     createOrRetrieveCustomer,

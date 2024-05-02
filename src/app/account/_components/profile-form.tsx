@@ -8,7 +8,6 @@ import { calculateAge } from '@/helpers/date';
 import { Profile } from '@/types/profile';
 import { useToast } from '@/_components/ui/Toasts/useToast';
 
-
 interface AuthFormInput {
   email: string;
   birthyear: number;
@@ -30,11 +29,15 @@ export default function ProfileForm({
       setLoading(true);
       try {
         const profile = await fetchUserProfile(userId);
-        console.log(profile)
+        console.log(profile);
         setCurrProfile(profile as Profile);
         reset(profile as AuthFormInput);
       } catch (error) {
-        alert('Error loading user data!');
+        toast({
+          title: 'Error!',
+          description: 'Error loading user data!',
+          className: 'bg-red-700 text-white border-transparent',
+        });
       } finally {
         setLoading(false);
       }
@@ -55,7 +58,11 @@ export default function ProfileForm({
         className: 'bg-green-700 text-white border-transparent',
       });
     } catch (error) {
-      alert('Error updating the data!');
+      toast({
+        title: 'Error!',
+        description: 'Error updating the data!',
+        className: 'bg-red-700 text-white border-transparent',
+      });
     } finally {
       setLoading(false);
     }
@@ -67,8 +74,10 @@ export default function ProfileForm({
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<AuthFormInput>();
-  const onSubmit: SubmitHandler<AuthFormInput> = async (data: AuthFormInput) => {
-    console.log(data)
+  const onSubmit: SubmitHandler<AuthFormInput> = async (
+    data: AuthFormInput,
+  ) => {
+    console.log(data);
     await updateProfile({ ...currProfile, ...data } as Profile);
   };
 
@@ -102,9 +111,7 @@ export default function ProfileForm({
       </div>
 
       <div className="mb-2">
-        <label className="text-gray-500 text-xs">
-          Age
-        </label>
+        <label className="text-gray-500 text-xs">Age</label>
         <input
           type="text"
           id="name"
@@ -116,9 +123,7 @@ export default function ProfileForm({
 
       <div className="w-full flex">
         <div className="flex items-center">
-          <label className="text-gray-500 text-xs mr-2">
-            Date of Birth
-          </label>
+          <label className="text-gray-500 text-xs mr-2">Date of Birth</label>
           <select
             {...register('birthyear', {
               required: true,
@@ -138,7 +143,7 @@ export default function ProfileForm({
           {errors.birthyear?.type === 'required' && (
             <p role="alert">Please enter your birthyear</p>
           )}
-        
+
           <select
             {...register('birthmonth', {
               required: true,

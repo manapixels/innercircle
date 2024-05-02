@@ -3,7 +3,7 @@
 import Stripe from 'stripe';
 import { stripe } from './config';
 import { createClient } from '../supabase/server';
-import { createOrRetrieveCustomer } from '../supabase/admin';
+import { confirmReservation, createOrRetrieveCustomer, cancelReservation } from '../supabase/admin';
 import { Tables } from '@/types/definitions';
 import { getErrorRedirect, getURL } from '@/helpers/misc';
 
@@ -19,7 +19,7 @@ type Event = Tables<'events'>;
 export async function checkoutWithStripe(
   price: Event['price_stripe_id'],
   quantity: number = 1,
-  // currentPath: string = '/',
+  reservationId: string,
   redirectPath: string = '/account'
 ): Promise<CheckoutResponse> {
   try {
@@ -56,6 +56,9 @@ export async function checkoutWithStripe(
       customer,
       customer_update: {
         address: 'auto'
+      },
+      metadata: {
+        reservation_id: reservationId
       },
       line_items: [
         {
@@ -168,3 +171,55 @@ export async function createStripePortal(currentPath: string) {
     }
   }
 }
+
+export async function fulfillOrder(session: Stripe.Checkout.Session) {
+  if (session?.payment_intent && session?.metadata?.reservation_id) {
+
+    let receiptUrl: string | null = null;
+    try {
+      const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent as string, {
+        expand: ['latest_charge']
+      });
+      const latestCharge = paymentIntent.latest_charge as Stripe.Charge;
+      receiptUrl = latestCharge?.receipt_url || null;
+    } catch (error) {
+      console.error('Failed to retrieve payment intent for receipt:', error);
+    }
+
+    // Confirm the reservation  
+    await confirmReservation(
+      session.metadata.reservation_id,
+      receiptUrl,
+      session.amount_total || 0,
+      session.currency || 'sgd'
+    );
+  } else {
+    console.log('No payment intent found in checkout session. Unable to fulfill order.');
+  }
+
+}
+
+/**
+ * Refunds a Stripe payment intent and updates the event_reservations record in Supabase.
+ * @param paymentIntentId - The ID of the Stripe payment intent to refund.
+ * @param reservationId - The ID of the reservation in the event_reservations table.
+ */
+export const refundPayment = async (paymentIntentId: string, reservationId: string) => {
+  try {
+    // Refund the Stripe payment intent
+    const refund: Stripe.Refund = await stripe.refunds.create({
+      payment_intent: paymentIntentId
+    });
+
+    if (!refund) {
+      throw new Error('Failed to create refund.');
+    }
+
+    await cancelReservation(reservationId);
+
+    return refund;
+  } catch (error: any) {
+    console.error(error);
+    throw new Error(`Error processing refund and updating reservation: ${error.message}`);
+  }
+};

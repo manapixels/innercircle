@@ -29,15 +29,12 @@ export const signUpNewUser = async (email, password) => {
  */
 export const signInWithEmail = async (email, password) => {
   const supabase = createClient();
+
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
-
-  if (error) {
-    alert('Could not authenticate user');
-  }
-
+  if (error) return error;
   return data;
 };
 
@@ -61,15 +58,11 @@ export const signOut = async () => {
  */
 export const updateEmail = async (email: string) => {
   const supabase = createClient();
-  try {
-    const { data } = await supabase.auth.updateUser({
-      email,
-    });
-    return data;
-  } catch (error) {
-    console.log('error', error);
-    return error;
-  }
+  const { data, error } = await supabase.auth.updateUser({
+    email,
+  });
+  if (error) return error;
+  return data;
 };
 
 /**
@@ -79,13 +72,10 @@ export const updateEmail = async (email: string) => {
  */
 export const updatePassword = async (password: string) => {
   const supabase = createClient();
-  try {
-    const { data } = await supabase.auth.updateUser({
-      password,
-    });
-    return data;
-  } catch (error) {
-    console.log('error', error);
-    return error;
-  }
+
+  const { data, error } = await supabase.auth.updateUser({
+    password,
+  });
+  if (error) return error;
+  return data;
 };
