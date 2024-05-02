@@ -42,7 +42,7 @@ export default function AuthForm() {
   const onSubmit: SubmitHandler<AuthFormInput> = async (data) => {
     if (state === 'login') {
       const resp = await signInWithEmail(data.email, data.password);
-      if (resp?.user) {
+      if ('user' in resp) {
         setUser(resp.user);
         toast({
           title: "You're logged in",
