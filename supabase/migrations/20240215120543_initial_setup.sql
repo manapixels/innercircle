@@ -198,8 +198,7 @@ create table public.event_reservations (
   user_id uuid not null references public.profiles (id) on delete cascade,
   tickets_bought integer not null default 0,
   reservation_status text not null default 'pending',
-  payment_status text not null default 'unpaid',
-  reservation_expires_at timestamp with time zone default (now() + interval '30 minutes')
+  payment_status text not null default 'unpaid'
 );
 
 -- Comments
@@ -209,7 +208,6 @@ comment on column public.event_reservations.reservation_status is 'Status of the
 
 comment on column public.event_reservations.payment_status is 'Status of the payment (unpaid, paid, refunded)';
 
-comment on column public.event_reservations.reservation_expires_at is 'Timestamp when the reservation expires if not paid';
 
 -- RLS
 alter table event_reservations enable row level security;
@@ -399,11 +397,11 @@ declare
     v_total_tickets_bought int;
     v_reservation_id uuid;
 begin
-    -- Retrieve the total slots and currently occupied slots for the event
+    -- Retrieve the total slots and currently occupied slots for the event, excluding 'cancelled' reservations
     select slots, coalesce(sum(tickets_bought), 0) into v_event_slots, v_total_tickets_bought
     from public.events
     join public.event_reservations on public.events.id = public.event_reservations.event_id
-    where public.events.id = p_event_id
+    where public.events.id = p_event_id and public.event_reservations.reservation_status in ('pending', 'confirmed')
     group by public.events.slots;
 
     -- Check if adding the new tickets exceeds the event's slots
@@ -500,7 +498,7 @@ select
         'reservations', (
           select jsonb_agg(to_jsonb(er.*))
           from public.event_reservations er
-          where er.user_id = p.id and er.event_id = e2.id
+          where er.user_id = p.id and er.event_id = e2.id and er.reservation_status = 'confirmed'
         )
       ) ORDER BY e2.date_start DESC
     ) FILTER (WHERE e2.id IS NOT NULL),
@@ -587,6 +585,8 @@ from
       sum(tickets_bought) as sign_ups
     from
       public.event_reservations
+    where
+      reservation_status = 'confirmed'
     group by
       event_id
   ) ep on e.id = ep.event_id;
