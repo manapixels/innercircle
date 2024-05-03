@@ -16,7 +16,6 @@ export interface Database {
           payment_amount: number | null
           payment_currency: string | null
           payment_status: string
-          reservation_expires_at: string | null
           reservation_status: string
           stripe_receipt_url: string | null
           tickets_bought: number
@@ -28,7 +27,6 @@ export interface Database {
           payment_amount?: number | null
           payment_currency?: string | null
           payment_status?: string
-          reservation_expires_at?: string | null
           reservation_status?: string
           stripe_receipt_url?: string | null
           tickets_bought?: number
@@ -40,7 +38,6 @@ export interface Database {
           payment_amount?: number | null
           payment_currency?: string | null
           payment_status?: string
-          reservation_expires_at?: string | null
           reservation_status?: string
           stripe_receipt_url?: string | null
           tickets_bought?: number

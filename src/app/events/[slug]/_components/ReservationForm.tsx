@@ -27,6 +27,11 @@ export default function ReservationForm({
   const { toast } = useToast();
 
   const eventOver = hasDatePassed(event?.date_start);
+  let slotsLeft = 0;
+  if (event?.sign_ups && event?.slots) {
+    slotsLeft = event.slots - event.sign_ups;
+  }
+  const exceedCapacity = slotsLeft - guests < 0
 
   const handleReservation = async () => {
     try {
@@ -244,12 +249,12 @@ export default function ReservationForm({
               type="button"
               id="increment-button"
               data-input-counter-increment="counter-input"
-              className={`flex-shrink-0 bg-gray-100 inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100  focus:outline-none ${eventOver ? 'pointer-events-none' : 'hover:bg-gray-200 focus:ring-2'}`}
+              className={`flex-shrink-0 bg-gray-100 inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100  focus:outline-none ${(eventOver || exceedCapacity) ? 'pointer-events-none' : 'hover:bg-gray-200 focus:ring-2'}`}
               onClick={() => setGuests(guests + 1)}
-              disabled={eventOver}
+              disabled={eventOver || exceedCapacity}
             >
               <svg
-                className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${eventOver ? 'opacity-50' : ''}`}
+                className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${(eventOver || exceedCapacity) ? 'opacity-50' : ''}`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -301,16 +306,18 @@ export default function ReservationForm({
           </div>
           <button
             className={`bg-base-600 text-white px-4 py-2 rounded-lg w-full block ${
-              eventOver || loading ? 'opacity-50' : ''
+              eventOver || loading || exceedCapacity ? 'opacity-50' : ''
             }`}
-            disabled={eventOver || loading}
+            disabled={eventOver || loading || exceedCapacity}
             onClick={handleReservation}
           >
             {loading
               ? 'Processing...'
               : eventOver
                 ? 'Event has passed'
-                : 'Reserve'}
+                : exceedCapacity
+                  ? 'Exceeds capacity'
+                  : 'Reserve'}
           </button>
         </>
       )}
