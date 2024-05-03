@@ -190,6 +190,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
     // Confirm the reservation  
     await confirmReservation(
       session.metadata.reservation_id,
+      session.payment_intent as string,
       receiptUrl,
       session.amount_total || 0,
       session.currency || 'sgd'

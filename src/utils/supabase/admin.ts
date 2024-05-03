@@ -17,7 +17,7 @@ const supabaseAdmin = createClient<Database>(
  * @param amount - The amount of the reservation.
  * @param currency - The currency of the reservation.
  */
-const confirmReservation = async (reservationId: string, receiptUrl: string | null, amount: number, currency: string) => {
+const confirmReservation = async (reservationId: string, paymentIntentId: string, receiptUrl: string | null, amount: number, currency: string) => {
 
     const { data, error } = await supabaseAdmin.from('event_reservations')
         .update({
@@ -25,6 +25,7 @@ const confirmReservation = async (reservationId: string, receiptUrl: string | nu
             reservation_status: 'confirmed',
             payment_amount: amount,
             payment_currency: currency,
+            stripe_payment_intent_id: paymentIntentId,
             stripe_receipt_url: receiptUrl
         })
         .eq('id', reservationId);
@@ -65,9 +66,9 @@ export const cancelReservation = async (reservationId: string) => {
 
 /**
  * Refunds a reservation.
- * @param reservationId - The ID of the reservation in the event_reservations table.
+ * @param paymentIntentId - The ID of the Stripe payment intent.
  */
-export const refundReservation = async (reservationId: string) => {
+export const refundReservationWithPaymentIntent = async (paymentIntentId: string) => {
     try {
 
         // Update the reservation record in Supabase
@@ -77,7 +78,7 @@ export const refundReservation = async (reservationId: string) => {
                 payment_status: 'refunded',
                 reservation_status: 'cancelled'
             })
-            .eq('id', reservationId);
+            .eq('stripe_payment_intent_id', paymentIntentId);
 
         if (error) {
             throw new Error(`Failed to refund reservation: ${error.message}`);

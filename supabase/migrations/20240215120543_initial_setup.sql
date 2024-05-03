@@ -191,14 +191,15 @@ with
 -- ...................
 create table public.event_reservations (
   id uuid not null default gen_random_uuid () primary key,
-  stripe_receipt_url text,
-  payment_amount integer,
-  payment_currency text,
   event_id uuid not null references public.events (id) on delete cascade,
   user_id uuid not null references public.profiles (id) on delete cascade,
   tickets_bought integer not null default 0,
   reservation_status text not null default 'pending',
-  payment_status text not null default 'unpaid'
+  payment_status text not null default 'unpaid',
+  payment_amount integer,
+  payment_currency text,
+  stripe_payment_intent_id text,
+  stripe_receipt_url text
 );
 
 -- Comments
