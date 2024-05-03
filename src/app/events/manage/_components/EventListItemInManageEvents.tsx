@@ -232,7 +232,7 @@ export default function EventListItemInMyEvents({
           <div>
             <div className="w-full bg-gray-200 rounded-full  dark:bg-gray-700 mb-3">
               <div
-                className={`${percentSold === 100 ? 'bg-gray-400' : 'bg-base-600'}  text-xs font-medium text-white text-center p-0.5 leading-none rounded-full`}
+                className={`${percentSold === 100 ? 'bg-gray-400' : 'bg-base-600'}  text-xs font-medium text-white text-center p-0.5 leading-none rounded-full min-w-24`}
                 style={{ width: `${percentSold}%` }}
               >
                 {ticketsLeft === 0
