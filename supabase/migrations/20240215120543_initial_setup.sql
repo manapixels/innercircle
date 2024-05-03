@@ -533,7 +533,7 @@ from
 group by
   p.id;
 
--- Create a view to list events with host data
+-- Create a view to list events with host data, excluding events with status 'draft'
 create or replace view events_with_host_data as
 select
   e.id,
@@ -601,7 +601,9 @@ from
       reservation_status = 'confirmed'
     group by
       event_id
-  ) ep on e.id = ep.event_id;
+  ) ep on e.id = ep.event_id
+where
+  e.status <> 'draft';
 
 drop publication if exists supabase_realtime;
 
