@@ -483,8 +483,14 @@ select
     '[]'::jsonb
   ) as events_hosted,
   coalesce(
-    jsonb_agg(
-      to_jsonb(e2.*) || jsonb_build_object(
+    (select jsonb_agg(jsonb_build_object(
+        'id', e2.id,
+        'name', e2.name,
+        'slug', e2.slug,
+        'description', e2.description,
+        'category', e2.category,
+        'date_start', e2.date_start,
+        'date_end', e2.date_end,
         'created_by', (
           select jsonb_build_object(
             'id', p2.id,
@@ -500,8 +506,14 @@ select
           from public.event_reservations er
           where er.user_id = p.id and er.event_id = e2.id and er.reservation_status = 'confirmed'
         )
-      ) ORDER BY e2.date_start DESC
-    ) FILTER (WHERE e2.id IS NOT NULL),
+      ) ORDER BY e2.date_start DESC)
+    from (
+      select distinct on (e2.id) e2.*
+      from public.events e2
+      join public.event_reservations ep on e2.id = ep.event_id
+      where ep.user_id = p.id
+      order by e2.id, e2.date_start DESC
+    ) as e2),
     '[]'::jsonb
   ) as events_joined,
   array_agg(distinct r.role) as user_roles,
@@ -517,7 +529,6 @@ from
   left join public.events e on p.id = e.created_by
   left join public.user_roles r on p.id = r.user_id
   left join public.event_reservations ep on p.id = ep.user_id
-  left join public.events e2 on e2.id = ep.event_id
 group by
   p.id;
 
