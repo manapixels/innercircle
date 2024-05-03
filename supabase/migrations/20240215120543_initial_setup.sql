@@ -475,9 +475,9 @@ select
     jsonb_agg(
       to_jsonb(e.*) || jsonb_build_object(
         'sign_ups', (
-          select count(*)
+          select sum(er.tickets_bought)
           from public.event_reservations er
-          where er.event_id = e.id
+          where er.event_id = e.id and er.reservation_status = 'confirmed'
         )
       ) ORDER BY e.date_start DESC
     ) FILTER (WHERE e.id IS NOT NULL),
