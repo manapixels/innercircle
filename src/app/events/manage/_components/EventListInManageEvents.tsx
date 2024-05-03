@@ -26,8 +26,6 @@ export default function EventListInMyEvents() {
         if (result) {
           const events = result as EventWithParticipants[];
 
-          console.log(events);
-
           setPastEvents(
             events.filter(
               (event) => event.date_end && hasDatePassed(event.date_end),

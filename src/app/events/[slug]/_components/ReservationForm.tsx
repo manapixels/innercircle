@@ -19,7 +19,6 @@ export default function ReservationForm({
   event: EventWithSignUps;
 }) {
   const [guests, setGuests] = useState(1);
-  const [isConfirming, setIsConfirming] = useState(false);
   const [loading, setLoading] = useState(false);
   const { profile } = useUser();
 
@@ -28,7 +27,9 @@ export default function ReservationForm({
 
   const eventOver = hasDatePassed(event?.date_start);
   const slotsLeft = event?.slots ? event.slots - (event.sign_ups || 0) : 0;
-  const exceedCapacity = slotsLeft - guests < 0
+  const exceedCapacity = slotsLeft - guests < 0;
+  const reservationClosed =
+    event.status !== 'reserving' || eventOver || exceedCapacity;
 
   const handleReservation = async () => {
     try {
@@ -81,8 +82,6 @@ export default function ReservationForm({
       }
 
       if (sessionId) {
-        
-
         // Redirects user to Stripe checkout
         const stripe = await getStripe();
         const result = await stripe?.redirectToCheckout({ sessionId });
@@ -115,209 +114,139 @@ export default function ReservationForm({
 
   return (
     <div className="border p-8 rounded-2xl shadow-lg">
-      {isConfirming ? (
+      <div className="text-xl font-medium mb-2">
+        {event?.price ? (
+          <span>
+            <span className="uppercase">{event?.price_currency}</span>{' '}
+            {event?.price} / person
+          </span>
+        ) : (
+          <span>Free</span>
+        )}
+      </div>
+
+      <div className="my-4 border-b"></div>
+
+      {!reservationClosed && (
         <>
-          <div className="text-sm text-gray-500 mb-6 flex items-center gap-2">
-            <button
-              className="flex-shrink-0 bg-white hover:bg-gray-100 inline-flex items-center justify-center border border-gray-400 rounded-md h-8 w-8 focus:ring-gray-100 focus:ring-2 focus:outline-none p-1"
-              onClick={() => setIsConfirming(false)}
-            >
-              <svg
-                className="fill-gray-500"
-                xmlns="http://www.w3.org/2000/svg"
-                width="1em"
-                height="1em"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="currentColor"
-                  d="m7.85 13l2.85 2.85q.3.3.288.7t-.288.7q-.3.3-.712.313t-.713-.288L4.7 12.7q-.3-.3-.3-.7t.3-.7l4.575-4.575q.3-.3.713-.287t.712.312q.275.3.288.7t-.288.7L7.85 11H19q.425 0 .713.288T20 12q0 .425-.288.713T19 13z"
-                ></path>
-              </svg>
-            </button>
-            Order summary
-          </div>
-          <div className="text-sm text-gray-600 flex items-center justify-between mb-6">
-            <span>
-              {guests}x {event?.name} {pluralize('Ticket', guests)}
-            </span>
-            <span>
-              {event?.price ? (
-                <span>
-                  <span className="uppercase">{event?.price_currency}</span>{' '}
-                  {event?.price * guests}
-                </span>
-              ) : (
-                <span>Free</span>
-              )}
-            </span>
-          </div>
-          <div className="text-lg font-medium flex items-center justify-between mb-4">
-            <span>Total</span>
-            <span>
-              {event?.price ? (
-                <span>
-                  <span className="uppercase">{event?.price_currency}</span>{' '}
-                  {event?.price * guests}
-                </span>
-              ) : (
-                <span>Free</span>
-              )}
-            </span>
-          </div>
-          <button
-            className={`bg-base-600 text-white px-4 py-2 rounded-lg w-full block ${
-              hasDatePassed(event?.date_start) || loading ? 'opacity-50' : ''
-            }`}
-            disabled={hasDatePassed(event?.date_start) || loading}
-            onClick={handleReservation}
-          >
-            {loading
-              ? 'Processing...'
-              : eventOver
-                ? 'Event has passed'
-                : 'Reserve'}
-          </button>
-        </>
-      ) : (
-        <>
-          <div className="text-xl font-medium mb-2">
-            {event?.price ? (
-              <span>
-                <span className="uppercase">{event?.price_currency}</span>{' '}
-                {event?.price} / person
-              </span>
-            ) : (
-              <span>Free</span>
-            )}
-          </div>
-
-          <div className="my-4 border-b"></div>
-
-          {!eventOver && (
-            <>
-              <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">
-                Booking for
-              </h3>
-            </>
-          )}
-
-          <div className="border flex justify-between items-center p-2 rounded-lg relative">
-            <button
-              type="button"
-              id="decrement-button"
-              data-input-counter-decrement="counter-input"
-              className={`flex-shrink-0 bg-gray-100 ${guests === 1 || eventOver ? 'pointer-events-none' : 'hover:bg-gray-200 focus:ring-2'} inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100 focus:outline-none`}
-              onClick={() => {
-                if (guests > 1) {
-                  setGuests(guests - 1);
-                }
-              }}
-              disabled={eventOver}
-            >
-              <svg
-                className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${guests === 1 || eventOver ? 'opacity-50' : ''}`}
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 18 2"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M1 1h16"
-                />
-              </svg>
-            </button>
-            <input
-              type="text"
-              id="counter-input"
-              data-input-counter
-              className="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
-              placeholder=""
-              value={guests}
-              onChange={(e) => setGuests(parseInt(e.target.value))}
-              disabled={eventOver}
-              required
-            />
-            <button
-              type="button"
-              id="increment-button"
-              data-input-counter-increment="counter-input"
-              className={`flex-shrink-0 bg-gray-100 inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100  focus:outline-none ${(eventOver || exceedCapacity) ? 'pointer-events-none' : 'hover:bg-gray-200 focus:ring-2'}`}
-              onClick={() => setGuests(guests + 1)}
-              disabled={eventOver || exceedCapacity}
-            >
-              <svg
-                className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${(eventOver || exceedCapacity) ? 'opacity-50' : ''}`}
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 18 18"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 1v16M1 9h16"
-                />
-              </svg>
-            </button>
-          </div>
-          {/* )} */}
-
-          <div className="flex justify-center my-4">
-            <div className="border-t border-gray-300 w-20"></div>
-          </div>
-
-          <div className="text-sm text-gray-600 flex items-center justify-between mb-6">
-            <span>
-              {guests}x {event?.name} {pluralize('Ticket', guests)}
-            </span>
-            <span>
-              {event?.price ? (
-                <span>
-                  <span className="uppercase">{event?.price_currency}</span>{' '}
-                  {event?.price * guests}
-                </span>
-              ) : (
-                <span>Free</span>
-              )}
-            </span>
-          </div>
-          <div className="text-lg font-medium flex items-center justify-between mb-4">
-            <span>Total</span>
-            <span>
-              {event?.price ? (
-                <span>
-                  <span className="uppercase">{event?.price_currency}</span>{' '}
-                  {event?.price * guests}
-                </span>
-              ) : (
-                <span>Free</span>
-              )}
-            </span>
-          </div>
-          <button
-            className={`bg-base-600 text-white px-4 py-2 rounded-lg w-full block ${
-              eventOver || loading || exceedCapacity ? 'opacity-50' : ''
-            }`}
-            disabled={eventOver || loading || exceedCapacity}
-            onClick={handleReservation}
-          >
-            {loading
-              ? 'Processing...'
-              : eventOver
-                ? 'Event has passed'
-                : exceedCapacity
-                  ? 'Exceeds capacity'
-                  : 'Reserve'}
-          </button>
+          <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">
+            Booking for
+          </h3>
         </>
       )}
+
+      <div className="border flex justify-between items-center p-2 rounded-lg relative">
+        <button
+          type="button"
+          id="decrement-button"
+          data-input-counter-decrement="counter-input"
+          className={`flex-shrink-0 bg-gray-100 ${guests === 1 || reservationClosed ? 'pointer-events-none' : 'hover:bg-gray-200 focus:ring-2'} inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100 focus:outline-none`}
+          onClick={() => {
+            if (guests > 1) {
+              setGuests(guests - 1);
+            }
+          }}
+          disabled={guests === 1 || reservationClosed}
+        >
+          <svg
+            className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${guests === 1 || reservationClosed ? 'opacity-50' : ''}`}
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 18 2"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M1 1h16"
+            />
+          </svg>
+        </button>
+        <input
+          type="text"
+          id="counter-input"
+          data-input-counter
+          className="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
+          placeholder=""
+          value={guests}
+          onChange={(e) => setGuests(parseInt(e.target.value))}
+          disabled={reservationClosed}
+          required
+        />
+        <button
+          type="button"
+          id="increment-button"
+          data-input-counter-increment="counter-input"
+          className={`flex-shrink-0 bg-gray-100 inline-flex items-center justify-center border border-gray-300 rounded-md h-8 w-8 focus:ring-gray-100  focus:outline-none ${reservationClosed ? 'pointer-events-none' : 'hover:bg-gray-200 focus:ring-2'}`}
+          onClick={() => setGuests(guests + 1)}
+          disabled={reservationClosed}
+        >
+          <svg
+            className={`w-2.5 h-2.5 text-gray-900 dark:text-white ${reservationClosed ? 'opacity-50' : ''}`}
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 18 18"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 1v16M1 9h16"
+            />
+          </svg>
+        </button>
+      </div>
+      {/* )} */}
+
+      <div className="flex justify-center my-4">
+        <div className="border-t border-gray-300 w-20"></div>
+      </div>
+
+      <div className="text-sm text-gray-600 flex items-center justify-between mb-6">
+        <span>
+          {guests}x {event?.name} {pluralize('Ticket', guests)}
+        </span>
+        <span>
+          {event?.price ? (
+            <span>
+              <span className="uppercase">{event?.price_currency}</span>{' '}
+              {event?.price * guests}
+            </span>
+          ) : (
+            <span>Free</span>
+          )}
+        </span>
+      </div>
+      <div className="text-lg font-medium flex items-center justify-between mb-4">
+        <span>Total</span>
+        <span>
+          {event?.price ? (
+            <span>
+              <span className="uppercase">{event?.price_currency}</span>{' '}
+              {event?.price * guests}
+            </span>
+          ) : (
+            <span>Free</span>
+          )}
+        </span>
+      </div>
+      <button
+        className={`bg-base-600 text-white px-4 py-2 rounded-lg w-full block ${
+          loading || reservationClosed ? 'opacity-50' : ''
+        }`}
+        disabled={loading || reservationClosed}
+        onClick={handleReservation}
+      >
+        {loading
+          ? 'Processing...'
+          : reservationClosed
+            ? 'Reservations closed'
+            : 'Reserve'}
+      </button>
     </div>
   );
 }

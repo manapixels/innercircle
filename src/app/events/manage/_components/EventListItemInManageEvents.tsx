@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 import { BUCKET_URL } from '@/constants';
 import {
@@ -11,6 +12,9 @@ import { reverseSlugify } from '@/helpers/text';
 import { EventWithParticipants } from '@/types/event';
 import EditEventForm from './EditEventForm';
 import ListOfParticipants from './ListOfParticipants';
+import { updateEventStatus } from '@/api/event';
+import { useToast } from '@/_components/ui/Toasts/useToast';
+
 
 export default function EventListItemInMyEvents({
   event,
@@ -23,9 +27,31 @@ export default function EventListItemInMyEvents({
   openModal: (content: React.ReactNode) => void;
   closeModal: () => void;
 }) {
+  const [status, setStatus] = useState<string>(event.status)
   const eventOver = hasDatePassed(event?.date_start);
   const ticketsLeft = (event.slots ?? 0) - (event.sign_ups ?? 0);
   const percentSold = event.slots ? (1 - ticketsLeft / event.slots) * 100 : 0;
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    setStatus(event.status)
+  }, [event.status])
+
+  useEffect(() => {
+    const updateStatus = async () => {
+      await updateEventStatus(event.id, status);
+      toast({
+        title: 'Success!',
+        description: `Event status updated`,
+        className: 'bg-green-700 text-white border-transparent',
+      });
+    };
+
+    if (status !== event.status) {
+      updateStatus();
+    }
+  }, [status]);
 
   const handleEditClick = () => {
     const modalContent = (
@@ -177,30 +203,6 @@ export default function EventListItemInMyEvents({
                   ></path>
                 </svg>
               </button>
-              <Link
-                href={`/events/${event?.slug}`}
-                className="inline-flex items-center gap-1 text-gray-500 text-sm"
-              >
-                Event page{' '}
-                <svg
-                  className="inline-block"
-                  width="16px"
-                  height="16px"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  color="#000000"
-                >
-                  <path
-                    d="M6.00005 19L19 5.99996M19 5.99996V18.48M19 5.99996H6.52005"
-                    stroke="#000000"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></path>
-                </svg>
-              </Link>
               <button
                 type="button"
                 onClick={handleEditClick}
@@ -227,12 +229,27 @@ export default function EventListItemInMyEvents({
                   ></path>
                 </svg>
               </button>
+
+              {/* Update event status */}
+              {(event.status !== 'completed' || !eventOver) && (
+              <select
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-base-500 focus:border-base-500 block w-full p-2.5 dark:bg-gray-7000 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-base-500 dark:focus:border-base-500"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="draft">Draft</option>
+                <option value="reserving">Reserving</option>
+                <option value="reservations-closed">Closed</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="completed">Completed</option>
+              </select>
+              )}
             </div>
           </div>
           <div>
             <div className="w-full bg-gray-200 rounded-full  dark:bg-gray-700 mb-3">
               <div
-                className={`${percentSold === 100 ? 'bg-gray-400' : 'bg-base-600'}  text-xs font-medium text-white text-center p-0.5 leading-none rounded-full min-w-24`}
+                className={`${percentSold === 100 ? 'bg-gray-400' : 'bg-base-600'}  text-xs font-medium text-white text-center p-0.5 leading-none rounded-full min-w-28`}
                 style={{ width: `${percentSold}%` }}
               >
                 {ticketsLeft === 0

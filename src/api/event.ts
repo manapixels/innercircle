@@ -3,6 +3,8 @@
 import { createClient } from '@/utils/supabase/server';
 import { Event } from '@/types/event';
 
+const validStatuses = ['draft', 'reserving', 'reservations-closed', 'cancelled', 'completed'];
+
 /**
  * Fetches all events and their authors.
  * @returns The events data or error.
@@ -220,6 +222,36 @@ export const updateEvent = async ({
     return error;
   }
 };
+
+/**
+ * Updates the status of an event.
+ * @param {string} event_id - The ID of the event to update.
+ * @param {string} new_status - The new status to set for the event.
+ * @returns The updated event data or an error if the update fails.
+ */
+export const updateEventStatus = async (event_id: string, new_status: string) => {
+
+  if (!validStatuses.includes(new_status)) {
+    throw new Error('Invalid status value');
+  }
+  
+  const supabase = createClient();
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .update({ status: new_status })
+      .match({ id: event_id })
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error updating event status:', error);
+    return error;
+  }
+};
+
 
 /**
  * Deletes an event from the database.
