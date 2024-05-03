@@ -49,6 +49,7 @@ export async function checkoutWithStripe(
 
     let params: Stripe.Checkout.SessionCreateParams = {
       mode: 'payment',
+      expires_at: Math.floor(Date.now() / 1000) + 900, // Set expiration time to 15 minutes from now
       invoice_creation: {
         enabled: true,
       },

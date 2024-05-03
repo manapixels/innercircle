@@ -48,19 +48,45 @@ export const cancelReservation = async (reservationId: string) => {
         const { data, error } = await supabaseAdmin
             .from('event_reservations')
             .update({
+                reservation_status: 'cancelled'
+            })
+            .eq('id', reservationId);
+
+        if (error) {
+            throw new Error(`Failed to cancel reservation: ${error.message}`);
+        }
+
+        return data;
+    } catch (error: any) {
+        console.error(error);
+        throw new Error(`Error cancelling reservation: ${error.message}`);
+    }
+};
+
+/**
+ * Refunds a reservation.
+ * @param reservationId - The ID of the reservation in the event_reservations table.
+ */
+export const refundReservation = async (reservationId: string) => {
+    try {
+
+        // Update the reservation record in Supabase
+        const { data, error } = await supabaseAdmin
+            .from('event_reservations')
+            .update({
                 payment_status: 'refunded',
                 reservation_status: 'cancelled'
             })
             .eq('id', reservationId);
 
         if (error) {
-            throw new Error(`Failed to update reservation status: ${error.message}`);
+            throw new Error(`Failed to refund reservation: ${error.message}`);
         }
 
         return data;
     } catch (error: any) {
         console.error(error);
-        throw new Error(`Error processing updating reservation: ${error.message}`);
+        throw new Error(`Error refunding reservation: ${error.message}`);
     }
 };
 

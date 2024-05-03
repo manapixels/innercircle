@@ -1,12 +1,13 @@
 import Stripe from 'stripe';
 import { stripe } from '@/utils/stripe/config';
 import {
-  cancelReservation
+  cancelReservation, refundReservation
 } from '@/utils/supabase/admin';
 import { fulfillOrder } from '@/utils/stripe/server';
 
 const relevantEvents = new Set([
   'checkout.session.completed',
+  'checkout.session.expired',
   'checkout.session.async_payment_succeeded',
   'charge.refunded'
 ]);
@@ -47,8 +48,17 @@ export async function POST(req: Request) {
           break;
         }
 
+        case 'checkout.session.expired': {
+          const session = event.data.object as Stripe.Checkout.Session;
+          // Cancel the reservation
+          if (session.metadata?.reservation_id) {
+            cancelReservation(session.metadata.reservation_id);
+          }
+          break;
+        }
+
         case 'checkout.session.async_payment_succeeded': {
-          const session = event.data.object;
+          const session = event.data.object as Stripe.Checkout.Session;
           // Fulfill the order
           fulfillOrder(session);
 
@@ -58,7 +68,9 @@ export async function POST(req: Request) {
         case 'charge.refunded': {
           charge = event.data.object as Stripe.Charge;
           // Update reservation status
-          cancelReservation(charge.metadata.reservation_id);
+          if (charge.metadata?.reservation_id) {
+            refundReservation(charge.metadata.reservation_id);
+          }
 
           break;
         }

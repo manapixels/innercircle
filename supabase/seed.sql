@@ -210,9 +210,9 @@ BEGIN
   ),
   (
       ARRAY['speed-dating']::public.event_categories[],  
-      '2024-03-02T09:00:00+08:00', 
-      '2024-05-02T19:00:00+08:00', 
-      '2024-05-02T22:00:00+08:00', 
+      '2024-04-25T09:00:00+08:00', 
+      '2024-05-22T19:00:00+08:00', 
+      '2024-05-22T22:00:00+08:00', 
       '', 
       '52e401c2-632c-4d96-9e4f-08d4f1c85ddd', 
       '52e401c2-632c-4d96-9e4f-08d4f1c85ddd.png', 
@@ -268,7 +268,7 @@ BEGIN
           payment_amount = event_record.price,
           payment_currency = event_record.price_currency
       WHERE id = reservation_id;
-      
+
       EXCEPTION WHEN OTHERS THEN
         RAISE LOG 'Error signing up user % for event %: %', user_ids[i], event_record.id, SQLERRM;
       END;
