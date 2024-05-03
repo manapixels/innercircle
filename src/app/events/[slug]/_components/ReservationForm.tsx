@@ -27,10 +27,7 @@ export default function ReservationForm({
   const { toast } = useToast();
 
   const eventOver = hasDatePassed(event?.date_start);
-  let slotsLeft = 0;
-  if (event?.sign_ups && event?.slots) {
-    slotsLeft = event.slots - event.sign_ups;
-  }
+  const slotsLeft = event?.slots ? event.slots - (event.sign_ups || 0) : 0;
   const exceedCapacity = slotsLeft - guests < 0
 
   const handleReservation = async () => {
