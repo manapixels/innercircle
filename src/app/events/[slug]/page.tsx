@@ -23,14 +23,14 @@ export default async function EventDetailsPage({
   return (
     <div>
       <div
-        className={`w-full h-96 bg-gray-300 bg-center rounded-2xl ${event?.image_banner_url === '' ? 'grayscale opacity-5' : ''}`}
+        className={`w-full h-72 md:h-96 bg-gray-300 bg-center rounded-2xl ${event?.image_banner_url === '' ? 'grayscale opacity-5' : ''}`}
         style={{
           backgroundImage: `url(${event?.image_banner_url === '' ? '/logo.svg' : `${BUCKET_URL}/event_banners/${event?.image_banner_url}`})`,
         }}
       />
 
-      <div className="flex justify-between mt-8">
-        <div className="w-1/2">
+      <div className="flex flex-col md:flex-row justify-between mt-8">
+        <div className="w-full md:w-1/2">
           <div className="text-3xl font-medium mb-2">{event?.name}</div>
           <div className="flex items-center text-gray-600 mb-4">
             <svg
@@ -49,7 +49,7 @@ export default async function EventDetailsPage({
               {event?.location_name}, {event?.location_country}
             </span>
           </div>
-          <div className="border border-gray-200 px-5 py-3 mb-4 rounded-lg flex items-center font-medium text-sm">
+          <div className="border border-gray-200 px-5 py-3 mb-4 rounded-2xl md:rounded-lg flex items-center font-medium text-sm">
             Hosted by{' '}
             {host?.avatar_url !== '' ? (
               <img
@@ -74,7 +74,7 @@ export default async function EventDetailsPage({
           </div>
           <div>{event?.description}</div>
         </div>
-        <div className="w-1/3">
+        <div className="w-full md:w-1/3">
           <ReservationForm event={event} />
         </div>
       </div>
