@@ -30,7 +30,7 @@ export default function RootLayout({
           <AuthProvider>
             <div className="flex flex-col min-h-screen w-full">
               <Header />
-              <div className="flex-grow px-6 py-8 max-w-6xl w-full mx-auto relative">
+              <div className="flex-grow px-4 md:px-6 py-4 md:py-8 max-w-6xl w-full mx-auto relative">
                 {children}
               </div>
               <Footer />

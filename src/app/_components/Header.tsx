@@ -15,7 +15,7 @@ export default function Header() {
   return (
     <header className="max-w-6xl w-full mx-auto bg-opacity-50 bg-white">
       <nav
-        className="relative grid grid-cols-2 md:grid-cols-3 items-center p-6"
+        className="relative grid grid-cols-2 md:grid-cols-3 items-center px-4 md:px-6 py-4 md:py-6"
         aria-label="Global"
       >
         <div className="justify-self-start pr-4 bg-white">
