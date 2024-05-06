@@ -20,7 +20,7 @@ export default function EventListItemInProfile({
       key={event.slug}
       className="p-3 rounded-lg hover:bg-gray-100"
     >
-      <div className="w-full relative aspect-square">
+      <div className="w-full relative aspect-square flex-shrink-0">
         {event?.image_thumbnail_url ? (
           <Image
             src={`${BUCKET_URL}/event_thumbnails/${event?.image_thumbnail_url}`}

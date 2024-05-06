@@ -6,7 +6,7 @@ const EventListItemSkeleton = () => {
       role="status"
       className="animate-pulse relative flex gap-4 p-6 rounded-lg bg-white border"
     >
-      <div className="relative aspect-square">
+      <div className="relative aspect-square flex-shrink-0">
         <div className="bg-gray-200 rounded-lg w-40 h-40 flex justify-center items-center">
           <Image
             src="/logo.svg"

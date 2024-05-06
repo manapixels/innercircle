@@ -492,6 +492,16 @@ select
         'category', e2.category,
         'date_start', e2.date_start,
         'date_end', e2.date_end,
+        'location_name', e2.location_name,
+        'location_address', e2.location_address,
+        'location_country', e2.location_country,
+        'price', e2.price,
+        'price_currency', e2.price_currency,
+        'price_stripe_id', e2.price_stripe_id,
+        'status', e2.status,
+        'slots', e2.slots,
+        'image_thumbnail_url', e2.image_thumbnail_url,
+        'image_banner_url', e2.image_banner_url,
         'created_by', (
           select jsonb_build_object(
             'id', p2.id,

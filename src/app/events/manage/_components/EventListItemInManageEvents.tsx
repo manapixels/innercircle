@@ -81,7 +81,7 @@ export default function EventListItemInMyEvents({
         </span>
       </div>
 
-      <div className="relative aspect-square">
+      <div className="relative aspect-square flex-shrink-0">
         {event?.image_thumbnail_url ? (
           <Image
             src={`${BUCKET_URL}/event_thumbnails/${event?.image_thumbnail_url}`}

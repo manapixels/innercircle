@@ -42,9 +42,9 @@ export default function EventListItemInMyEvents({
 
   return (
     <div
-      className={`relative flex gap-4 p-6 rounded-lg bg-white border ${eventOver ? 'col-span-1' : 'col-span-2 lg:col-span-4'}`}
+      className={`relative flex gap-4 md:p-6 rounded-lg bg-white md:border ${eventOver ? 'col-span-1' : 'col-span-2 lg:col-span-4'}`}
     >
-      <div className="absolute top-0 right-0">
+      <div className="absolute top-0 right-0 hidden md:block">
         <span
           className={`block   text-sm font-medium px-4 py-1.5 rounded align-top ${eventOver ? 'bg-gray-100 text-gray-400' : 'bg-base-600 text-white'}`}
         >
@@ -52,17 +52,17 @@ export default function EventListItemInMyEvents({
         </span>
       </div>
 
-      <div className="relative aspect-square">
+      <div className="w-32 md:w-auto relative aspect-square flex-shrink-0">
         {event?.image_thumbnail_url ? (
           <Image
             src={`${BUCKET_URL}/event_thumbnails/${event?.image_thumbnail_url}`}
             alt={`${event?.name}`}
-            className="rounded-lg object-cover w-40 h-40 bg-gray-200"
+            className="rounded-lg object-cover w-full h-full bg-gray-200"
             width="170"
             height="170"
           />
         ) : (
-          <div className="bg-gray-200 rounded-lg w-40 h-40 flex justify-center items-center">
+          <div className="bg-gray-200 rounded-lg w-full h-full flex justify-center items-center">
             <Image
               src="/logo.svg"
               alt="Inner Circle"
@@ -77,14 +77,14 @@ export default function EventListItemInMyEvents({
       <div className="min-w-0 py-2 flex-grow flex flex-col justify-between">
         <div>
           {/* Event name & tags */}
-          <div className="flex gap-4">
+          <div className="flex gap-4 mb-2">
             <Link
               href={`/events/${event?.slug}`}
               className="truncate text-lg font-semibold mb-1"
             >
               {event?.name}
             </Link>
-            <div className="items-center gap-2 mb-2">
+            <div className="items-center gap-2 hidden md:block">
               {event?.category?.map((c) => (
                 <span
                   key={c}
@@ -96,11 +96,32 @@ export default function EventListItemInMyEvents({
             </div>
           </div>
           {/* Hosted by */}
-          {event?.created_by?.name && (
-            <div>
-              <p>Hosted by {event?.created_by?.name}</p>
+          <div className="flex items-center mb-2">
+          <Link
+            href={`/profiles/${event?.created_by?.username}`}
+            className="block"
+          >
+            <div className="flex flex-row gap-2 md:gap-3 items-center">
+              <Image
+                src={
+                  event?.created_by?.avatar_url !== ''
+                    ? `${BUCKET_URL}/avatars/${event.created_by.avatar_url}`
+                    : '/users/placeholder-avatar.svg'
+                }
+                alt=""
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+              <div>
+                <div className="font-medium text-base-800">
+                  {event?.created_by?.name}
+                </div>
+                <div className="text-sm text-gray-400">Your host</div>
+              </div>
             </div>
-          )}
+          </Link>
+        </div>
 
           {/* Location */}
           {event?.location_name && event?.location_country ? (
@@ -110,9 +131,9 @@ export default function EventListItemInMyEvents({
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_name)},${encodeURIComponent(event.location_country)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden text-sm text-gray-500 sm:block hover:text-base-600 group"
+                className="text-sm text-gray-500 hover:text-base-600 group"
               >
-                {event?.location_name}, {event?.location_country}
+                {event?.location_name}<span className="hidden md:inline-block">, {event?.location_country}</span>
                 <svg
                   className="hidden group-hover:inline-block"
                   width="16px"
@@ -145,10 +166,10 @@ export default function EventListItemInMyEvents({
           <div className="flex gap-1 items-center">
             {event?.date_start && event?.date_end && (
               <>
-                <div className="hidden text-lg text-gray-800 sm:block">
+                <div className="text-md md:text-lg text-gray-800 ">
                   {formatDateRange(event?.date_start, event?.date_end)}
                 </div>
-                <div className="text-lg text-gray-600">
+                <div className="text-md md:text-lg text-gray-600">
                   {new Date(event?.date_start).getFullYear()}
                 </div>
               </>

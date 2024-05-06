@@ -25,7 +25,7 @@ export default function EventListItem({
       key={event.slug}
       className={`px-0 md:px-3 py-3 rounded-lg hover:bg-gray-100 ${hasDatePassed(event.date_end) && 'grayscale opacity-80'} hover:grayscale-0 hover:opacity-100 flex md:block`}
     >
-      <div className="w-32 md:w-full relative aspect-square">
+      <div className="w-32 md:w-full relative aspect-square flex-shrink-0">
         {event?.image_thumbnail_url ? (
           <Image
             src={`${BUCKET_URL}/event_thumbnails/${event?.image_thumbnail_url}`}
@@ -68,7 +68,7 @@ export default function EventListItem({
                 href={`/profiles/${event?.created_by?.username}`}
                 className="block p-4"
               >
-                <div className="flex flex-row gap-3 items-center mb-5">
+                <div className="flex flex-row gap-2 md:gap-3 items-center mb-5">
                   <Image
                     src={
                       event?.created_by?.avatar_url !== ''
@@ -128,10 +128,10 @@ export default function EventListItem({
         <p className="truncate overflow-hidden text-ellipsis text-lg md:text-sm font-semibold max-w-full">
           {event.name}
         </p>
-        <p className="hidden text-sm text-gray-500 sm:block">
+        <p className="text-md md:text-sm text-gray-500">
           {event.location_name}, {event.location_country}
         </p>
-        <p className="hidden text-lg md:text-sm text-gray-500 sm:block">
+        <p className="text-lg md:text-sm text-gray-500">
           {event?.date_start &&
             event?.date_end &&
             formatDateRange(event.date_start, event.date_end)}
