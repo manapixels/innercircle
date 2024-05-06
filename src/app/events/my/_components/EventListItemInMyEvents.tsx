@@ -16,7 +16,7 @@ export default function EventListItemInMyEvents({
   event: EventWithReservations;
 }) {
   const eventOver = hasDatePassed(event?.date_start);
-  const ticketsBought = event?.reservations.reduce(
+  const ticketsBought = event?.reservations?.reduce(
     (acc, curr) => acc + curr.tickets_bought,
     0,
   );
@@ -162,7 +162,7 @@ export default function EventListItemInMyEvents({
               </div>
             )}
 
-            {event?.reservations.map(
+            {event?.reservations?.map(
               (r) =>
                 r.stripe_receipt_url && (
                   <a

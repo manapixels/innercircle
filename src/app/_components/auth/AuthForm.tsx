@@ -79,21 +79,21 @@ export default function AuthForm() {
         backdropDismiss={true}
       >
         {/* Modal header */}
-        <div className="flex items-center justify-between px-12 py-6 border-b rounded-t dark:border-gray-600">
+        <div className="flex items-center justify-between max-w-lg mx-auto px-5 md:px-10 py-5 border-b rounded-t dark:border-gray-600">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
             Welcome to <i>innercircle</i>
           </h3>
         </div>
 
         <form
-          className="max-w-lg mx-auto p-10"
+          className="max-w-lg mx-auto p-5 md:p-10"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="mb-5 w-full">
             <input
               type="email"
               id="email"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2.5 py-4 md:py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               required
               placeholder="Email"
               {...register('email', {
@@ -109,12 +109,12 @@ export default function AuthForm() {
               <p role="alert">Please enter a valid email</p>
             )}
           </div>
-          <div className="mb-5 w-full">
+          <div className="mb-4 md:mb-5 w-full">
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2.5 py-4 md:py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 required
                 placeholder="Password"
                 {...register('password', { required: true })}
@@ -162,8 +162,8 @@ export default function AuthForm() {
             </div>
           </div>
           {state === 'login' && (
-            <div className="flex justify-between mb-5">
-              <div className="flex items-center">
+            <div className="flex flex-col md:flex-row justify-between mb-5">
+              <div className="flex items-center order-2 md:order-1">
                 <div className="flex items-center h-5">
                   <input
                     id="remember"
@@ -181,7 +181,7 @@ export default function AuthForm() {
                 </label>
               </div>
               <a
-                className="text-sm text-gray-400 font-medium text-foreground ml-4"
+                className="text-sm text-gray-400 font-medium text-foreground mb-4 md:mb-0 md:ml-4 order-1 md:order-2"
                 href="/forgot-password"
               >
                 Forgot password?
@@ -190,7 +190,7 @@ export default function AuthForm() {
           )}
           <button
             type="submit"
-            className={`text-black bg-base-100 hover:bg-base-200 focus:ring-4 focus:outline-none focus:ring-base-300 font-bold rounded-lg text-sm block w-full px-5 py-2.5 text-center dark:bg-base-600 dark:hover:bg-base-700 dark:focus:ring-base-800 ${isSubmitting ? 'disabled:opacity-50' : ''}`}
+            className={`text-black text-sm bg-base-100 hover:bg-base-200 focus:ring-4 focus:outline-none focus:ring-base-300 font-bold block w-full px-5 py-4 md:py-2.5 text-center dark:bg-base-600 dark:hover:bg-base-700 dark:focus:ring-base-800 ${isSubmitting ? 'disabled:opacity-50' : ''} rounded-full`}
             disabled={isSubmitting}
           >
             {isSubmitting && <Spinner className="mr-1.5" />}
