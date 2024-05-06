@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   return (
     <>
-      <div className="p-4 md:p-12 pb-0 md:pb-0 max-w-7xl mx-auto">
+      <div className="px-4 py-8 md:px-12 md:py-12 max-w-7xl mx-auto self-center">
         <div className="max-w-md text-center mx-auto ">
-          <div className="text-6xl font-bold mb-4">
+          <div className="text-5xl md:text-6xl font-bold mb-4">
             Join our
             <br />
             inner
@@ -22,16 +22,16 @@ export default async function HomePage() {
             Welcome to our community where millennials unite to build
             connections, friendships, and empower each other.
           </p>
-          <div className="flex gap-3 justify-center">
+          <div className="flex flex-col md:flex-row gap-3 justify-center">
             <Link
               href="/events"
-              className="px-5 py-3 text-base font-medium text-center text-white bg-base-700 rounded-full hover:bg-base-800 focus:ring-4 focus:outline-none focus:ring-base-300 dark:bg-base-600 dark:hover:bg-base-700 dark:focus:ring-base-800 italic"
+              className="px-5 py-5 md:py-3 text-lg md:text-base font-medium text-center text-white bg-base-700 rounded-full hover:bg-base-800 focus:ring-4 focus:outline-none focus:ring-base-300 dark:bg-base-600 dark:hover:bg-base-700 dark:focus:ring-base-800 italic"
             >
               Find an event
             </Link>
             <Link
               href="/"
-              className="px-5 py-3 text-base font-medium text-center text-base-700 bg-white border border-base-700 rounded-full hover:border-base-600 hover:text-base-600 focus:ring-4 focus:outline-none focus:ring-base-300 dark:text-base-600 dark:border-base-600 dark:hover:bg-base-600 dark:hover:text-white dark:focus:ring-base-800 italic"
+              className="px-5 py-3 text-lg md:text-base font-medium text-center text-base-700 bg-white border border-base-700 rounded-full hover:border-base-600 hover:text-base-600 focus:ring-4 focus:outline-none focus:ring-base-300 dark:text-base-600 dark:border-base-600 dark:hover:bg-base-600 dark:hover:text-white dark:focus:ring-base-800 italic"
             >
               Join our{' '}
               <svg
@@ -86,18 +86,18 @@ export default async function HomePage() {
         })}
       </div>
 
-      <div className="absolute inset-0 flex flex-wrap justify-center items-center -z-[1]">
+      <div className="absolute inset-0 flex flex-wrap justify-center items-center -z-[1] overflow-hidden">
         <Image
           src="/events/background-1.jpg"
           alt="background"
-          className="w-1/6 transform translate-y-3/4 -translate-x-[140%] rounded-3xl aspect-square"
+          className="w-1/3 md:w-1/6 transform translate-y-3/4 -translate-x-[100%] md:-translate-x-[140%] rounded-3xl aspect-square"
           width={300}
           height={300}
         />
         <Image
           src="/events/background-2.jpg"
           alt="background"
-          className="w-1/6 transform -translate-y-2/4 translate-x-[140%] rounded-3xl aspect-square"
+          className="w-1/3 md:w-1/6 transform -translate-y-3/4 md:-translate-y-2/4 translate-x-[120%] md:translate-x-[140%] rounded-3xl aspect-square"
           width={300}
           height={300}
         />
