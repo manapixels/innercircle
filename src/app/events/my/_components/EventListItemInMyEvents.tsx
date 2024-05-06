@@ -131,11 +131,11 @@ export default function EventListItemInMyEvents({
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_name)},${encodeURIComponent(event.location_country)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-gray-500 hover:text-base-600 group"
+                className="text-sm text-gray-500 hover:text-base-600 group flex items-center gap-1"
               >
                 {event?.location_name}<span className="hidden md:inline-block">, {event?.location_country}</span>
                 <svg
-                  className="hidden group-hover:inline-block"
+                  className="md:hidden group-hover:inline-block"
                   width="16px"
                   height="16px"
                   viewBox="0 0 24 24"
@@ -155,7 +155,7 @@ export default function EventListItemInMyEvents({
               </a>
             </div>
           ) : (
-            <span className="hidden text-sm text-gray-500 sm:block mb-3">
+            <span className="text-sm text-gray-500 mb-3">
               {event?.location_name ? `${event?.location_name}, ` : ''}
               {event?.location_country}
             </span>

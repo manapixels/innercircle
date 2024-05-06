@@ -47,9 +47,10 @@ export default function Header() {
           {profile?.roles?.includes('host') && (
             <Link
               href="/events/create"
-              className="inline-block self-center px-4 py-2 text-sm font-medium text-center text-base-700 bg-white border border-base-700 rounded-full hover:border-base-600 hover:text-base-600 focus:ring-4 focus:outline-none focus:ring-base-300 dark:text-base-600 dark:border-base-600 dark:hover:bg-base-600 dark:hover:text-white dark:focus:ring-base-800 italic"
+              className="inline-block self-center px-4 py-2 text-sm md:italic font-bold md:font-medium text-center text-base-700 bg-white border border-base-700 rounded-full hover:border-base-600 hover:text-base-600 focus:ring-4 focus:outline-none focus:ring-base-300 dark:text-base-600 dark:border-base-600 dark:hover:bg-base-600 dark:hover:text-white dark:focus:ring-base-800 "
             >
-              + Create event
+              + Create{" "}
+              <span className="hidden md:inline-block">event</span>
             </Link>
           )}
           {profile?.id ? (

@@ -129,7 +129,7 @@ export default function EventListItem({
           {event.name}
         </p>
         <p className="text-md md:text-sm text-gray-500">
-          {event.location_name}, {event.location_country}
+        {event?.location_name}<span className="hidden md:inline-block">, {event?.location_country}</span>
         </p>
         <p className="text-lg md:text-sm text-gray-500">
           {event?.date_start &&

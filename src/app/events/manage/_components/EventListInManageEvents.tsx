@@ -63,32 +63,36 @@ export default function EventListInMyEvents() {
   };
 
   return (
-    <div className={`grid grid-cols-1 gap-6 bg-gray-50 rounded-2xl p-8`}>
+    <div className={`grid grid-cols-1 gap-6 md:bg-gray-50 rounded-2xl md:p-8`}>
       <div>
         <h2 className="font-medium text-xl mb-4">Upcoming Events</h2>
         {isLoading && futureEvents.length === 0 && <EventListItemSkeleton />}
-        {futureEvents.map((event, i) => (
-          <EventListItemInManageEvents
-            event={event}
-            key={i}
-            updateEventInList={updateEventInList}
-            openModal={openModal}
-            closeModal={closeModal}
-          />
-        ))}
+        <div className="flex flex-col gap-7 md:gap-4 bg-gray-50 rounded-2xl py-2 md:px-8 md:py-8">
+          {futureEvents.map((event, i) => (
+            <EventListItemInManageEvents
+              event={event}
+              key={i}
+              updateEventInList={updateEventInList}
+              openModal={openModal}
+              closeModal={closeModal}
+            />
+          ))}
+        </div>
       </div>
       <div>
         <h2 className="font-medium text-xl mb-4">Past Events</h2>
         {isLoading && pastEvents.length === 0 && <EventListItemSkeleton />}
-        {pastEvents.map((event, i) => (
-          <EventListItemInManageEvents
-            event={event}
-            key={i}
-            updateEventInList={updateEventInList}
-            openModal={openModal}
-            closeModal={closeModal}
-          />
-        ))}
+        <div className="flex flex-col gap-7 md:gap-4 bg-gray-50 rounded-2xl py-2 md:px-8 md:py-8">
+          {pastEvents.map((event, i) => (
+            <EventListItemInManageEvents
+              event={event}
+              key={i}
+              updateEventInList={updateEventInList}
+              openModal={openModal}
+              closeModal={closeModal}
+            />
+          ))}
+        </div>
       </div>
 
       <Modal isOpen={isModalOpen} handleClose={closeModal}>
