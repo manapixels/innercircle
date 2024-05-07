@@ -53,7 +53,7 @@ export default function LoggedInUser({
           </motion.button>
           <motion.div
             ref={ref}
-            className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
+            className={`origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-20 ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
             initial={{ opacity: 0 }}
             animate={isOpen ? 'open' : 'closed'}
             variants={{

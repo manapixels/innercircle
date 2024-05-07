@@ -25,13 +25,13 @@ export default async function HomePage() {
           <div className="flex flex-col md:flex-row gap-3 justify-center">
             <Link
               href="/events"
-              className="px-5 py-5 md:py-3 text-lg md:text-base font-medium text-center text-white bg-base-700 rounded-full hover:bg-base-800 focus:ring-4 focus:outline-none focus:ring-base-300 dark:bg-base-600 dark:hover:bg-base-700 dark:focus:ring-base-800 italic"
+              className="px-12 py-3 text-lg md:text-base font-medium text-center text-white bg-base-700 rounded-full hover:bg-base-800 focus:ring-4 focus:outline-none focus:ring-base-300 dark:bg-base-600 dark:hover:bg-base-700 dark:focus:ring-base-800 italic"
             >
               Find an event
             </Link>
             <Link
               href="/"
-              className="px-5 py-3 text-lg md:text-base font-medium text-center text-base-700 bg-white border border-base-700 rounded-full hover:border-base-600 hover:text-base-600 focus:ring-4 focus:outline-none focus:ring-base-300 dark:text-base-600 dark:border-base-600 dark:hover:bg-base-600 dark:hover:text-white dark:focus:ring-base-800 italic"
+              className="px-12 py-3 text-lg md:text-base font-medium text-center text-base-700 bg-white border border-base-700 rounded-full hover:border-base-600 hover:text-base-600 focus:ring-4 focus:outline-none focus:ring-base-300 dark:text-base-600 dark:border-base-600 dark:hover:bg-base-600 dark:hover:text-white dark:focus:ring-base-800 italic"
             >
               Join our{' '}
               <svg

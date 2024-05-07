@@ -41,7 +41,7 @@ export default function EventListInMyEvents() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="font-medium text-xl mb-4">Upcoming events</h2>
+        <h2 className="font-medium text-md md:text-xl text-gray-600 md:text-black mb-4">Upcoming events</h2>
         {isLoading && futureEvents.length === 0 && <EventListItemSkeleton />}
         <div className="flex flex-col gap-7 md:gap-4 bg-gray-50 rounded-2xl py-2 md:px-8 md:py-8">
           {futureEvents.length > 0 ? (
@@ -54,7 +54,7 @@ export default function EventListInMyEvents() {
         </div>
       </div>
       <div>
-        <h2 className="font-medium text-xl mb-4">Past events</h2>
+        <h2 className="font-medium text-md md:text-xl text-gray-600 md:text-black mb-4">Past events</h2>
         {isLoading && pastEvents.length === 0 && <EventListItemSkeleton />}
         <div className="flex flex-col gap-7 md:gap-4 bg-gray-50 rounded-2xl py-2 md:px-8 md:py-8">
           {pastEvents.length > 0 ? (

@@ -235,7 +235,7 @@ export default function ReservationForm({
         </span>
       </div>
       <button
-        className={`bg-base-600 text-white text-lg md:text-md px-4 py-3 md:py-2 rounded-full w-full block ${
+        className={`bg-base-600 text-white px-12 py-3 rounded-full w-full block ${
           loading || reservationClosed ? 'opacity-50' : ''
         }`}
         disabled={loading || reservationClosed}

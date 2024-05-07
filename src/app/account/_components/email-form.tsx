@@ -62,7 +62,7 @@ export default function EmailForm({ currEmail }: { currEmail: string | undefined
       <div className="text-right">
         <button
           type="submit"
-          className="text-base-700 bg-white border border-base-700 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-md md:text-xs px-4 py-2 md:py-1.5"
+          className="text-base-700 bg-white border border-base-700 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 rounded-full px-4 py-2 text-sm md:text-xs font-bold md:font-medium"
           disabled={isSubmitting}
         >
           {isSubmitting && <Spinner className="mr-1.5" />}
