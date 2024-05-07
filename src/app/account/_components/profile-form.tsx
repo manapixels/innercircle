@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
@@ -83,17 +84,17 @@ export default function ProfileForm({
 
   return (
     <form
-      className="p-10 border border-gray-300 rounded-lg bg-gray-50"
+      className="p-5 md:p-10 border border-gray-300 rounded-lg bg-gray-50"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="mb-2">
-        <label htmlFor="name" className="text-gray-500 text-xs">
+        <label htmlFor="name" className="text-gray-500 text-sm md:text-xs">
           Your name
         </label>
         <input
           type="text"
           id="name"
-          className={`bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
+          className={`bg-white border border-gray-300 text-gray-900text-md md:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
           required
           placeholder="Name"
           {...register('name', {
@@ -111,24 +112,24 @@ export default function ProfileForm({
       </div>
 
       <div className="mb-2">
-        <label className="text-gray-500 text-xs">Age</label>
+        <label className="text-gray-500 text-sm md:text-xs">Age</label>
         <input
           type="text"
           id="name"
           value={calculateAge(currProfile?.birthyear, currProfile?.birthmonth)}
-          className={`bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none ${loading ? 'animate-pulse bg-gray-200' : ''}`}
+          className={`bg-gray-100 border border-gray-300 text-gray-900text-md md:text-sm rounded-lg block w-full p-2.5 focus:outline-none ${loading ? 'animate-pulse bg-gray-200' : ''}`}
           readOnly
         />
       </div>
 
       <div className="w-full flex">
         <div className="flex items-center">
-          <label className="text-gray-500 text-xs mr-2">Date of Birth</label>
+          <label className="text-gray-500 text-sm md:text-xs mr-2">Date of Birth</label>
           <select
             {...register('birthyear', {
               required: true,
             })}
-            className={`text-gray-900 text-sm p-1 rounded-md mr-2 border border-gray-300 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
+            className={`text-gray-900text-md md:text-sm p-1 rounded-md mr-2 border border-gray-300 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
             required
           >
             {Array.from(
@@ -148,7 +149,7 @@ export default function ProfileForm({
             {...register('birthmonth', {
               required: true,
             })}
-            className={`text-gray-900 text-sm p-1 rounded-md border border-gray-300 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
+            className={`text-gray-900text-md md:text-sm p-1 rounded-md border border-gray-300 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
             required
           >
             <option value="1">Jan</option>
@@ -174,7 +175,7 @@ export default function ProfileForm({
       <div className="text-right">
         <button
           type="submit"
-          className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-md text-xs px-2 py-1.5"
+          className="text-base-700 bg-white border border-base-700 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-md md:text-xs px-4 py-2 md:py-1.5"
           disabled={isSubmitting || loading}
         >
           {isSubmitting && <Spinner className="mr-1.5" />}

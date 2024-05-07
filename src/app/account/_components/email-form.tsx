@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { updateEmail } from '@/api/auth';
@@ -33,11 +34,11 @@ export default function EmailForm({ currEmail }: { currEmail: string | undefined
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="text-xs mb-0.5"><span className="text-gray-400">Current:</span> {currEmail}</div>
+      <div className="text-sm md:text-xs mb-0.5"><span className="text-gray-400">Current:</span> {currEmail}</div>
       <input
         type="email"
         id="email"
-        className={`bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
+        className={`bg-white border border-gray-300 text-gray-900 text-md md:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${loading ? 'animate-pulse bg-gray-200' : ''}`}
         disabled={loading}
         required
         placeholder="New email"
@@ -61,7 +62,7 @@ export default function EmailForm({ currEmail }: { currEmail: string | undefined
       <div className="text-right">
         <button
           type="submit"
-          className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-md text-xs px-2 py-1.5"
+          className="text-base-700 bg-white border border-base-700 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-md md:text-xs px-4 py-2 md:py-1.5"
           disabled={isSubmitting}
         >
           {isSubmitting && <Spinner className="mr-1.5" />}
