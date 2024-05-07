@@ -229,9 +229,10 @@ export default function EditEventForm({
     <div>
       <div className="text-xl font-medium mb-5 py-1">Edit event</div>
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit, onError)}>
-        <div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
-          {/* Event thumbnail */}
-          <div className="sm:col-span-2">
+        <div className="grid grid-cols-6 gap-4 md:gap-6">
+
+          {/* Images - thumbnail */}
+          <div className="col-span-2">
             <FileUpload
               className="aspect-square h-full"
               currValue={event?.image_thumbnail_url}
@@ -251,8 +252,9 @@ export default function EditEventForm({
               </span>
             )}
           </div>
-          {/* Event banner */}
-          <div className="sm:col-span-4">
+
+          {/* Images - banner */}
+          <div className="col-span-4">
             <FileUpload
               className="h-full"
               currValue={event?.image_banner_url}
@@ -272,8 +274,9 @@ export default function EditEventForm({
               </span>
             )}
           </div>
-          {/* Event name */}
-          <div className="sm:col-span-6">
+
+          {/* Name */}
+          <div className="col-span-6">
             <label
               htmlFor="name"
               className="block text-sm font-medium text-gray-700"
@@ -295,8 +298,9 @@ export default function EditEventForm({
               </span>
             )}
           </div>
-          {/* Event category */}
-          <div className="sm:col-span-6">
+
+          {/* Category */}
+          <div className="col-span-6">
             <label
               htmlFor="category"
               className="block text-sm font-medium text-gray-700"
@@ -356,8 +360,8 @@ export default function EditEventForm({
             )}
           </div>
 
-          {/* Event description */}
-          <div className="sm:col-span-6">
+          {/* Description */}
+          <div className="col-span-6">
             <label
               htmlFor="description"
               className="block text-sm font-medium text-gray-700"
@@ -379,8 +383,9 @@ export default function EditEventForm({
               </span>
             )}
           </div>
-          {/* Event location */}
-          <div className="sm:col-span-6">
+
+          {/* Google Places Autofill */}
+          <div className="col-span-6">
             <label
               htmlFor="autocomplete"
               className="block text-sm font-medium text-gray-700"
@@ -444,7 +449,7 @@ export default function EditEventForm({
                   id="location_country"
                   defaultValue="Singapore"
                   disabled={true}
-                  className={`mt-1 block w-full border ${errors.location_country ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50 pointer-events-none`}
+                  className={`mt-1 block w-32 border ${errors.location_country ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50 pointer-events-none`}
                 >
                   <option>Singapore</option>
                 </select>
@@ -456,8 +461,9 @@ export default function EditEventForm({
               </div>
             </div>
           </div>
-          {/* Event location name */}
-          <div className="-mt-3 sm:col-span-6">
+
+          {/* Location name */}
+          <div className="-mt-3 col-span-6">
             <input
               {...register('location_name', {
                 required: 'Enter name of location.',
@@ -475,8 +481,9 @@ export default function EditEventForm({
               </span>
             )}
           </div>
-          {/* Event address */}
-          <div className="-mt-3 sm:col-span-6">
+
+          {/* Address */}
+          <div className="-mt-3 col-span-6">
             <input
               {...register('location_address', {
                 required: 'Enter address of location.',
@@ -494,8 +501,9 @@ export default function EditEventForm({
               </span>
             )}
           </div>
-          {/* Event date and time */}
-          <div className="sm:col-span-6">
+
+          {/* Date & time */}
+          <div className="col-span-6">
             <div className="flex justify-between">
               <label className="block text-sm font-medium text-gray-700">
                 Date <span className="text-red-500 text-sm">*</span>
@@ -517,7 +525,7 @@ export default function EditEventForm({
                 ))}
               </select>
             </div>
-            <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-[1fr_1fr_20px_1fr_1fr] gap-4">
               <input
                 {...register('date_start', {
                   required: 'Select date of event.',
@@ -526,7 +534,7 @@ export default function EditEventForm({
                 name="date_start"
                 id="date_start"
                 required
-                className={`mt-1 block w-full border ${errors.date_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                className={`order-1 mt-1 block w-full border ${errors.date_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
               />
 
               <input
@@ -537,9 +545,9 @@ export default function EditEventForm({
                 name="time_start"
                 id="time_start"
                 required
-                className={`mt-1 block w-full border ${errors.time_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                className={`order-2 mt-1 block w-full border ${errors.time_start ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
               />
-              <div className="text-center self-center">–</div>
+              <div className="order-3 text-center self-center hidden md:block">–</div>
 
               <input
                 {...register('time_end', {
@@ -549,7 +557,7 @@ export default function EditEventForm({
                 name="time_end"
                 id="time_end"
                 required
-                className={`mt-1 block w-full border ${errors.time_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                className={`order-5 md:order-4 mt-1 block w-full border ${errors.time_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
               />
 
               <input
@@ -563,7 +571,7 @@ export default function EditEventForm({
                 name="date_end"
                 id="date_end"
                 required
-                className={`mt-1 block w-full border ${errors.date_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                className={`order-4 md:order-5 mt-1 block w-full border ${errors.date_end ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
               />
             </div>
             <div>
@@ -589,16 +597,17 @@ export default function EditEventForm({
               )}
             </div>
           </div>
-          {/* Event price and currency */}
-          <div className="sm:col-span-3">
+
+          {/* Price & currency */}
+          <div className="col-span-3">
             <label
               htmlFor="price"
               className="block text-sm font-medium text-gray-700"
             >
               Price <span className="text-red-500 text-sm">*</span>
             </label>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-2">
+            <div className="flex gap-4">
+              <div className="flex-grow-1">
                 <input
                   {...register('price', {
                     required: 'Enter price of event.',
@@ -610,7 +619,7 @@ export default function EditEventForm({
                   className="mt-1 block w-full border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
                 />
               </div>
-              <div>
+              <div className="w-[78px] flex-shrink-0">
                 <select
                   {...register('price_currency', {
                     required: 'Select currency of price.',
@@ -618,7 +627,7 @@ export default function EditEventForm({
                   name="price_currency"
                   id="price_currency"
                   defaultValue="SGD"
-                  className={`mt-1 block w-full border ${errors.price_currency ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50`}
+                  className={`mt-1 block w-full border ${errors.price_currency ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 md:text-sm bg-gray-50`}
                 >
                   <option>SGD</option>
                 </select>
@@ -635,8 +644,9 @@ export default function EditEventForm({
               </span>
             )}
           </div>
-          {/* Event slots */}
-          <div className="sm:col-span-3">
+
+          {/* Slots */}
+          <div className="col-span-3">
             <label
               htmlFor="slots"
               className="block text-sm font-medium text-gray-700"
@@ -660,9 +670,11 @@ export default function EditEventForm({
             )}
           </div>
         </div>
+
+        {/* Footer */}
         <div className="bg-white bg-opacity-75 border-t border-gray-400 sticky -mx-5 bottom-0 left-0 w-auto z-20">
-          <div className="py-4 px-10 flex justify-between items-end">
-            <div>
+          <div className="py-4 px-5 md:px-10 flex flex-col md:flex-row justify-between md:items-end">
+            <div className="mb-4 md:mb-0">
               {showErrorSummary && Object.keys(errors).length > 0 && (
                 <div
                   className="p-4 text-sm text-red-700 bg-red-100 rounded-lg"
@@ -679,7 +691,7 @@ export default function EditEventForm({
             </div>
             <button
               type="submit"
-              className="bg-base-600 text-white px-12 py-3 rounded-full"
+              className="bg-base-600 text-white font-medium w-full md:w-auto px-12 py-3 rounded-full"
             >
               {isLoading && <Spinner className="mr-1.5" />}
               Update Event

@@ -88,7 +88,7 @@ export default function EventListItemInMyEvents({
           <Image
             src={`${BUCKET_URL}/event_thumbnails/${event?.image_thumbnail_url}`}
             alt={`${event?.name}`}
-            className="rounded-lg object-cover w-40 h-40 bg-gray-200"
+            className="rounded-lg object-cover h-full bg-gray-200"
             width="170"
             height="170"
           />
