@@ -183,12 +183,12 @@ export default function CreateEventForm() {
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit, onError)}>
-      <div className="grid grid-cols-6 gap-4 md:gap-6">
+      <div className="grid grid-cols-6 gap-3 md:gap-6">
 
         {/* Images - Thumbnail */}
         <div className="col-span-2">
           <FileUpload
-            className="aspect-square h-full"
+            className="aspect-square w-28 md:w-48 h-full"
             currValue={null}
             userId={profile?.id}
             bucketId="event_thumbnails"
@@ -210,7 +210,7 @@ export default function CreateEventForm() {
         {/* Images - Banner */}
         <div className="col-span-4">
           <FileUpload
-            className="h-36 md:h-full"
+            className="h-full"
             currValue={null}
             userId={profile?.id}
             bucketId="event_banners"
@@ -228,6 +228,7 @@ export default function CreateEventForm() {
             </span>
           )}
         </div>
+
         {/* Name */}
         <div className="col-span-6">
           <label

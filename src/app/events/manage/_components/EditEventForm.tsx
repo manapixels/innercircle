@@ -229,12 +229,12 @@ export default function EditEventForm({
     <div>
       <div className="text-xl font-medium mb-5 py-1">Edit event</div>
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit, onError)}>
-        <div className="grid grid-cols-6 gap-4 md:gap-6">
+        <div className="grid grid-cols-6 gap-3 md:gap-6">
 
           {/* Images - thumbnail */}
           <div className="col-span-2">
             <FileUpload
-              className="aspect-square h-full"
+              className="aspect-square w-28 md:w-48 h-full"
               currValue={event?.image_thumbnail_url}
               userId={profile?.id}
               bucketId="event_thumbnails"
