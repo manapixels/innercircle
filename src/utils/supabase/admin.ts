@@ -17,7 +17,7 @@ const supabaseAdmin = createClient<Database>(
  * @param amount - The amount of the reservation.
  * @param currency - The currency of the reservation.
  */
-const confirmReservation = async (reservationId: string, paymentIntentId: string, receiptUrl: string | null, amount: number, currency: string) => {
+export const confirmReservation = async (reservationId: string, paymentIntentId: string, receiptUrl: string | null, amount: number, currency: string) => {
 
     const { data, error } = await supabaseAdmin.from('event_reservations')
         .update({
@@ -119,7 +119,7 @@ export const addReceiptUrl = async (reservationId: string, receiptUrl: string) =
 
 
 
-const updatePriceRecord = async (
+export const updatePriceRecord = async (
     price: Stripe.Price,
     retryCount = 0,
     maxRetries = 3
@@ -151,7 +151,7 @@ const updatePriceRecord = async (
     }
 };
 
-const deleteProductRecord = async (product: Stripe.Product) => {
+export const deleteProductRecord = async (product: Stripe.Product) => {
     const { error: deletionError } = await supabaseAdmin
         .from('products')
         .delete()
@@ -161,7 +161,7 @@ const deleteProductRecord = async (product: Stripe.Product) => {
     console.log(`Product deleted: ${product.id}`);
 };
 
-const upsertCustomerToSupabase = async (uuid: string, customerId: string) => {
+export const upsertCustomerToSupabase = async (uuid: string, customerId: string) => {
     const { error: upsertError } = await supabaseAdmin
         .from('profiles')
         .update({ stripe_customer_id: customerId })
@@ -173,7 +173,7 @@ const upsertCustomerToSupabase = async (uuid: string, customerId: string) => {
     return customerId;
 };
 
-const createCustomerInStripe = async (uuid: string, email: string) => {
+export const createCustomerInStripe = async (uuid: string, email: string) => {
     const customerData = { metadata: { supabaseUUID: uuid }, email: email };
     const newCustomer = await stripe.customers.create(customerData);
     if (!newCustomer) throw new Error('Stripe customer creation failed.');
@@ -181,7 +181,7 @@ const createCustomerInStripe = async (uuid: string, email: string) => {
     return newCustomer.id;
 };
 
-const createOrRetrieveCustomer = async ({
+export const createOrRetrieveCustomer = async ({
     email,
     uuid
 }: {
@@ -259,7 +259,7 @@ const createOrRetrieveCustomer = async ({
 /**
  * Copies the billing details from the payment method to the customer object.
  */
-const copyBillingDetailsToCustomer = async (
+export const copyBillingDetailsToCustomer = async (
     uuid: string,
     payment_method: Stripe.PaymentMethod
 ) => {
@@ -277,12 +277,4 @@ const copyBillingDetailsToCustomer = async (
         })
         .eq('id', uuid);
     if (updateError) throw new Error(`Customer update failed: ${updateError.message}`);
-};
-
-export {
-    confirmReservation,
-    updatePriceRecord,
-    deleteProductRecord,
-    createOrRetrieveCustomer,
-    copyBillingDetailsToCustomer
 };

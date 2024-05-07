@@ -2,6 +2,11 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { Event } from '@/types/event';
+import { formatEventDate } from '@/helpers/date';
+
+// Telegram setup
+const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+const chatId = process.env.TELEGRAM_CHAT_ID;
 
 const validStatuses = ['draft', 'reserving', 'reservations-closed', 'cancelled', 'completed'];
 
@@ -234,7 +239,7 @@ export const updateEventStatus = async (event_id: string, new_status: string) =>
   if (!validStatuses.includes(new_status)) {
     throw new Error('Invalid status value');
   }
-  
+
   const supabase = createClient();
   try {
     const { data, error } = await supabase
@@ -297,5 +302,77 @@ export const signUpForEvent = async (
   } catch (error) {
     console.error('Error signing up for event:', error);
     return '';
+  }
+};
+
+/**
+ * Posts event details to a Telegram channel.
+ * @param {string} eventId - The ID of the event to post.
+ * @returns The response from the Telegram API or an error.
+ */
+export const postEventToTelegram = async (eventId: string, userId: string) => {
+  const supabase = createClient();
+  // Check if the user has the 'admin' or 'host' role
+  const { data: roles, error: rolesError } = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', userId)
+    .in('role', ['admin', 'host']);
+
+  if (rolesError) {
+    throw new Error(`Failed to verify user roles: ${rolesError.message}`);
+  }
+
+  if (roles.length === 0) {
+    throw new Error('Unauthorized access: Only admins and hosts can post events to Telegram.');
+  }
+
+  // Fetch event data from Supabase
+  const { data: eventData, error } = await supabase
+    .from('events')
+    .select('*')
+    .eq('id', eventId)
+    .single();
+
+  if (error) {
+    throw new Error(`[postEventToTelegram] Event lookup failed: ${error.message}`);
+  }
+
+  // Prepare message
+  const message = `
+  <b>${eventData.name}</b>\n
+  at ${eventData.location_name}\n\n
+  ${eventData.description}\n\n
+  ${formatEventDate(eventData.date_start, eventData.date_end)}\n\n
+  ---
+  Hosted by @${eventData.created_by}`;
+
+  const imageUrl = eventData.image_thumbnail_url;
+
+  // Send message to Telegram
+  try {
+    const response = await fetch(`https://api.telegram.org/bot${telegramToken}/sendPhoto`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        photo: imageUrl,
+        caption: message,
+        parse_mode: 'HTML'
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Failed to send message to Telegram: ${errorData.description}`);
+    }
+
+    const responseData = await response.json();
+
+    return responseData;
+  } catch (error) {
+    throw new Error(`Error sending message to Telegram: ${error}`);
   }
 };

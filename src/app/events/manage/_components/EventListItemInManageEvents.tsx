@@ -14,6 +14,7 @@ import EditEventForm from './EditEventForm';
 import ListOfParticipants from './ListOfParticipants';
 import { updateEventStatus } from '@/api/event';
 import { useToast } from '@/_components/ui/Toasts/useToast';
+import PostToTelegram from './PostToTelegram';
 
 export default function EventListItemInMyEvents({
   event,
@@ -71,7 +72,7 @@ export default function EventListItemInMyEvents({
   };
 
   return (
-    <div>
+    <div className="relative">
       <div className={`relative flex gap-4 md:p-6 rounded-lg bg-white border`}>
         <div className="absolute top-0 right-0 hidden md:block">
           <span
@@ -335,6 +336,10 @@ export default function EventListItemInMyEvents({
             <option value="completed">Completed</option>
           </select>
         )}
+      </div>
+
+      <div className="absolute top-0 left-0">
+        <PostToTelegram event={event} />
       </div>
     </div>
   );

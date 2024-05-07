@@ -130,3 +130,24 @@ export function timeBeforeEvent(startDate: string | Date | null, endDate: string
         return `In ${Math.floor(differenceInDays / 365)} years`;
     }
 }
+
+export function formatEventDate(startDate: string | Date, endDate: string | Date): string {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+
+    if (start.toDateString() === end.toDateString()) {
+        if (start.getTime() === end.getTime()) {
+            return start.toLocaleDateString('en-US', options).replace(',', '');
+        } else {
+            const startTime = start.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const endTime = end.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            return `${start.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}, ${startTime} - ${endTime}`;
+        }
+    } else {
+        const startFormat = start.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
+        const endFormat = end.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
+        return `${startFormat.split(' ')[0]} - ${endFormat}`;
+    }
+}
