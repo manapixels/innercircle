@@ -6,6 +6,7 @@ import { useToast } from '@/_components/ui/Toasts/useToast';
 import { EventWithParticipants } from '@/types/event';
 import { postEventToTelegram } from '@/api/event';
 import { useUser } from '@/_contexts/UserContext';
+import Spinner from '@/_components/ui/Spinner';
 
 export default function PostToTelegram({
   event,
@@ -13,16 +14,18 @@ export default function PostToTelegram({
   event: EventWithParticipants;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { user } = useUser();
+  const { profile } = useUser();
 
   const ref = useRef(null);
   useOnClickOutside(ref, () => setIsOpen(false));
 
   const handleConfirm = async () => {
-    if (event?.id && user?.id) {
+    if (event?.id && profile?.id) {
       try {
-        await postEventToTelegram(event.id, user.id);
+        setIsLoading(true);
+        await postEventToTelegram(event.id, profile);
         toast({
           title: 'Success!',
           description: 'Event posted to Telegram',
@@ -34,6 +37,9 @@ export default function PostToTelegram({
           description: 'Failed to post event to Telegram',
           className: 'bg-red-700 text-white border-transparent',
         });
+      } finally {
+        setIsLoading(false);
+        setIsOpen(false);
       }
     }
   };
@@ -80,7 +86,8 @@ export default function PostToTelegram({
           tabIndex={-1}
         >
           <button className="px-4 py-2" onClick={handleConfirm}>
-            Post to Telegram
+            {isLoading && <Spinner className="mr-1.5" />}
+            {isLoading ? 'Posting...' : 'Post to Telegram'}
           </button>
         </motion.div>
       </div>
