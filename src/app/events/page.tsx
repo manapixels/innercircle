@@ -12,7 +12,7 @@ export default async function EventsPage() {
 
   return (
     <div className="flex w-full flex-col md:col-span-4">
-      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
         {events?.map((event, i) => {
           return <EventListItem event={event} key={i} />;
         })}

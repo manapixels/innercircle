@@ -23,7 +23,7 @@ export default function EventListItem({
     <Link
       href={`/events/${event.slug}`}
       key={event.slug}
-      className={`px-0 md:px-3 py-3 rounded-lg hover:bg-gray-100 ${hasDatePassed(event.date_end) && 'grayscale opacity-80'} hover:grayscale-0 hover:opacity-100 flex md:block`}
+      className={`px-0 md:px-3 py-3 rounded-lg hover:bg-gray-100 ${hasDatePassed(event.date_end) && 'grayscale opacity-80'} hover:grayscale-0 hover:opacity-100 flex md:block overflow-hidden`}
     >
       <div className="w-32 md:w-full relative aspect-square flex-shrink-0">
         {event?.image_thumbnail_url ? (
@@ -125,18 +125,18 @@ export default function EventListItem({
       </div>
       <div className="min-w-0 px-3 md:px-0 py-2 flex flex-col justify-between md:block">
         <div>
-        <p className="truncate overflow-hidden text-ellipsis text-lg md:text-sm font-semibold max-w-full">
+        <p className="truncate overflow-hidden text-ellipsis text-md md:text-sm font-semibold max-w-full">
           {event.name}
         </p>
-        <p className="text-md md:text-sm text-gray-500">
+        <p className="text-sm text-gray-500">
         {event?.location_name}<span className="hidden md:inline-block">, {event?.location_country}</span>
         </p>
-        <p className="text-lg md:text-sm text-gray-500">
+        <p className="text-sm text-gray-500">
           {event?.date_start &&
             event?.date_end &&
             formatDateRange(event.date_start, event.date_end)}
         </p>
-        <p className="truncate text-lg md:text-sm mt-1">
+        <p className="truncate text-md md:text-sm mt-1">
           <span className="font-semibold uppercase mr-1">
             ${event.price} {event.price_currency}
           </span>
@@ -186,7 +186,7 @@ export default function EventListItem({
                 className="rounded-full"
               />
               <div>
-                <div className="font-medium text-base-800">
+                <div className="font-medium text-sm text-base-800">
                   {event?.created_by?.name}
                 </div>
                 <div className="text-sm text-gray-400">Your host</div>
