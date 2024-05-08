@@ -67,7 +67,7 @@ export default function EventListInMyEvents() {
       <div>
         <h2 className="font-medium text-md md:text-xl text-gray-600 md:text-black mb-4">Upcoming Events</h2>
         {isLoading && futureEvents.length === 0 && <EventListItemSkeleton />}
-        <div className="flex flex-col gap-7 md:gap-4 bg-gray-50 rounded-2xl py-2">
+        <div className="grid grid-cols-1 gap-7 md:gap-4 bg-gray-50 rounded-2xl py-2">
           {futureEvents.map((event, i) => (
             <EventListItemInManageEvents
               event={event}
@@ -82,7 +82,7 @@ export default function EventListInMyEvents() {
       <div>
         <h2 className="font-medium text-md md:text-xl text-gray-600 md:text-black mb-4">Past Events</h2>
         {isLoading && pastEvents.length === 0 && <EventListItemSkeleton />}
-        <div className="flex flex-col gap-7 md:gap-4 bg-gray-50 rounded-2xl py-2">
+        <div className="grid grid-cols-1 gap-7 md:gap-4 bg-gray-50 rounded-2xl py-2">
           {pastEvents.map((event, i) => (
             <EventListItemInManageEvents
               event={event}
