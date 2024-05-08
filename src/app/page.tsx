@@ -59,8 +59,14 @@ export default async function HomePage() {
       </div>
 
       <div className="relative -z-[1]">
-        <div className="border aspect-square border-base-300 rounded-full w-10/12 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="fixed top-3/4 left-1/2 w-full transform -translate-x-1/2 flex items-center justify-center">
+        <div
+          className="border aspect-square border-base-300 rounded-full w-10/12 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          style={{ transform: 'translateZ(0})' }}
+        ></div>
+        <div
+          className="fixed top-3/4 left-1/2 w-full transform -translate-x-1/2 flex items-center justify-center"
+          style={{ transform: 'translateZ(0})' }}
+        >
           <div className="border aspect-square border-base-300 bg-base-100 rounded-full w-9/12"></div>
           <div className="border aspect-square border-base-300 bg-white rounded-full w-7/12 absolute"></div>
         </div>
