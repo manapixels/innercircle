@@ -15,15 +15,15 @@ export default function Header() {
   return (
     <header className="max-w-6xl w-full mx-auto bg-opacity-50 bg-white">
       <nav
-        className="relative grid grid-cols-2 md:grid-cols-3 items-center px-4 md:px-6 py-4 md:py-6"
+        className="relative grid grid-cols-2 md:grid-cols-3 items-center px-4 md:px-6 py-3 md:py-6"
         aria-label="Global"
       >
         <div className="justify-self-start pr-4 bg-white">
           <a href="/" className="-m-1.5 p-1.5 block">
             <Image
-              className="relative"
               src="/logo.svg"
               alt="innercircle Logo"
+              className="relative w-14 h-10 md:w-20 md:h-14"
               width={80}
               height={55}
               priority
@@ -47,7 +47,7 @@ export default function Header() {
           {profile?.roles?.includes('host') && (
             <Link
               href="/events/create"
-              className="inline-block self-center px-4 py-2 text-sm md:italic font-bold md:font-medium text-center text-base-700 bg-white border border-base-700 rounded-full hover:border-base-600 hover:text-base-600 focus:ring-4 focus:outline-none focus:ring-base-300 dark:text-base-600 dark:border-base-600 dark:hover:bg-base-600 dark:hover:text-white dark:focus:ring-base-800"
+              className="inline-block whitespace-nowrap self-center px-4 py-2 text-sm md:italic font-bold md:font-medium text-center text-base-700 bg-white border border-base-700 rounded-full hover:border-base-600 hover:text-base-600 focus:ring-4 focus:outline-none focus:ring-base-300 dark:text-base-600 dark:border-base-600 dark:hover:bg-base-600 dark:hover:text-white dark:focus:ring-base-800"
             >
               + Create{" "}
               <span className="hidden md:inline-block">event</span>

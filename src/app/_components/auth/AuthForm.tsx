@@ -35,8 +35,8 @@ export default function AuthForm() {
     formState: { errors, isSubmitting },
   } = useForm<AuthFormInput>({
     defaultValues: {
-      email: 'shirley@innercircle.fam',
-      password: 'password123',
+      email: '',
+      password: '',
     },
   });
   const onSubmit: SubmitHandler<AuthFormInput> = async (data) => {
