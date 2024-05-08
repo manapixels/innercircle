@@ -297,8 +297,7 @@ export default function EventListItemInMyEvents({
         <button
           type="button"
           onClick={handleEditClick}
-          className={`inline-flex items-center justify-center gap-1 text-base-700 text-sm text-center py-2 px-4 bg-white border rounded-lg ${eventOver ? 'text-gray-400 cursor-not-allowed' : 'border-base-700'}`}
-          disabled={eventOver}
+          className={`inline-flex items-center justify-center gap-1 text-base-700 text-sm text-center py-2 px-4 bg-white border rounded-lg border-base-700`}
         >
           Edit{' '}
           <svg
@@ -313,7 +312,7 @@ export default function EventListItemInMyEvents({
           >
             <path
               d="M3 12L21 12M21 12L12.5 3.5M21 12L12.5 20.5"
-              className={`${eventOver ? 'stroke-gray-400' : 'stroke-base-700'}`}
+              className="stroke-base-700"
               stroke="#000000"
               strokeWidth="1.5"
               strokeLinecap="round"
