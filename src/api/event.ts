@@ -363,10 +363,12 @@ at ${eventData.location_name}\n`
     message += `${eventData.description}\n`
   }
   message += `${formatEventDate(eventData.date_start, eventData.date_end)}\n
-Hosted by ${profile?.name}
+Hosted by <a href="${process.env.NEXT_PUBLIC_SITE_URL}/profiles/${profile?.username}">${profile?.name}</a>
 
-Reserve your seats <a href="${process.env.APP_URL}/events/${eventData.slug}">here</a>
+Reserve your seats <a href="${process.env.NEXT_PUBLIC_SITE_URL}/events/${eventData.slug}">here</a>
 `;
+
+console.log(message)
 
   // Create form data
   const formData = new FormData();
