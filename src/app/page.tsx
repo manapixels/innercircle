@@ -11,11 +11,11 @@ export default async function HomePage() {
     <>
       <div className="px-4 py-8 md:px-12 md:py-12 max-w-7xl mx-auto self-center">
         <div className="max-w-md text-center mx-auto ">
-          <div className="text-5xl md:text-6xl font-bold mb-4">
+          <div className="text-[2.5rem] leading-10 md:text-6xl font-bold mb-4">
             Join our
             <br />
             inner
-            <div className="w-10 h-10 bg-base-300 rounded-full aspect-square inline-block mx-2"></div>
+            <div className="w-6 md:w-10 h-6 md:h-10 bg-base-300 rounded-full aspect-square inline-block mx-2"></div>
             circle
           </div>
           <p className="text-xl mb-8 text-gray-700">
