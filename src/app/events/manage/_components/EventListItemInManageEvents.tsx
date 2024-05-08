@@ -112,7 +112,7 @@ export default function EventListItemInMyEvents({
             <div className="flex gap-4">
               <Link
                 href={`/events/${event?.slug}`}
-                className="truncate text-lg font-semibold mb-1"
+                className="truncate text-md md:text-sm font-semibold mb-1"
               >
                 {event?.name}
               </Link>
@@ -129,13 +129,13 @@ export default function EventListItemInMyEvents({
             </div>
             {/* Location */}
             {event?.location_name && event?.location_country ? (
-              <div className="flex gap-1 items-center md:mb-3">
+              <div className="flex gap-1 items-center md:mb-3 text-md md:text-sm">
                 <span>at</span>
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_name)},${encodeURIComponent(event.location_country)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-500 hover:text-base-600 group flex items-center gap-1"
+                  className="text-gray-500 hover:text-base-600 group flex items-center gap-1"
                 >
                   {event?.location_name}
                   <span className="hidden md:inline-block">
@@ -162,7 +162,7 @@ export default function EventListItemInMyEvents({
                 </a>
               </div>
             ) : (
-              <span className="text-sm text-gray-500 mb-3">
+              <span className="text-gray-500 mb-3">
                 {event?.location_name ? `${event?.location_name}, ` : ''}
                 {event?.location_country}
               </span>
@@ -171,13 +171,13 @@ export default function EventListItemInMyEvents({
 
           <div className="flex-grow">
             <div className="flex flex-col md:flex-row gap-4 justify-between mb-3">
-              <div className="flex gap-1 items-center">
+              <div className="flex gap-1 items-center text-md md:text-sm">
                 {event?.date_start && event?.date_end && (
                   <>
-                    <div className="text-lg text-gray-800">
+                    <div className="text-gray-800">
                       {formatDateRange(event?.date_start, event?.date_end)}
                     </div>
-                    <div className="text-lg text-gray-600">
+                    <div className="text-gray-600">
                       {new Date(event?.date_start).getFullYear()}
                     </div>
                   </>
@@ -271,7 +271,7 @@ export default function EventListItemInMyEvents({
         <button
           type="button"
           onClick={handleViewParticipantsClick}
-          className={`inline-flex items-center gap-1 text-base-700 text-sm p-4 bg-white border border-base-700 rounded-lg`}
+          className={`inline-flex items-center justify-center gap-1 text-base-700 text-sm text-center py-2 px-4 bg-white border border-base-700 rounded-lg`}
         >
           Participants{' '}
           <svg
@@ -297,7 +297,7 @@ export default function EventListItemInMyEvents({
         <button
           type="button"
           onClick={handleEditClick}
-          className={`inline-flex items-center gap-1 text-base-700 text-sm p-4 bg-white border rounded-lg ${eventOver ? 'text-gray-400 cursor-not-allowed' : 'border-base-700'}`}
+          className={`inline-flex items-center justify-center gap-1 text-base-700 text-sm text-center py-2 px-4 bg-white border rounded-lg ${eventOver ? 'text-gray-400 cursor-not-allowed' : 'border-base-700'}`}
           disabled={eventOver}
         >
           Edit{' '}

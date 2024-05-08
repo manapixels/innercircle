@@ -55,12 +55,12 @@ export default function EventListItemInProfile({
       </div>
 
       <div className="min-w-0 py-2">
-        <p className="truncate text-sm font-semibold">{event.name}</p>
-        <p className="hidden text-sm text-gray-500 sm:block">
+        <p className="truncate text-md md:text-sm font-semibold">{event.name}</p>
+        <p className="hidden text-md md:text-sm text-gray-500 sm:block">
           {event.location_name}, {event.location_country}
         </p>
         {event.date_start && event.date_end && (
-          <p className="hidden text-sm text-gray-500 sm:block">
+          <p className="hidden text-md md:text-sm text-gray-500 sm:block">
             {formatDateRange(event.date_start, event.date_end, true)}
           </p>
         )}

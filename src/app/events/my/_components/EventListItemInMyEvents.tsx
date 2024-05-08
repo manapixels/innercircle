@@ -80,7 +80,7 @@ export default function EventListItemInMyEvents({
           <div className="flex gap-4 mb-2">
             <Link
               href={`/events/${event?.slug}`}
-              className="truncate text-lg font-semibold mb-1"
+              className="truncate text-md md:text-sm font-semibold mb-1"
             >
               {event?.name}
             </Link>
@@ -166,10 +166,10 @@ export default function EventListItemInMyEvents({
           <div className="flex gap-1 items-center">
             {event?.date_start && event?.date_end && (
               <>
-                <div className="text-md md:text-lg text-gray-800 ">
+                <div className="text-md md:text-sm text-gray-800 ">
                   {formatDateRange(event?.date_start, event?.date_end)}
                 </div>
-                <div className="text-md md:text-lg text-gray-600">
+                <div className="text-md md:text-sm text-gray-600">
                   {new Date(event?.date_start).getFullYear()}
                 </div>
               </>
