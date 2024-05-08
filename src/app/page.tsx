@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   return (
-    <>
+    <div className="flex ">
       <div className="px-4 py-8 md:px-12 md:py-12 max-w-7xl mx-auto self-center">
         <div className="max-w-md text-center mx-auto ">
           <div className="text-[2.5rem] leading-10 md:text-6xl font-bold mb-4">
@@ -102,6 +102,6 @@ export default async function HomePage() {
           height={300}
         />
       </div>
-    </>
+    </div>
   );
 }
