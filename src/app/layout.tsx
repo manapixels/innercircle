@@ -9,6 +9,7 @@ import { AuthProvider } from '@/_contexts/AuthContext';
 import './globals.css';
 import 'tippy.js/dist/tippy.css';
 import URLToaster from './_components/ui/Toasts/URLToaster';
+import Head from 'next/head';
 
 
 const inter = Inter({ subsets: ['latin'] });
@@ -25,6 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Head>
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+      </Head>
       <body className={`${inter.className} antialiased`}>
         <UserProvider>
           <AuthProvider>
