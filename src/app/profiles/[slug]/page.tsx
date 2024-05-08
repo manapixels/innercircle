@@ -38,6 +38,8 @@ export default async function ProfilePage({
     isParticipant = true;
   }
 
+  console.log(profile)
+
   return (
     <div className="flex w-full flex-col md:col-span-4">
       <Image
@@ -106,15 +108,15 @@ export default async function ProfilePage({
       {isHost && (
         <>
           <div
-            className={`font-bold text-xl mb-4 flex justify-between items-center`}
+            className={`mb-4 flex justify-between items-center`}
           >
-            <h2>Events hosted</h2>
+            <h2 className="font-bold text-md md:text-lg">Events hosted</h2>
             {user?.user?.id === profile?.id && (
               <Link
                 href="/events/manage"
-                className="flex items-center gap-1 text-white bg-base-700 hover:bg-base-600 font-medium text-base rounded-full px-7 py-2.5"
+                className="flex items-center gap-1 text-white bg-base-700 hover:bg-base-600 font-medium rounded-full px-4 md:px-7 py-2 md:py-2.5 text-sm md:text-md"
               >
-                Manage my events{' '}
+                Manage events{' '}
                 <svg
                   className="inline-block"
                   width="16px"
@@ -137,7 +139,7 @@ export default async function ProfilePage({
             )}
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-10">
             {hostedEvents?.length > 0 ? (
               hostedEvents.map((event, i) => (
                 <EventListItemInProfile event={event} key={event.id || i} />

@@ -472,15 +472,37 @@ select
   p.name,
   p.avatar_url,
   coalesce(
-    jsonb_agg(
-      to_jsonb(e.*) || jsonb_build_object(
+    (select jsonb_agg(jsonb_build_object(
+        'id', e1.id,
+        'name', e1.name,
+        'slug', e1.slug,
+        'description', e1.description,
+        'category', e1.category,
+        'date_start', e1.date_start,
+        'date_end', e1.date_end,
+        'location_name', e1.location_name,
+        'location_address', e1.location_address,
+        'location_country', e1.location_country,
+        'price', e1.price,
+        'price_currency', e1.price_currency,
+        'price_stripe_id', e1.price_stripe_id,
+        'status', e1.status,
+        'slots', e1.slots,
+        'image_thumbnail_url', e1.image_thumbnail_url,
+        'image_banner_url', e1.image_banner_url,
         'sign_ups', (
           select sum(er.tickets_bought)
           from public.event_reservations er
-          where er.event_id = e.id and er.reservation_status = 'confirmed'
+          where er.event_id = e1.id and er.reservation_status = 'confirmed'
         )
-      ) ORDER BY e.date_start DESC
-    ) FILTER (WHERE e.id IS NOT NULL),
+      ) ORDER BY e1.date_start DESC)
+    from (
+      select distinct on (e1.id) e1.*
+      from public.events e1
+      join public.event_reservations ep on e1.id = ep.event_id
+      where e1.created_by = p.id
+      order by e1.id, e1.date_start DESC
+    ) as e1),
     '[]'::jsonb
   ) as events_hosted,
   coalesce(

@@ -18,7 +18,7 @@ export default function EventListItemInProfile({
     <Link
       href={`/events/${event.slug}`}
       key={event.slug}
-      className="p-3 rounded-lg hover:bg-gray-100"
+      className="rounded-lg hover:bg-gray-100"
     >
       <div className="w-full relative aspect-square flex-shrink-0">
         {event?.image_thumbnail_url ? (
@@ -48,7 +48,7 @@ export default function EventListItemInProfile({
           </div>
         )}
 
-        <div className="absolute bottom-5 left-5 w-16 h-16">
+        <div className="hidden md:block absolute bottom-5 left-5 w-16 h-16">
           <div className="rounded-full absolute bottom-0 left-0 bg-white w-16 h-16"></div>
           <div className="rounded-full absolute bottom-9 left-9 bg-base-400 w-6 h-6"></div>
         </div>
@@ -56,11 +56,11 @@ export default function EventListItemInProfile({
 
       <div className="min-w-0 py-2">
         <p className="truncate text-md md:text-sm font-semibold">{event.name}</p>
-        <p className="hidden text-md md:text-sm text-gray-500 sm:block">
+        <p className="text-sm md:text-md md:text-sm text-gray-500">
           {event.location_name}, {event.location_country}
         </p>
         {event.date_start && event.date_end && (
-          <p className="hidden text-md md:text-sm text-gray-500 sm:block">
+          <p className="text-sm md:text-md md:text-sm text-gray-500">
             {formatDateRange(event.date_start, event.date_end, true)}
           </p>
         )}
