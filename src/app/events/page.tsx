@@ -3,6 +3,8 @@ import { fetchEvents } from '@/api/event';
 import EventListItem from './_components/EventListItem';
 import { EventWithCreatorInfo } from '@/types/event';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'innercircle | All events',
 };

@@ -3,6 +3,8 @@ import ProfileForm from './_components/profile-form';
 import EmailForm from './_components/email-form';
 import PasswordForm from './_components/password-form';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AccountPage() {
   const supabase = createClient();
 
