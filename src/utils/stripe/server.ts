@@ -47,7 +47,7 @@ export async function checkoutWithStripe(
       throw new Error('Unable to access customer record.');
     }
 
-    let params: Stripe.Checkout.SessionCreateParams = {
+    const params: Stripe.Checkout.SessionCreateParams = {
       mode: 'payment',
       expires_at: Math.floor(Date.now() / 1000) + 1800, // Set expiration time to 30 minutes from now
       invoice_creation: {

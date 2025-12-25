@@ -22,7 +22,7 @@ const validStatuses = ['draft', 'reserving', 'reservations-closed', 'cancelled',
 export const fetchEvents = async () => {
   const supabase = createClient();
   try {
-    let { data } = await supabase
+    const { data } = await supabase
       .from('events_with_host_data')
       .select('*')
       .order('created_at', { ascending: false });
@@ -42,7 +42,7 @@ export const fetchEvents = async () => {
 export const fetchEvent = async (slug: string) => {
   const supabase = createClient();
   try {
-    let { data } = await supabase
+    const { data } = await supabase
       .from('events_with_host_data')
       .select('*')
       .eq('slug', slug)
@@ -132,7 +132,7 @@ export const addEvent = async ({
 }) => {
   const supabase = createClient();
   try {
-    let { data, error } = await supabase
+    const { data, error } = await supabase
       .from('events')
       .insert([
         {
@@ -271,7 +271,7 @@ export const updateEventStatus = async (event_id: string, new_status: string) =>
 export const deleteEvent = async (event_id) => {
   const supabase = createClient();
   try {
-    let { data } = await supabase
+    const { data } = await supabase
       .from('events')
       .delete()
       .match({ id: event_id });
@@ -368,7 +368,7 @@ Hosted by <a href="${process.env.NEXT_PUBLIC_SITE_URL}/profiles/${profile?.usern
 Reserve your seats <a href="${process.env.NEXT_PUBLIC_SITE_URL}/events/${eventData.slug}">here</a>
 `;
 
-console.log(message)
+  console.log(message)
 
   // Create form data
   const formData = new FormData();

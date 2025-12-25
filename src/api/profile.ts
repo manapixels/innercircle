@@ -11,7 +11,7 @@ import { Profile, ProfileWithRoles } from '@/types/profile';
 export const fetchUserProfile = async (userId) => {
   const supabase = createClient();
   try {
-    let { data } = await supabase
+    const { data } = await supabase
       .from('profiles_with_roles')
       .select(`*`)
       .eq('id', userId)
@@ -29,7 +29,7 @@ export const fetchUserProfile = async (userId) => {
  * @param {string} username - The username of the profile.
  * @returns The profile data with hosted events or null if an error occurs.
  */
-export const fetchUserProfileWithEvents = async ({username, userId}: {username?: string, userId?: string}) => {
+export const fetchUserProfileWithEvents = async ({ username, userId }: { username?: string, userId?: string }) => {
   const supabase = createClient();
   try {
     let query = supabase
@@ -85,7 +85,7 @@ export const updateUserProfile = async (user: Profile) => {
 export const fetchUserRoles = async (setState) => {
   const supabase = createClient();
   try {
-    let { data } = await supabase.from('user_roles').select(`*`);
+    const { data } = await supabase.from('user_roles').select(`*`);
     if (setState) setState(data);
     return data;
   } catch (error) {
