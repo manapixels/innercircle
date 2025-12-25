@@ -4,6 +4,11 @@
     "es6": true,
     "node": true
   },
+  "settings": {
+    "jest": {
+      "version": 29
+    }
+  },
   "ignorePatterns": ["next.config.mjs"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

@@ -151,15 +151,9 @@ export const updatePriceRecord = async (
     }
 };
 
-export const deleteProductRecord = async (product: Stripe.Product) => {
-    const { error: deletionError } = await supabaseAdmin
-        .from('products')
-        .delete()
-        .eq('id', product.id);
-    if (deletionError)
-        throw new Error(`Product deletion failed: ${deletionError.message}`);
-    console.log(`Product deleted: ${product.id}`);
-};
+// Note: deleteProductRecord was removed because the 'products' table
+// does not exist in the current database schema. If you need this functionality,
+// add the 'products' table to your Supabase schema and types first.
 
 export const upsertCustomerToSupabase = async (uuid: string, customerId: string) => {
     const { error: upsertError } = await supabaseAdmin
@@ -267,7 +261,7 @@ export const copyBillingDetailsToCustomer = async (
     const customer = payment_method.customer as string;
     const { name, phone, address } = payment_method.billing_details;
     if (!name || !phone || !address) return;
-    //@ts-ignore
+    // @ts-expect-error - Stripe types don't perfectly match the address structure
     await stripe.customers.update(customer, { name, phone, address });
     const { error: updateError } = await supabaseAdmin
         .from('profiles')
